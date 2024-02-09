@@ -1,0 +1,306 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  daily-checkers
+
+  Sample SAM Template for daily-checkers
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
+    LoggingConfig:
+      LogFormat: JSON
+Resources:
+
+  # API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------
+
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: "1"
+      Auth:
+        Authorizers:
+          UserAuth:
+            FunctionArn: !GetAtt UserAuth.Arn
+            Identity:
+              Headers:
+                - Authorization
+              ReauthorizeEvery: 0
+            FunctionPayloadType: REQUEST
+          AdminAuth:
+            FunctionArn: !GetAtt AdminAuth.Arn
+            Identity:
+              Headers:
+                - Authorization
+              ReauthorizeEvery: 0
+            FunctionPayloadType: REQUEST
+  
+  # Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------
+  
+  UserAuth:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: auth/user-auth/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref UserTable
+
+  AdminAuth:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: auth/admin-auth/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref UserTable
+
+  # Dynamo Tables ------ Dynamo Tables ------ Dynamo Tables ------ Dynamo Tables ------ Dynamo Tables ------ Dynamo Tables ------ Dynamo Tables ------ Dynamo Tables ------
+
+  GameTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+      TableName: GameTable
+
+  
+  UserTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+      TableName: UserTable
+
+  # Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ 
+
+  GameConcedeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/game-concede/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /game/concede/{id}
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
+              !Ref UserTable
+    
+  GameInviteFunction:
+    Type: AWS::Serverless::Function #
+    Properties:
+      CodeUri: api/game-invite/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source:
+          Properties:
+            Path: /game/invite
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
+              !Ref UserTable
+
+  GameTakeTurnFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/game-take-turn/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /game/take-turn/{id}
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
+  
+  GameViewFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/game-view/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /game/view/{id}
+            Method: get
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
+  
+  InviteAcceptFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/invite-accept/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /invite/accept/{id}
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
+              !Ref UserTable
+
+  InviteDeclineFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/invite-decline/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /invite/decline/{id}
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
+              !Ref UserTable
+  
+  InviteListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/invite-list/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /invite/list
+            Method: get
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
+              !Ref UserTable
+  
+  UserDeleteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/user-delete/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /user/delete/{id}
+            Method: delete
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
+              !Ref UserTable
+
+  UserRegisterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/user-register/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /user/register
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref UserTable
+  
+  UserUpdateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/user-update/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /user/update/{id}
+            Method: put
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref UserTable
+  
+  UserViewFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/user-view/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /user/view/{id}
+            Method: get
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref UserTable
