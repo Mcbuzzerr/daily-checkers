@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="css/css_reset.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chokokutai&family=Rubik+Glitch+Pop&display=swap"
+        rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="./css/my_profile.css">
+    <script src="./js/profile.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>Daily Checkers</h1>
+        <div class="hori-flex">
+            <div class="profile-section">
+                <h2>Your Profile</h2>
+                <div class="slate">
+                    <div class="bar">
+                        <label for="name">Friend Code: </label>
+                        <p>[PLAYER ID]</p>
+                    </div>
+                    <div class="bar">
+                        <label for="name">Name: </label>
+                        <p>[PLAYER DATA]</p>
+                        <input class="hidden" type="text" id="name" name="name">
+                    </div>
+                    <div class="bar">
+                        <label for="email">Email: </label>
+                        <p>[PLAYER DATA]</p>
+                        <input class="hidden" type="text" id="email" name="email">
+                    </div>
+                    <div class="bar hidden">
+                        <label for="password">Password: </label>
+                        <input type="password" id="confirm-password" name="confirm-password">
+                    </div>
+                    <div class="bar">
+                        <p class="button submit hidden">Save</p>
+                        <p class="button" onclick="handleEditClicked()">Edit</p>
+                        <p class="button" onclick="window.location.href = 'login.html'">Log Out</p>
+                        <p class="button cancel hidden">Delete</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slate army-div">
+                <h3>Your Armies</h3>
+                <div class="row">
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                </div>
+                <div class="row">
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece black">
+                        </div>
+                    </div>
+                </div>
+                <div class="divider">
+                </div>
+                <div class="row">
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                </div>
+                <div class="row">
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                    <div class="cell black">
+                        <div class="piece white">
+
+                        </div>
+                    </div>
+                    <div class="cell white"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+</body>
+
+</html>
