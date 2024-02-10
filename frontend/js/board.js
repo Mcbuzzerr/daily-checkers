@@ -3,6 +3,7 @@ let showCoords = false;
 let gameBoard = null;
 let selected_piece = null;
 let pieceMoved = false;
+let Game = null;
 
 
 const renderBoard = (
@@ -55,7 +56,6 @@ const selectPiece = (event) => {
     let cell = event.target.parentElement;
     let x = cell.id.split("-")[0];
     let y = cell.id.split("-")[1];
-    console.log(Game)
     selected_piece = Game.board[y][x];
     if (selected_piece != null) {
         highlightMoves(x, y);
@@ -134,7 +134,6 @@ const undo = () => {
 }
 
 window.onload = () => {
-    let Game = null;
 
     if (document.cookie == null || document.cookie == "") {
         Game = {
@@ -307,6 +306,8 @@ window.onload = () => {
     } else {
         Game = JSON.parse(document.cookie.split('=')[1]);
     }
+
+    // Get Game from backend instead of this ^^^^
 
     setColors(Game.players);
     renderBoard(Game);
