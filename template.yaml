@@ -15,7 +15,6 @@ Globals:
     LoggingConfig:
       LogFormat: JSON
 Resources:
-
   # API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------ API Gateway ------
 
   MyApi:
@@ -87,6 +86,41 @@ Resources:
         Name: id
         Type: String
       TableName: UserTable
+  
+  # SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------
+
+  MySqsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: my-queue
+
+  # Lambdas (non-endpoints) ------ Lambdas (non-endpoints) ------ Lambdas (non-endpoints) ------ Lambdas (non-endpoints) ------ Lambdas (non-endpoints) ------
+  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedule.html
+
+  ScheduledEmailSenderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+     CodeUri: email/scheduled-sender/
+      Handler: index.handler
+      Runtime: python3.9
+      Events:
+        ScheduleEvent:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: "rate(1 hour)"
+    
+  QueuedEmailSenderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+     CodeUri: email/queue-sender/
+      Handler: index.handler
+      Runtime: python3.9
+      Events:
+        MySQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt MySqsQueue.Arn
+            BatchSize: 1
 
   # Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ 
 

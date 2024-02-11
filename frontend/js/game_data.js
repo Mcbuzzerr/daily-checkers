@@ -1,5 +1,5 @@
 // Doesn't include "promoted" property because that's a game state thing
-let PieceExample = {
+let Piece_inDB = {
     "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
     "displayText": "text",
     // Stupid optional shit
@@ -9,13 +9,13 @@ let PieceExample = {
 }
 
 
-let PlayerA = {
+let PlayerA_inDB = {
     "id": "213123-123123-123123-123213", //Friend Code
     "name": "Player A",
     "email": "playerA@email.com",
     "password": "shhhhhhhhhhhhh",
     "pieces": [
-        PieceExample, // List of pieces includes black and white
+        Piece_inDB, // List of pieces includes black and white
     ],
     "piecesAColor": "#000000",
     "piecesBColor": "#ffffff",
@@ -23,9 +23,26 @@ let PlayerA = {
     "backgroundColor": "#5079e9"
 }
 
-let Game = {
+let Piece_inGame = {
+    "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
+    "displayText": "text",
+}
+
+let PlayerA_inGame = {
+    "id": "213123-123123-123123-123213", //Friend Code
+    "name": "Player A",
+    "pieces": [
+        Piece_inGame, // List of pieces includes only pieces for their assigned team for this game
+    ],
+    "piecesColor": "#000000",
+    "highlightColor": "#2940ef",
+    "backgroundColor": "#5079e9",
+    "lastTurnTakenAt": "TIMESTAMP"
+}
+
+let Game_inDB = {
     "players": {
-        "A": PlayerA,
+        "A": PlayerA_inGame,
         "B": null
     },
     "turnCount": 0,
