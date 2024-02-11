@@ -6,11 +6,10 @@
     --player-a-piece-color-primary: #000;
     --player-b-piece-color-primary: #fff;
 
-    --current-player-outline-color: #2940ef;
+    --player-a-outline-color: #2940ef;
+    --player-b-outline-color: #ff0000;
 
     --cell-size: min(8vh, 9vw);
-
-    --background-color: #5079e9;
 }
 
 div {
@@ -84,7 +83,7 @@ main {
 }
 
 .cell.highlighted {
-    outline: var(--current-player-outline-color) solid 2px;
+    outline: var(--player-a-outline-color) solid 2px;
     outline-offset: -2px;
 }
 
@@ -133,6 +132,7 @@ main {
     font-size: 20px;
     overflow: hidden;
     text-wrap: nowrap;
+    user-select: none;
 }
 
 .piece::before {
@@ -182,8 +182,8 @@ main {
 }
 
 .piece.ghost {
-    border-color: var(--current-player-outline-color);
-    color: var(--current-player-outline-color);
+    border-color: var(--player-a-outline-color);
+    color: var(--player-a-outline-color);
     filter: brightness(1.3);
 }
 
