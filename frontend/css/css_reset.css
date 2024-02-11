@@ -191,6 +191,16 @@ h1 {
     text-wrap: none;
 }
 
+h2 {
+    font-size: 3em;
+    color: black;
+    margin-bottom: 20px;
+    background-image: url(../img/gray020.png);
+    padding: 10px;
+    border: 1px solid black;
+    box-shadow: 7px 7px 0px black;
+}
+
 
 h3 {
     font-size: 2em;
@@ -213,19 +223,33 @@ h3 {
     z-index: 2;
 }
 
+.invites {
+    position: absolute;
+    top: 10px;
+    left: 120px;
+    z-index: 2;
+}
+
 .button {
     padding: 10px 20px;
     font-size: 20px;
     cursor: pointer;
     border: solid 1px black;
     background-color: white;
-    box-shadow: 3px 3px 0px black;
+    box-shadow: 4px 4px 0px black;
     text-align: center;
 }
 
 .button:hover {
     box-shadow: none;
-    transform: translate(3px, 3px);
+    transform: translate(4px, 4px);
+}
+
+.button.disabled {
+    filter: brightness(0.6);
+    cursor: not-allowed;
+    transform: translate(4px, 4px);
+    box-shadow: none;
 }
 
 .slate {

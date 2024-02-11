@@ -115,8 +115,12 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
     if (pieceMoved) {
         return;
     }
-    pieceMoved = true;
     if (selected_piece == null) return;
+    pieceMoved = true;
+    let undoButton = document.getElementById("undo-button");
+    undoButton.classList.remove("disabled");
+    let submitButton = document.getElementById("submit-button");
+    submitButton.classList.remove("disabled");
 
     let old_cell = document.getElementById(`${old_x}-${old_y}`);
     let new_cell = document.getElementById(`${new_x}-${new_y}`);
