@@ -6,8 +6,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chokokutai&family=Rubik+Glitch+Pop&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Blaka+Hollow&display=swap" rel="stylesheet">
+
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,64 +18,85 @@
 
 <body>
     <main>
+        <p class="button logout" onclick="handleLogoutClicked()">Log Out</p>
         <h1>Daily Checkers</h1>
         <div class="hori-flex">
             <div class="profile-section">
                 <h2>Your Profile</h2>
-                <div class="slate">
+                <div class="slate player-slate">
+                    <h3 class="playerName playerColor">John PlayerName</h3>
+                    <div class="wide-bar">
+                        <label for="name">Friend Code: </label>
+                        <p>[PLAYER ID]</p>
+                    </div>
+                    <div class="wide-bar">
+                        <label class="playerColor" for="name">Victories: </label>
+                        <span class="playerColor" id="player-victories">#</span>
+                    </div>
+                    <p class="button edit" onclick="handleEditClicked()">Edit</p>
+                </div>
+                <div class="slate hidden">
+                    <h3>Account</h3>
                     <div class="bar">
                         <label for="name">Friend Code: </label>
                         <p>[PLAYER ID]</p>
                     </div>
                     <div class="bar">
                         <label for="name">Name: </label>
-                        <p>[PLAYER DATA]</p>
-                        <input class="hidden" type="text" id="name" name="name">
+                        <input type="text" id="name" name="name">
                     </div>
                     <div class="bar">
                         <label for="email">Email: </label>
-                        <p>[PLAYER DATA]</p>
-                        <input class="hidden" type="text" id="email" name="email">
-                    </div>
-                    <div class="bar hidden">
-                        <label for="password">Password: </label>
-                        <input type="password" id="confirm-password" name="confirm-password">
+                        <input type="text" id="email" name="email">
                     </div>
                     <div class="bar">
-                        <p class="button submit hidden" onclick="handleSaveClicker()">Save</p>
-                        <p class="button" onclick="handleEditClicked()">Edit</p>
-                        <p class="button" onclick="handleLogoutClicked()">Log Out</p>
-                        <p class="button cancel hidden" onclick="handleDeleteClicked()">Delete</p>
+                        <label for="password">Confirm Password: </label>
+                        <input type="password" id="confirm-password" name="confirm-password">
                     </div>
-                </div>
-                <br />
-                <div class="slate">
                     <h3>Customization</h3>
-                    Highlight Color: ALL USERS <br />
-                    Piece Colors: VICTORS ONLY (Custom hex codes) <br />
-                    Board Colors: VICTORS ONLY (Big Maybe, also likely just themes)
+                    <div class="bar">
+                        <label for="highlight-color">Highlight Color: </label>
+                        <input type="color" id="highlight-color" name="highlight-color">
+                    </div>
+                    <div class="bar">
+                        <label for="background-color">Background Color: </label>
+                        <input type="color" id="background-color" name="background-color">
+                    </div>
+                    <div class="bar">
+                        <label for="piece-a-color">Black Piece Color: </label>
+                        <input type="color" id="piece-a-color" name="piece-a-color">
+                    </div>
+                    <div class="bar">
+                        <label for="piece-b-color">White Piece Color: </label>
+                        <input type="color" id="piece-b-color" name="piece-b-color">
+                    </div>
+                    <div class="bar">
+                        <p class="button submit" onclick="handleSaveClicker()">Save</p>
+                        <p class="button" onclick="handleCancelClicked()">Cancel</p>
+                        <p class="button cancel" onclick="handleDeleteClicked()">Delete</p>
+                    </div>
                 </div>
             </div>
             <div class="slate army-div">
                 <h3>Your Armies</h3>
                 <div class="row">
-                    <div class="cell white"></div>
-                    <div class="cell black">
+                    <div class="cell white highlighted"></div>
+                    <div class="cell black highlighted">
                         <div class="piece black">
                         </div>
                     </div>
-                    <div class="cell white"></div>
-                    <div class="cell black">
+                    <div class="cell white highlighted"></div>
+                    <div class="cell black highlighted">
                         <div class="piece black">
                         </div>
                     </div>
-                    <div class="cell white"></div>
-                    <div class="cell black">
+                    <div class="cell white highlighted"></div>
+                    <div class="cell black highlighted">
                         <div class="piece black">
                         </div>
                     </div>
-                    <div class="cell white"></div>
-                    <div class="cell black">
+                    <div class="cell white highlighted"></div>
+                    <div class="cell black highlighted">
                         <div class="piece black">
                         </div>
                     </div>
@@ -127,30 +148,30 @@
                 <div class="divider">
                 </div>
                 <div class="row">
-                    <div class="cell black">
+                    <div class="cell highlighted black">
                         <div class="piece white">
 
                         </div>
                     </div>
-                    <div class="cell white"></div>
-                    <div class="cell black">
+                    <div class="cell highlighted white"></div>
+                    <div class="cell highlighted black">
                         <div class="piece white">
 
                         </div>
                     </div>
-                    <div class="cell white"></div>
-                    <div class="cell black">
+                    <div class="cell highlighted white"></div>
+                    <div class="cell highlighted black">
                         <div class="piece white">
 
                         </div>
                     </div>
-                    <div class="cell white"></div>
-                    <div class="cell black">
+                    <div class="cell highlighted white"></div>
+                    <div class="cell highlighted black">
                         <div class="piece white">
 
                         </div>
                     </div>
-                    <div class="cell white"></div>
+                    <div class="cell highlighted white"></div>
                 </div>
                 <div class="row">
                     <div class="cell white"></div>

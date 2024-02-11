@@ -25,7 +25,7 @@ const renderBoard = (
 
         if (game_board[y][x] != null) {
             cells[i].innerHTML = game_board[y][x].id;
-            let pieceText = game.players[game_board[y][x].id.split("-")[1]].pieces[game_board[y][x].id.split("-")[0] - 1];
+            let pieceText = game.players[game_board[y][x].id.split("-")[1]].pieces[game_board[y][x].id.split("-")[0] - 1].displayText;
             let color = game_board[y][x].id.split("-")[1] === "A" ? "black" : "white";
             cells[i].innerHTML = `<div class="piece ${color}" id="${game_board[y][x].id}">${pieceText}</div>`;
             if (game.turnCount % 2 === 0 && game_board[y][x].id.split("-")[1] === "A" || game.turnCount % 2 !== 0 && game_board[y][x].id.split("-")[1] === "B") {
@@ -44,9 +44,7 @@ const renderBoard = (
 const setColors = (players) => {
     let root = document.documentElement;
     root.style.setProperty("--player-a-piece-color-primary", players.A.primaryColor);
-    root.style.setProperty("--player-a-piece-color-secondary", players.A.secondaryColor);
     root.style.setProperty("--player-b-piece-color-primary", players.B.primaryColor);
-    root.style.setProperty("--player-b-piece-color-secondary", players.B.secondaryColor);
 }
 
 const selectPiece = (event) => {

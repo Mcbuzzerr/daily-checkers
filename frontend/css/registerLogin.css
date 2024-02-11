@@ -35,15 +35,6 @@ main {
     flex-direction: column;
 }
 
-
-h1 {
-    font-size: 5em;
-    color: black;
-    margin-bottom: 20px;
-    font-family: "Chokokutai", system-ui;
-    text-shadow: 3px 3px 0px white;
-}
-
 h2 {
     font-size: 3em;
     color: black;

@@ -1,41 +1,32 @@
+// Doesn't include "promoted" property because that's a game state thing
+let PieceExample = {
+    "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
+    "displayText": "text",
+    // Stupid optional shit
+    "lifetimeKills": 0,
+    "lifetimeDeaths": 0, //Display ratio on stats page
+    "lifetimePromotions": 0
+}
+
+
+let PlayerA = {
+    "id": "213123-123123-123123-123213", //Friend Code
+    "name": "Player A",
+    "email": "playerA@email.com",
+    "password": "shhhhhhhhhhhhh",
+    "pieces": [
+        PieceExample, // List of pieces includes black and white
+    ],
+    "piecesAColor": "#000000",
+    "piecesBColor": "#ffffff",
+    "highlightColor": "#2940ef",
+    "backgroundColor": "#5079e9"
+}
+
 let Game = {
     "players": {
-        "A": {
-            "pieces": [
-                "OwO",
-                "UwU",
-                "EwE",
-                "Salo",
-                "Fridge",
-                "🐈",
-                "🦈",
-                "0 - 0",
-                ">w>",
-                "Squij",
-                "🐛",
-                "Pheeb"
-            ],
-            "primaryColor": "black",
-            "secondaryColor": "white"
-        },
-        "B": {
-            "pieces": [
-                "^_^",
-                "(•_•)",
-                "O.O",
-                "^o^",
-                "X_X",
-                "ᓚᘏᗢ",
-                "💀",
-                "🐢",
-                "/ᐠ｡ꞈ｡ᐟ\\",
-                "Sheem",
-                "Pinto",
-                ":3"
-            ],
-            "primaryColor": "white",
-            "secondaryColor": "black"
-        }
+        "A": PlayerA,
+        "B": null
     },
     "turnCount": 0,
     "board": [
@@ -116,10 +107,7 @@ let Game = {
         ],
         [
             null,
-            {
-                "id": "2-B",
-                "promoted": false
-            },
+            null,
             null,
             null,
             null,
@@ -133,7 +121,10 @@ let Game = {
                 "promoted": false
             },
             null,
-            null,
+            {
+                "id": "2-B",
+                "promoted": false
+            },
             null,
             {
                 "id": "3-B",

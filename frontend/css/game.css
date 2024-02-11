@@ -1,10 +1,12 @@
 :root {
-    --player-a-piece-color-primary: #000;
-    --player-a-piece-color-secondary: #fff;
-    --player-b-piece-color-primary: #fff;
     --player-b-piece-color-secondary: #000;
+    --player-a-piece-color-secondary: #fff;
+    /* No longer really used ^^^^ */
 
-    --current-player-outline-color: rgb(41, 64, 239);
+    --player-a-piece-color-primary: #000;
+    --player-b-piece-color-primary: #fff;
+
+    --current-player-outline-color: #2940ef;
 
     --cell-size: min(8vh, 9vw);
 
@@ -42,17 +44,6 @@ main {
     justify-content: flex-start;
     align-items: center;
     flex-direction: column;
-}
-
-
-h1 {
-    font-size: 5em;
-    color: black;
-    margin-bottom: 20px;
-    font-family: "Blaka Hollow";
-    /*"Chokokutai", system-ui;*/
-    text-shadow: 3px 3px 0px white;
-    text-wrap: none;
 }
 
 .board {
