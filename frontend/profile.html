@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="./js/cookie_tools.js"></script>
     <link rel="stylesheet" href="css/css_reset.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,11 +26,11 @@
         <div class="hori-flex">
             <div class="profile-section">
                 <h2>Your Profile</h2>
-                <div class="slate player-slate">
-                    <h3 class="playerName playerColor">John PlayerName</h3>
+                <div id="player-slate" class="slate hidden">
+                    <h3 id="playerName" class="playerColor">John PlayerName</h3>
                     <div class="wide-bar">
                         <label for="name">Friend Code: </label>
-                        <span>[PLAYER ID]</span>
+                        <span id="friendCode">[PLAYER ID]</span>
                     </div>
                     <div class="wide-bar">
                         <label class="playerColor" for="name">Victories: </label>
@@ -37,23 +38,27 @@
                     </div>
                     <p class="button edit" onclick="handleEditClicked()">Edit</p>
                 </div>
-                <div class="slate hidden">
+                <div id="editor-slate" class="slate">
                     <h3>Account</h3>
                     <div class="bar">
                         <label for="name">Friend Code: </label>
-                        <p>[PLAYER ID]</p>
+                        <p id="player-id">[PLAYER ID]</p>
                     </div>
                     <div class="bar">
                         <label for="name">Name: </label>
-                        <input type="text" id="name" name="name">
+                        <input type="text" id="name-field" name="name">
                     </div>
                     <div class="bar">
                         <label for="email">Email: </label>
-                        <input type="text" id="email" name="email">
+                        <input type="text" id="email-field" name="email">
+                    </div>
+                    <div class="bar">
+                        <label for="new-password">New Password: </label>
+                        <input type="password" id="new-password-field" name="new-password">
                     </div>
                     <div class="bar">
                         <label for="password">Confirm Password: </label>
-                        <input type="password" id="confirm-password" name="confirm-password">
+                        <input type="password" id="confirm-password-field" name="confirm-password">
                     </div>
                     <h3>Customization</h3>
                     <div class="bar">
@@ -66,11 +71,11 @@
                     </div>
                     <div class="bar">
                         <label for="piece-a-color">Black Piece Color: </label>
-                        <input type="color" id="piece-a-color" name="piece-a-color">
+                        <input type="color" id="pieces-a-color" name="piece-a-color">
                     </div>
                     <div class="bar">
                         <label for="piece-b-color">White Piece Color: </label>
-                        <input type="color" id="piece-b-color" name="piece-b-color">
+                        <input type="color" id="pieces-b-color" name="piece-b-color">
                     </div>
                     <div class="bar">
                         <p class="button submit" onclick="handleSaveClicker()">Save</p>

@@ -1,9 +1,9 @@
 :root {
-    --player-a-piece-color-primary: #000;
-    --player-a-piece-color-secondary: #fff;
-    --player-b-piece-color-primary: #fff;
     --player-b-piece-color-secondary: #000;
+    --player-a-piece-color-secondary: #fff;
 
+    --player-a-piece-color-primary: #000;
+    --player-b-piece-color-primary: #fff;
     --current-player-outline-color: #ffe600;
     --current-player-background-color: #adadad;
 
@@ -200,7 +200,7 @@
     margin: 10px 0;
 }
 
-.playerName {
+#playerName {
     margin: 0;
 }
 
@@ -208,7 +208,8 @@
     color: var(--current-player-outline-color);
 }
 
-.player-slate {
+#player-slate,
+#editor-slate {
     background-color: var(--current-player-background-color);
 }
 

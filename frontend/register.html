@@ -12,6 +12,7 @@
     <meta charset="UTF-8">
     <title>Register</title>
     <link rel="stylesheet" href="./css/registerLogin.css">
+    <script src="js/register.js" defer></script>
 </head>
 
 <body>
@@ -30,11 +31,11 @@
                 </div>
                 <div class="bar">
                     <label for="password">Password: </label>
-                    <input type="password" id="confirm-password" name="confirm-password">
+                    <input type="password" id="password" name="password">
                 </div>
             </div>
             <div class="bar">
-                <p class="button submit">Register</p>
+                <p class="button submit" onclick="handleRegisterClicked()">Register</p>
                 <p class="button" onclick="window.location.href = 'login.html'">Log In</p>
             </div>
         </div>

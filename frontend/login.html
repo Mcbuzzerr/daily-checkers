@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <script src="js/cookie_tools.js" defer></script>
     <link rel="stylesheet" href="css/css_reset.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,6 +13,7 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="./css/registerLogin.css">
+    <script src="js/login.js" defer></script>
 </head>
 
 <body>
@@ -26,11 +28,11 @@
                 </div>
                 <div class="bar">
                     <label for="password">Password: </label>
-                    <input type="password" id="confirm-password" name="confirm-password">
+                    <input type="password" id="password" name="password">
                 </div>
             </div>
             <div class="bar">
-                <p class="button submit">Log In</p>
+                <p class="button submit" onclick="handleLoginClicked()">Log In</p>
                 <p class="button" onclick="window.location.href = 'register.html'">Register</p>
             </div>
         </div>
