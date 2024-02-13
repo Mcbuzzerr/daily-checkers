@@ -143,26 +143,6 @@ Resources:
             TableName: 
               !Ref GameTable
               !Ref UserTable
-    
-  GameInviteFunction:
-    Type: AWS::Serverless::Function #
-    Properties:
-      CodeUri: api/game-invite/
-      Handler: app.lambda_handler
-      Runtime: python3.9
-      Architectures:
-      - x86_64
-      Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source:
-          Properties:
-            Path: /game/invite
-            Method: post
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: 
-              !Ref GameTable
-              !Ref UserTable
 
   GameTakeTurnFunction:
     Type: AWS::Serverless::Function
@@ -201,6 +181,26 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
+  
+  InviteCreateFunction:
+    Type: AWS::Serverless::Function #
+    Properties:
+      CodeUri: api/invite-create/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source:
+          Properties:
+            Path: /invite
+            Method: post
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
+              !Ref UserTable
   
   InviteAcceptFunction:
     Type: AWS::Serverless::Function

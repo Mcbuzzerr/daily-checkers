@@ -12,26 +12,19 @@
 
     <meta charset="UTF-8">
     <title>Invites</title>
-    <link rel="stylesheet" href="./css/invite_list.css">
-    <script src="./js/invite_list.js"></script>
+    <link rel="stylesheet" href="./css/games_list.css">
+    <script src="./js/games_list.js"></script>
 </head>
 
 <body>
     <p class="button profile" onclick="window.location.href='profile.html'">Profile</p>
-    <p class="button invites disabled" onclick="window.location.href='invites.html'">Invites</p>
-    <p class="button games" onclick="window.location.href='games.html'">Games</p>
+    <p class="button invites" onclick="window.location.href='invites.html'">Invites</p>
+    <p class="button games disabled" onclick="window.location.href='games.html'">Games</p>
     <p class="button logout" onclick="handleLogoutClicked()">Log Out</p>
     <main>
         <h1 onclick="window.location.href = 'index.html'">Daily Checkers</h1>
-        <h2>Game Invites</h2>
-        <div class="header-bar">
-            <div class="slate">
-                <input type="text" id="friend-code"
-                    placeholder="Input a friend's code to invite them to a game. Leave the field blank to invite a random player.">
-            </div>
-            <div id="new-invite-button">+</div>
-        </div>
-        <div id="invite-container">
+        <h2>Games in Progress</h2>
+        <div id="game-container">
 
         </div>
     </main>

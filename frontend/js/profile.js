@@ -4,6 +4,60 @@ const handleClickPiece = (event) => {
     // (and possibly view per-piece stats)
     // ONLY AVAILABLE TO VICTORS
     console.log(event.target);
+    console.log(event.target.innerHTML);
+    const piece = event.target;
+    const pieceText = piece.innerHTML;
+    const pieceId = piece.id;
+    const pieceColor = pieceId.split('-')[1] === 'A' ? 'black' : 'white';
+    const textColor = pieceColor === 'black' ? 'white' : 'black';
+
+    piece.innerHTML = `
+    <input type="text" value="${pieceText}" style="width:100%; text-align: center; background-color: transparent; color: ${textColor};" />
+    `;
+    const label = piece.querySelector('input');
+    label.focus();
+
+    const eventListenerEvent = (event) => {
+        piece.innerHTML = label.value;
+        handleSavePieces();
+    }
+
+    label.addEventListener('blur', eventListenerEvent);
+    label.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            eventListenerEvent();
+        }
+    });
+
+};
+
+const handleSavePieces = () => {
+    const pieces = document.getElementsByClassName('piece');
+    const pieceData = [];
+    for (let piece of pieces) {
+        pieceData.push({
+            id: piece.id,
+            displayText: piece.innerHTML,
+        });
+    }
+    console.log(pieceData);
+    // const url = 'http://localhost:3000/pieces' //Not real endpoint
+    // fetch(url, {
+    //     method: 'PUT',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(pieceData),
+    // })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         console.log('Success:', data);
+    //         alert('Pieces saved successfully');
+    //     })
+    //     .catch((error) => {
+    //         console.error('Error:', error);
+    //         alert('An error occurred. Please try again later.');
+    //     });
 };
 
 const handleLogoutClicked = () => {
@@ -42,25 +96,25 @@ const handleSaveClicked = () => {
         piecesBColor: piecesBColor.value,
     };
     console.log(user);
-    const url = 'http://localhost:3000/profile' //Not real endpoint
-    fetch(url, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            renderProfile(data);
-            setCookie('user', JSON.stringify(data), 22);
-            handleCancelClicked();
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again later.')
-        });
+    // const url = 'http://localhost:3000/profile' //Not real endpoint
+    // fetch(url, {
+    //     method: 'PUT',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(user),
+    // })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         console.log('Success:', data);
+    //         renderProfile(data);
+    //         setCookie('user', JSON.stringify(data), 22);
+    //         handleCancelClicked();
+    //     })
+    //     .catch((error) => {
+    //         console.error('Error:', error);
+    //         alert('An error occurred. Please try again later.')
+    //     });
 };
 
 const handleCancelClicked = () => {
@@ -81,7 +135,9 @@ const renderProfile = (user) => {
     let friendCodeElement = document.getElementById('friendCode');
     friendCodeElement.innerText = user.id;
     let playerWinsElement = document.getElementById('player-victories');
-    playerWinsElement.innerText = user.totalWins;
+    playerWinsElement.innerText = user.victories;
+
+
     let playerPieces = user.pieces;
     let pieces = document.getElementsByClassName('piece');
     let itter_count = 0;
@@ -115,24 +171,12 @@ const renderProfile = (user) => {
 
 window.onload = () => {
     // Get the user's profile
-    // Initialize the interactable JavaScript bits
-    let pieces = document.getElementsByClassName('piece');
-    let itter_count = 0;
-    for (let piece of pieces) {
-        piece.addEventListener('click', handleClickPiece);
-        if (itter_count < 12) {
-            piece.id = `${itter_count + 1}-A`;
-        } else {
-            piece.id = `${itter_count - 11}-B`;
-        }
-        itter_count++;
-    }
-
     let PlayerA_inDB = {
         "id": "213123-123123-123123-123213", //Friend Code
         "name": "Player A",
         "email": "playerA@email.com",
         "password": "shhhhhhhhhhhhh",
+        "victories": 0,
         "pieces": [
             {
                 "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
@@ -231,11 +275,45 @@ window.onload = () => {
                 "displayText": "text",
             }
         ],
-        "piecesAColor": "#112233",
-        "piecesBColor": "#ffaabb",
-        "highlightColor": "#2940ef",
-        "backgroundColor": "#5079e9",
-        "totalWins": 0,
+        "piecesAColor": "#000000",
+        "piecesBColor": "#ffffff",
+        "highlightColor": "#ffe600",
+        "backgroundColor": "#adadad",
+    }
+
+
+    if (PlayerA_inDB.victories > 0) {
+        // Initialize the interactable JavaScript bits
+        let pieces = document.getElementsByClassName('piece');
+        let itter_count = 0;
+        for (let piece of pieces) {
+            piece.addEventListener('click', handleClickPiece);
+            if (itter_count < 12) {
+                piece.id = `${itter_count + 1}-A`;
+            } else {
+                piece.id = `${itter_count - 11}-B`;
+            }
+            itter_count++;
+        }
+
+        let customizationStation = document.getElementById('customization-station');
+        customizationStation.classList.remove('hidden');
+        let nonVictorMessage = document.getElementById('non-victor-message');
+        nonVictorMessage.classList.add('hidden');
+
+        // If the player can, but has not yet, customized their pieces
+        // Highlight the edit button to signify that there's new stuff in the edit menu
+        if (
+            PlayerA_inDB.victories == 1 &&
+            PlayerA_inDB.piecesAColor == "#000000" &&
+            PlayerA_inDB.piecesBColor == "#ffffff" &&
+            PlayerA_inDB.backgroundColor == "#adadad"
+        ) {
+            const editButton = document.getElementById('edit-button');
+            editButton.style.backgroundColor = PlayerA_inDB.highlightColor;
+            // Add animation that makes the background color fade in and out
+            editButton.style.animation = 'pulse 3s infinite';
+        }
     }
 
     // const user = getCookie('user');

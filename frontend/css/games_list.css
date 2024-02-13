@@ -1,0 +1,22 @@
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.game {
+    margin-bottom: 20px;
+}
+
+.header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0 15px 0;
+    gap: 20px;
+}
+
+#friend-code {
+    width: 555px;
+}

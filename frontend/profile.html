@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <script src="./js/cookie_tools.js"></script>
+    <script src="./js/global_tools.js" defer></script>
     <link rel="stylesheet" href="css/css_reset.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile</title>
+    <title>Profile</title>
     <link rel="stylesheet" href="./css/my_profile.css">
     <script src="./js/profile.js"></script>
 </head>
@@ -21,12 +21,13 @@
     <main>
         <p class="button profile" onclick="window.location.href='profile.html'">Profile</p>
         <p class="button invites" onclick="window.location.href='invites.html'">Invites</p>
+        <p class="button games" onclick="window.location.href='games.html'">Games</p>
         <p class="button logout" onclick="handleLogoutClicked()">Log Out</p>
         <h1 onclick="window.location.href = 'index.html'">Daily Checkers</h1>
         <div class="hori-flex">
             <div class="profile-section">
                 <h2>Your Profile</h2>
-                <div id="player-slate" class="slate hidden">
+                <div id="player-slate" class="slate">
                     <h3 id="playerName" class="playerColor">John PlayerName</h3>
                     <div class="wide-bar">
                         <label for="name">Friend Code: </label>
@@ -36,9 +37,9 @@
                         <label class="playerColor" for="name">Victories: </label>
                         <span class="playerColor" id="player-victories">#</span>
                     </div>
-                    <p class="button edit" onclick="handleEditClicked()">Edit</p>
+                    <p id="edit-button" class="button edit" onclick="handleEditClicked()">Edit</p>
                 </div>
-                <div id="editor-slate" class="slate">
+                <div id="editor-slate" class="slate hidden">
                     <h3>Account</h3>
                     <div class="bar">
                         <label for="name">Friend Code: </label>
@@ -65,17 +66,24 @@
                         <label for="highlight-color">Highlight Color: </label>
                         <input type="color" id="highlight-color" name="highlight-color">
                     </div>
-                    <div class="bar">
-                        <label for="background-color">Background Color: </label>
-                        <input type="color" id="background-color" name="background-color">
+                    <div class="hidden" id="customization-station">
+                        <div class="bar">
+                            <label for="background-color">Background Color: </label>
+                            <input type="color" id="background-color" name="background-color">
+                        </div>
+                        <div class="bar">
+                            <label for="piece-a-color">Black Piece Color: </label>
+                            <input type="color" id="pieces-a-color" name="piece-a-color">
+                        </div>
+                        <div class="bar">
+                            <label for="piece-b-color">White Piece Color: </label>
+                            <input type="color" id="pieces-b-color" name="piece-b-color">
+                        </div>
                     </div>
-                    <div class="bar">
-                        <label for="piece-a-color">Black Piece Color: </label>
-                        <input type="color" id="pieces-a-color" name="piece-a-color">
-                    </div>
-                    <div class="bar">
-                        <label for="piece-b-color">White Piece Color: </label>
-                        <input type="color" id="pieces-b-color" name="piece-b-color">
+                    <div id="non-victor-message">
+                        <p class="bar">
+                            Win a single game to unlock more customization options!
+                        </p>
                     </div>
                     <div class="bar">
                         <p class="button submit" onclick="handleSaveClicker()">Save</p>

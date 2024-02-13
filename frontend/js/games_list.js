@@ -4,8 +4,8 @@
 // Decline Invites
 // Send Invites
 
-const getInviteList = async () => {
-    let inviteList = [];
+const getGameList = async () => {
+    let gameList = [];
     // fetch('/api/invite/list', {
     //     method: 'GET',
     //     headers: {
@@ -17,7 +17,7 @@ const getInviteList = async () => {
     //     console.log(data);
     //     inviteList = data;
     // });
-    inviteList = [
+    gameList = [
         {
             "id": "123123-123123-123123-123213", //Invite Code
             "from": "213123-123123-123123-123213",
@@ -44,26 +44,29 @@ const getInviteList = async () => {
         },
     ];
 
-    for (let i = 0; i < inviteList.length; i++) {
-        let invite = inviteList[i];
+    for (let i = 0; i < gameList.length; i++) {
+        let invite = gameList[i];
         let inviteElement = document.createElement('div');
         inviteElement.classList.add('slate');
-        inviteElement.classList.add('invite');
+        inviteElement.classList.add('game');
         inviteElement.style.backgroundColor = invite["from-background-color"];
+
+        // Check if the invite is from the current user
+        // Change the invite text if so
+        // Display Game data such as turn number, current turn, etc.
         inviteElement.innerHTML = `
         <h3>
             <span class="player-name bold" style="color: ${invite["from-highlight-color"]};">${invite["from-name"]}</span> has invited you to play a game of checkers.
         </h3>
         <div class="button-container">
-            <p class="button submit" onclick="acceptInviteClicked('${invite.id}')">Accept</p>
-            <p class="button cancel" onclick="declineInviteClicked('${invite.id}')">Decline</p>
+            <p class="button submit" onclick="playGameClicked('${invite.id}')">Play Game</p>
         </div>
             `;
 
-        document.getElementById('invite-container').appendChild(inviteElement);
+        document.getElementById('game-container').appendChild(inviteElement);
     }
 
-    if (inviteList.length === 0) {
+    if (gameList.length === 0) {
         let inviteElement = document.createElement('div');
         // inviteElement.classList.add('slate');
         // inviteElement.classList.add('invite');
@@ -74,31 +77,15 @@ const getInviteList = async () => {
             </h3>
         </div>
             `;
-        document.getElementById('invite-container').appendChild(inviteElement);
+        document.getElementById('game-container').appendChild(inviteElement);
     }
 };
 
-const acceptInviteClicked = async (inviteId) => {
-    console.log(inviteId);
-};
-
-const declineInviteClicked = async (inviteId) => {
-    console.log(inviteId);
-};
-
-const newInviteClicked = () => {
-    //Open model to decide between to options
-    //1. Invite someone by friend code
-    //2. Invite someone random
-};
-
-const sendInviteByFriendCode = async (friendCode) => {
-};
-
-const sendInviteRandom = async () => {
-};
-
+const playGameClicked = (gameId) => {
+    // window.location.href = `/play_game#game=${gameId}`;
+    console.log(gameId)
+}
 
 window.onload = async () => {
-    getInviteList();
+    getGameList();
 };

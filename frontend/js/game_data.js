@@ -8,19 +8,19 @@ let Piece_inDB = {
     "lifetimePromotions": 0
 }
 
-
 let PlayerA_inDB = {
     "id": "213123-123123-123123-123213", //Friend Code
     "name": "Player A",
     "email": "playerA@email.com",
     "password": "shhhhhhhhhhhhh",
+    "victories": 1,
     "pieces": [
         Piece_inDB, // List of pieces includes black and white
     ],
     "piecesAColor": "#000000",
     "piecesBColor": "#ffffff",
-    "highlightColor": "#2940ef",
-    "backgroundColor": "#5079e9"
+    "highlightColor": "#ffe600",
+    "backgroundColor": "#adadad"
 }
 
 let Piece_inGame = {
@@ -365,3 +365,12 @@ let Game2 = {
         ]
     ]
 };
+
+let invite_inDB = {
+    "id": "123123-123123-123123-123213", //Invite Code
+    "from": "213123-123123-123123-123213",
+    "from-name": "Player A",
+    "from-background-color": "#adadad",
+    "from-highlight-color": "#ffe600",
+    "to": "213123-123123-123123-123213",
+}

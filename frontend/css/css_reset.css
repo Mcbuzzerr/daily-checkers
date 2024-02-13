@@ -230,6 +230,13 @@ h3 {
     z-index: 2;
 }
 
+.games {
+    position: absolute;
+    top: 10px;
+    left: 230px;
+    z-index: 2;
+}
+
 .button {
     padding: 10px 20px;
     font-size: 20px;
@@ -243,6 +250,16 @@ h3 {
 .button:hover {
     box-shadow: none;
     transform: translate(4px, 4px);
+}
+
+.button.submit {
+    background-color: green;
+    color: white;
+}
+
+.button.cancel {
+    background-color: red;
+    color: black;
 }
 
 .button.disabled {

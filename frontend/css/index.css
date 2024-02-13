@@ -14,9 +14,3 @@ main {
     margin-top: 10px;
     width: calc(100% - 80px);
 }
-
-
-.button.submit {
-    background-color: green;
-    color: white;
-}
