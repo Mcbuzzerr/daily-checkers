@@ -1,3 +1,5 @@
+const User = null;
+
 const handleClickPiece = (event) => {
     // Get the piece that was clicked
     // Open up a menu allowing the user to edit the piece's text
@@ -131,16 +133,16 @@ const handleDeleteClicked = () => {
     alert(areTheySure);
 };
 
-const renderProfile = (user) => {
+const renderProfile = (User) => {
     let nameElement = document.getElementById('playerName');
-    nameElement.innerText = user.name;
+    nameElement.innerText = User.name;
     let friendCodeElement = document.getElementById('friendCode');
-    friendCodeElement.innerText = user.id;
+    friendCodeElement.innerText = User.id;
     let playerWinsElement = document.getElementById('player-victories');
-    playerWinsElement.innerText = user.victories;
+    playerWinsElement.innerText = User.victories;
 
 
-    let playerPieces = user.pieces;
+    let playerPieces = User.pieces;
     let pieces = document.getElementsByClassName('piece');
     let itter_count = 0;
     for (let piece of pieces) {
@@ -149,142 +151,49 @@ const renderProfile = (user) => {
     }
 
     // Set the colors
-    document.documentElement.style.setProperty('--player-a-piece-color-primary', user.piecesAColor);
-    document.documentElement.style.setProperty('--player-b-piece-color-primary', user.piecesBColor);
-    document.documentElement.style.setProperty('--current-player-outline-color', user.highlightColor);
-    document.documentElement.style.setProperty('--current-player-background-color', user.backgroundColor);
+    document.documentElement.style.setProperty('--player-a-piece-color-primary', User.piecesAColor);
+    document.documentElement.style.setProperty('--player-b-piece-color-primary', User.piecesBColor);
+    document.documentElement.style.setProperty('--current-player-outline-color', User.highlightColor);
+    document.documentElement.style.setProperty('--current-player-background-color', User.backgroundColor);
 
     // Set field values
     let playerIdElement = document.getElementById('player-id');
-    playerIdElement.innerHTML = user.id;
+    playerIdElement.innerHTML = User.id;
     let playerNameField = document.getElementById('name-field');
-    playerNameField.value = user.name;
+    playerNameField.value = User.name;
     let playerEmailField = document.getElementById('email-field');
-    playerEmailField.value = user.email;
+    playerEmailField.value = User.email;
     let highlightColor = document.getElementById('highlight-color');
-    highlightColor.value = user.highlightColor;
+    highlightColor.value = User.highlightColor;
     let backgroundColor = document.getElementById('background-color');
-    backgroundColor.value = user.backgroundColor;
+    backgroundColor.value = User.backgroundColor;
     let piecesAColor = document.getElementById('pieces-a-color');
-    piecesAColor.value = user.piecesAColor;
+    piecesAColor.value = User.piecesAColor;
     let piecesBColor = document.getElementById('pieces-b-color');
-    piecesBColor.value = user.piecesBColor;
+    piecesBColor.value = User.piecesBColor;
 };
 
 window.onload = () => {
     // Get the user's profile
-    let PlayerA_inDB = {
-        "id": "213123-123123-123123-123213", //Friend Code
-        "name": "Player A",
-        "email": "playerA@email.com",
-        "password": "shhhhhhhhhhhhh",
-        "victories": 1,
-        "pieces": [
-            {
-                "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "2-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "3-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "4-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "5-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "6-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "7-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "8-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "9-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "10-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "11-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "12-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            },
-            {
-                "id": "1-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "2-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "3-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "4-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "5-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "6-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "7-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "8-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "9-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "10-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "11-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }, // List of pieces includes black and white
-            {
-                "id": "12-B", // {PieceNumber}-{TeamLetter} A = Black, B = White
-                "displayText": "text",
-            }
-        ],
-        "piecesAColor": "#000000",
-        "piecesBColor": "#ffffff",
-        "highlightColor": "#000000",
-        "backgroundColor": "#aaffff",
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const user_id = urlParams.get('user_id');
+    if (user_id == "me") {
+        User = getUser();
+    } else {
+        // const url = `http://localhost:3000/profile/${user_id}` //Not real endpoint
+        // fetch(url)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         User = data;
+        //     })
+        //     .catch((error) => {
+        //         console.error('Error:', error);
+        //         alert('An error occurred. Please try again later.');
+        //     });
     }
 
-
-    if (PlayerA_inDB.victories > 0) {
+    if (User.victories > 0) {
         // Initialize the interactable JavaScript bits
         let pieces = document.getElementsByClassName('piece');
         let itter_count = 0;
@@ -306,20 +215,20 @@ window.onload = () => {
         // If the player can, but has not yet, customized their pieces
         // Highlight the edit button to signify that there's new stuff in the edit menu
         if (
-            PlayerA_inDB.victories == 1 &&
-            PlayerA_inDB.piecesAColor == "#000000" &&
-            PlayerA_inDB.piecesBColor == "#ffffff" &&
-            PlayerA_inDB.backgroundColor == "#adadad"
+            User.victories == 1 &&
+            User.piecesAColor == "#000000" &&
+            User.piecesBColor == "#ffffff" &&
+            User.backgroundColor == "#adadad"
         ) {
             const editButton = document.getElementById('edit-button');
-            editButton.style.backgroundColor = PlayerA_inDB.highlightColor;
+            editButton.style.backgroundColor = User.highlightColor;
             // Add animation that makes the background color fade in and out
             editButton.style.animation = 'pulse 3s infinite';
         }
     }
 
     // const user = getCookie('user');
-    const user = PlayerA_inDB;
+    const user = User;
     if (user) {
         renderProfile(user);
     } else {

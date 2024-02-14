@@ -28,6 +28,10 @@ const getUser = () => {
     return getCookie("user");
 }
 
+const setUser = (user) => {
+    setCookie("user", user, 1);
+}
+
 let inputs = [];
 document.body.addEventListener("keydown", (event) => {
     inputs.push(event.key);

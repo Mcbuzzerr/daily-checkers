@@ -2,7 +2,6 @@
 let Piece_inDB = {
     "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
     "displayText": "text",
-    // Stupid optional shit
     "lifetimeKills": 0,
     "lifetimeDeaths": 0, //Display ratio on stats page
     "lifetimePromotions": 0
@@ -26,18 +25,6 @@ let PlayerA_inDB = {
 let Piece_inGame = {
     "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
     "promoted": false
-}
-
-let PlayerA_frontend = {
-    "id": "213123-123123-123123-123213", //Friend Code
-    "name": "Player A",
-    "pieces": [
-        Piece_inGame, // List of pieces includes only pieces for their assigned team for this game
-    ],
-    "piecesColor": "#000000",
-    "highlightColor": "#2940ef",
-    "backgroundColor": "#5079e9",
-    "lastTurnTakenAt": "TIMESTAMP"
 }
 
 let Game_inDB = {
