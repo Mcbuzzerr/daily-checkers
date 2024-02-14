@@ -60,8 +60,7 @@ const getGameList = async () => {
         </h3>
         <div class="button-container">
             <p class="button submit" onclick="playGameClicked('${invite.id}')">Play Game</p>
-        </div>
-            `;
+        </div>`;
 
         document.getElementById('game-container').appendChild(inviteElement);
     }
@@ -75,8 +74,7 @@ const getGameList = async () => {
             <h3>
                 You have no game invites at this time.
             </h3>
-        </div>
-            `;
+        </div>`;
         document.getElementById('game-container').appendChild(inviteElement);
     }
 };

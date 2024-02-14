@@ -127,6 +127,8 @@ const handleCancelClicked = () => {
 };
 
 const handleDeleteClicked = () => {
+    let areTheySure = confirm('Are you sure you want to delete your account? This action cannot be undone.');
+    alert(areTheySure);
 };
 
 const renderProfile = (user) => {
@@ -176,7 +178,7 @@ window.onload = () => {
         "name": "Player A",
         "email": "playerA@email.com",
         "password": "shhhhhhhhhhhhh",
-        "victories": 0,
+        "victories": 1,
         "pieces": [
             {
                 "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
@@ -277,8 +279,8 @@ window.onload = () => {
         ],
         "piecesAColor": "#000000",
         "piecesBColor": "#ffffff",
-        "highlightColor": "#ffe600",
-        "backgroundColor": "#adadad",
+        "highlightColor": "#000000",
+        "backgroundColor": "#aaffff",
     }
 
 
