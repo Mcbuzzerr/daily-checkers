@@ -4,8 +4,10 @@ let gameBoard = null;
 let selected_piece = null;
 let pieceMoved = false;
 let Game = null;
-let PlayerA = null;
-let PlayerB = null;
+let Players = {
+    "A": null,
+    "B": null
+}
 
 
 const renderBoard = (
@@ -27,13 +29,11 @@ const renderBoard = (
 
         if (game_board[y][x] != null) {
             cells[i].innerHTML = game_board[y][x].id;
-            let pieceText = "Bunk";
-            console.log(game_board[y][x].id.split("-")[1]);
-            console.log(game_board[y][x].id)
-
-            let color = game_board[y][x].id.split("-")[1] === "A" ? "black" : "white";
-            cells[i].innerHTML = `<div class="piece ${color}" id="${game_board[y][x].id}">${pieceText}</div>`;
-            if (game.turnCount % 2 === 0 && game_board[y][x].id.split("-")[1] === "A" || game.turnCount % 2 !== 0 && game_board[y][x].id.split("-")[1] === "B") {
+            let piece_id = Object.keys(game_board[y][x])[0];
+            let pieceText = Players[piece_id.split("-")[1]].pieces[piece_id].displayText;
+            let color = piece_id.split("-")[1] === "A" ? "black" : "white";
+            cells[i].innerHTML = `<div class="piece ${color}" id="${piece_id}">${pieceText}</div>`;
+            if (game.turnCount % 2 === 0 && piece_id.split("-")[1] === "A" || game.turnCount % 2 !== 0 && piece_id.split("-")[1] === "B") {
                 cells[i].addEventListener("click", selectPiece);
             }
         } else {
@@ -44,12 +44,6 @@ const renderBoard = (
             cells[i].innerHTML = cells[i].innerHTML + `${x}-${y}`;
         }
     }
-}
-
-const setColors = (players) => {
-    let root = document.documentElement;
-    root.style.setProperty("--player-a-piece-color-primary", players.A.primaryColor);
-    root.style.setProperty("--player-b-piece-color-primary", players.B.primaryColor);
 }
 
 const selectPiece = (event) => {
@@ -67,7 +61,6 @@ const selectPiece = (event) => {
 }
 
 const highlightMoves = (x, y) => {
-    console.log("Highlighting moves");
     let piece = selected_piece;
     let piece_player = piece.id.split("-")[1];
 
@@ -79,7 +72,6 @@ const highlightMoves = (x, y) => {
                 let cell = document.getElementById(`${x_check}-${y_check}`);
                 cell.classList.add("highlighted");
                 cell.addEventListener("click", () => {
-                    console.log("Moving piece");
                     planMovePiece(piece, x, y, x_check, y_check);
                 });
 
@@ -93,7 +85,6 @@ const highlightMoves = (x, y) => {
                         let cell = document.getElementById(`${x_jump}-${y_jump}`);
                         cell.classList.add("highlighted");
                         cell.addEventListener("click", () => {
-                            console.log("Moving piece");
                             planMovePiece(piece, x, y, x_jump, y_jump);
                         });
                     }
@@ -157,66 +148,54 @@ const getGame = async (gameId) => {
             [
                 null,
                 {
-                    "id": "1-A",
-                    "promoted": false
+                    "1-A": false
                 },
                 null,
                 {
-                    "id": "2-A",
-                    "promoted": false
+                    "2-A": false
                 },
                 null,
                 {
-                    "id": "3-A",
-                    "promoted": false
+                    "3-A": false
                 },
                 null,
                 {
-                    "id": "4-A",
-                    "promoted": false
+                    "4-A": false
                 }
             ],
             [
                 {
-                    "id": "5-A",
-                    "promoted": false
+                    "5-A": false
                 },
                 null,
                 {
-                    "id": "6-A",
-                    "promoted": false
+                    "6-A": false
                 },
                 null,
                 {
-                    "id": "7-A",
-                    "promoted": false
+                    "7-A": false
                 },
                 null,
                 {
-                    "id": "8-A",
-                    "promoted": false
+                    "8-A": false
                 }
             ],
             [
                 null,
                 {
-                    "id": "9-A",
-                    "promoted": false
+                    "9-A": false
                 },
                 null,
                 {
-                    "id": "10-A",
-                    "promoted": false
+                    "10-A": false
                 },
                 null,
                 {
-                    "id": "11-A",
-                    "promoted": false
+                    "11-A": false
                 },
                 null,
                 {
-                    "id": "12-A",
-                    "promoted": false
+                    "12-A": false
                 }
             ],
             [
@@ -241,82 +220,225 @@ const getGame = async (gameId) => {
             ],
             [
                 {
-                    "id": "1-B",
-                    "promoted": false
+                    "1-B": false
                 },
                 null,
                 {
-                    "id": "2-B",
-                    "promoted": false
+                    "2-B": false
                 },
                 null,
                 {
-                    "id": "3-B",
-                    "promoted": false
+                    "3-B": false
                 },
                 null,
                 {
-                    "id": "4-B",
-                    "promoted": false
+                    "4-B": false
                 }
             ],
             [
                 null,
                 {
-                    "id": "5-B",
-                    "promoted": false
+                    "5-B": false
                 },
                 null,
                 {
-                    "id": "6-B",
-                    "promoted": false
+                    "6-B": false
                 },
                 null,
                 {
-                    "id": "7-B",
-                    "promoted": false
+                    "7-B": false
                 },
                 null,
                 {
-                    "id": "8-B",
-                    "promoted": false
+                    "8-B": false
                 }
             ],
             [
                 {
-                    "id": "9-B",
-                    "promoted": false
+                    "9-B": false
                 },
                 null,
                 {
-                    "id": "10-B",
-                    "promoted": false
+                    "10-B": false
                 },
                 null,
                 {
-                    "id": "11-B",
-                    "promoted": false
+                    "11-B": false
                 },
                 null,
                 {
-                    "id": "12-B",
-                    "promoted": false
+                    "12-B": false
                 }
             ]
-        ],
-        "status": "pending|your-turn|their-turn|accepted|waiting"
+        ]
     };
 };
 
 const getPlayer = async (playerId) => {
     return {
-        "id": "213123-123123-123123-123213", //Friend Code
-        "name": "Player",
+        "id": playerId, //Friend Code
+        "name": "Player A",
         "email": "playerA@email.com",
         "password": "shhhhhhhhhhhhh",
         "victories": 1,
-        "pieces": [
-        ],
+        "pieces": {
+            "1-A": { // {PieceNumber}-{TeamLetter} A = Black, B = Whit: {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0, //Display ratio on stats page
+                "lifetimePromotions": 0
+            },
+            "2-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "3-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "4-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "5-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "6-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "7-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "8-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "9-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "10-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "11-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "12-A": {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "1-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "2-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "3-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "4-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "5-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "6-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "7-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "8-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "9-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "10-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "11-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            },
+            "12-B": {
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0,
+                "lifetimePromotions": 0
+            }
+        },
         "piecesAColor": "#000000",
         "piecesBColor": "#ffffff",
         "highlightColor": "#ffe600",
@@ -324,20 +446,27 @@ const getPlayer = async (playerId) => {
     }
 };
 
-window.onload = () => {
+
+const setColors = (players) => {
+    let root = document.documentElement;
+    root.style.setProperty("--player-a-piece-color-primary", players.A.piecesAColor);
+    root.style.setProperty("--player-b-piece-color-primary", players.B.piecesBColor);
+}
+
+window.onload = async () => {
 
 
-    Game = getGame("asdasd");
-    PlayerA = getPlayer(Game.players.A.id);
-    PlayerB = getPlayer(Game.players.B.id);
+    Game = await getGame("asdasd");
+    Players = {
+        "A": await getPlayer(Game.players.A.id),
+        "B": await getPlayer(Game.players.B.id)
+    }
 
 
     // Get Game from backend instead of this ^^^^
-
-    setColors(Game.players);
+    setColors(Players);
     renderBoard(Game);
     document.addEventListener("dblclick", () => {
-        console.log("Clearing selections");
         clearSelection();
         clearHighlights();
     })

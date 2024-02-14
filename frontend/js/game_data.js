@@ -13,9 +13,164 @@ let PlayerA_inDB = {
     "email": "playerA@email.com",
     "password": "shhhhhhhhhhhhh",
     "victories": 1,
-    "pieces": [
-        Piece_inDB, // List of pieces includes black and white
-    ],
+    "pieces": {
+        "1-A": { // {PieceNumber}-{TeamLetter} A = Black, B = Whit: {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0, //Display ratio on stats page
+            "lifetimePromotions": 0
+        },
+        "2-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "3-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "4-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "5-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "6-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "7-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "8-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "9-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "10-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "11-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "12-A": {
+
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "1-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "2-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "3-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "4-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "5-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "6-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "7-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "8-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "9-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "10-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "11-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        },
+        "12-B": {
+            "displayText": "text",
+            "lifetimeKills": 0,
+            "lifetimeDeaths": 0,
+            "lifetimePromotions": 0
+        }
+    },
     "piecesAColor": "#000000",
     "piecesBColor": "#ffffff",
     "highlightColor": "#ffe600",
@@ -23,7 +178,7 @@ let PlayerA_inDB = {
 }
 
 let Piece_inGame = {
-    "1-A": false // {PieceNumber}-{TeamLetter} A = Black, B = White
+    "1-A": false // {PieceNumber}-{TeamLetter} A = Black, B = White | True = Promoted
 }
 
 let Game_inDB = {

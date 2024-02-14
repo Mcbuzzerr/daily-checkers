@@ -80,7 +80,7 @@ const getGameList = async () => {
 };
 
 const playGameClicked = (gameId) => {
-    // window.location.href = `/play_game#game=${gameId}`;
+    window.location.href = `/frontend/play_game.html?game=${gameId}`;
     console.log(gameId)
 }
 
