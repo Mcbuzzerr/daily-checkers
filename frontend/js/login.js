@@ -26,180 +26,168 @@ const handleLoginClicked = () => {
 
     user = {
         "id": "213123-123123-123123-123213", //Friend Code
-        "name": "Player A",
+        "name": "Player Template",
         "email": "playerA@email.com",
         "password": "shhhhhhhhhhhhh",
         "victories": 1,
-        "pieces": [
-            {
-                "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
+        "pieces": {
+            "1-A": { // {PieceNumber}-{TeamLetter} A = Black, B = Whit: {
+
+                "displayText": "text",
+                "lifetimeKills": 0,
+                "lifetimeDeaths": 0, //Display ratio on stats page
+                "lifetimePromotions": 0
+            },
+            "2-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "2-A",
+            "3-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "3-A",
+            "4-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "4-A",
+            "5-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "5-A",
+            "6-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "6-A",
+            "7-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "7-A",
+            "8-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "8-A",
+            "9-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "9-A",
+            "10-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "10-A",
+            "11-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "11-A",
+            "12-A": {
+
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "12-A",
+            "1-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "1-B",
+            "2-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "2-B",
+            "3-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "3-B",
+            "4-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "4-B",
+            "5-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "5-B",
+            "6-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "6-B",
+            "7-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "7-B",
+            "8-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "8-B",
+            "9-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "9-B",
+            "10-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "10-B",
+            "11-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             },
-            {
-                "id": "11-B",
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            {
-                "id": "12-B",
+            "12-B": {
                 "displayText": "text",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0,
                 "lifetimePromotions": 0
             }
-        ],
+        },
         "piecesAColor": "#000000",
         "piecesBColor": "#ffffff",
         "highlightColor": "#ffe600",

@@ -8,6 +8,7 @@ let Players = {
     "A": null,
     "B": null
 }
+let loggedInPlayer = null;
 
 
 const renderBoard = (
@@ -30,6 +31,7 @@ const renderBoard = (
         if (game_board[y][x] != null) {
             cells[i].innerHTML = game_board[y][x].id;
             let piece_id = Object.keys(game_board[y][x])[0];
+            console.log(Players[piece_id.split("-")[1]].pieces)
             let pieceText = Players[piece_id.split("-")[1]].pieces[piece_id].displayText;
             let color = piece_id.split("-")[1] === "A" ? "black" : "white";
             cells[i].innerHTML = `<div class="piece ${color}" id="${piece_id}">${pieceText}</div>`;
@@ -62,7 +64,7 @@ const selectPiece = (event) => {
 
 const highlightMoves = (x, y) => {
     let piece = selected_piece;
-    let piece_player = piece.id.split("-")[1];
+    let piece_player = Object.keys(piece)[0].split("-")[1];
 
     for (let i = -1; i <= 1; i += 2) {
         let x_check = parseInt(x) + i;
@@ -77,7 +79,7 @@ const highlightMoves = (x, y) => {
 
 
 
-            } else if (Game.board[y_check][x_check].id.split("-")[1] !== piece_player) {
+            } else if (Object.keys(Game.board[y_check][x_check])[0].split("-")[1] !== piece_player) {
                 let x_jump = x_check + i;
                 let y_jump = y_check + (piece_player === "A" ? 1 : -1);
                 if (x_jump >= 0 && x_jump <= 7 && y_jump >= 0 && y_jump <= 7) {
@@ -120,8 +122,9 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
 
     let old_cell = document.getElementById(`${old_x}-${old_y}`);
     let new_cell = document.getElementById(`${new_x}-${new_y}`);
-    let pieceText = Game.players[piece.id.split("-")[1]].pieces[piece.id.split("-")[0] - 1];
-    new_cell.innerHTML = `<div class="piece ghost ${piece.promoted ? "promoted" : ""}" id="${piece.id}">${pieceText}</div>`
+    console.log(Players[Object.keys(piece)[0].split("-")[1]])
+    let pieceText = Players[Object.keys(piece)[0].split("-")[1]].pieces[Object.keys(piece)[0]];
+    new_cell.innerHTML = `<div class="piece ghost ${piece.promoted ? "promoted" : ""}" id="${Object.keys(piece)[0]}">${pieceText}</div>`
     old_cell.innerHTML = `<div class="piece shadow ${piece.promoted ? "promoted" : ""}" id="shadow"></div>`;
     clearSelection();
     clearHighlights();
@@ -277,7 +280,7 @@ const getGame = async (gameId) => {
 const getPlayer = async (playerId) => {
     return {
         "id": playerId, //Friend Code
-        "name": "Player A",
+        "name": "Player Template",
         "email": "playerA@email.com",
         "password": "shhhhhhhhhhhhh",
         "victories": 1,
@@ -457,9 +460,19 @@ window.onload = async () => {
 
 
     Game = await getGame("asdasd");
-    Players = {
-        "A": await getPlayer(Game.players.A.id),
-        "B": await getPlayer(Game.players.B.id)
+
+    loggedInPlayer = await getUser();
+    console.log(loggedInPlayer);
+
+    if (loggedInPlayer.id === Game.players.A.id) {
+        Players.A = loggedInPlayer;
+        Players.B = await getPlayer(Game.players.B.id);
+    } else if (loggedInPlayer.id === Game.players.B.id) {
+        Players.A = await getPlayer(Game.players.A.id);
+        Players.B = loggedInPlayer;
+    } else {
+        alert("You are not a player in this game");
+        window.location.href = "/home";
     }
 
 
