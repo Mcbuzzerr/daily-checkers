@@ -1,4 +1,4 @@
-const User = null;
+let User = null;
 
 const handleClickPiece = (event) => {
     // Get the piece that was clicked
@@ -42,6 +42,7 @@ const handleSavePieces = () => {
             displayText: piece.innerHTML,
         });
     }
+    User.pieces
     console.log(pieceData);
     // const url = 'http://localhost:3000/pieces' //Not real endpoint
     // fetch(url, {
@@ -63,8 +64,8 @@ const handleSavePieces = () => {
 };
 
 const handleLogoutClicked = () => {
-    setCookie('user', '', 0);
-    window.location.href = 'index.html'
+    setUser(null);
+    window.location.href = '/frontend/index.html'
 }
 
 const handleEditClicked = () => {
@@ -177,10 +178,12 @@ window.onload = () => {
     // Get the user's profile
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const user_id = urlParams.get('user_id');
-    if (user_id == "me") {
+    const user_id = urlParams.get('user');
+    if (user_id == null) {
         User = getUser();
     } else {
+        let editButton = document.getElementById('edit-button');
+        editButton.classList.add('hidden');
         // const url = `http://localhost:3000/profile/${user_id}` //Not real endpoint
         // fetch(url)
         //     .then(response => response.json())
@@ -192,46 +195,44 @@ window.onload = () => {
         //         alert('An error occurred. Please try again later.');
         //     });
     }
-
-    if (User.victories > 0) {
-        // Initialize the interactable JavaScript bits
-        let pieces = document.getElementsByClassName('piece');
-        let itter_count = 0;
-        for (let piece of pieces) {
-            piece.addEventListener('click', handleClickPiece);
-            if (itter_count < 12) {
-                piece.id = `${itter_count + 1}-A`;
-            } else {
-                piece.id = `${itter_count - 11}-B`;
+    if (User) {
+        if (User.victories > 0) {
+            // Initialize the interactable JavaScript bits
+            let pieces = document.getElementsByClassName('piece');
+            let itter_count = 0;
+            for (let piece of pieces) {
+                piece.addEventListener('click', handleClickPiece);
+                if (itter_count < 12) {
+                    piece.id = `${itter_count + 1}-A`;
+                } else {
+                    piece.id = `${itter_count - 11}-B`;
+                }
+                itter_count++;
             }
-            itter_count++;
+
+            let customizationStation = document.getElementById('customization-station');
+            customizationStation.classList.remove('hidden');
+            let nonVictorMessage = document.getElementById('non-victor-message');
+            nonVictorMessage.classList.add('hidden');
+
+            // If the player can, but has not yet, customized their pieces
+            // Highlight the edit button to signify that there's new stuff in the edit menu
+            if (
+                User.victories == 1 &&
+                User.piecesAColor == "#000000" &&
+                User.piecesBColor == "#ffffff" &&
+                User.backgroundColor == "#adadad"
+            ) {
+                const editButton = document.getElementById('edit-button');
+                editButton.style.backgroundColor = User.highlightColor;
+                // Add animation that makes the background color fade in and out
+                editButton.style.animation = 'pulse 3s infinite';
+            }
         }
 
-        let customizationStation = document.getElementById('customization-station');
-        customizationStation.classList.remove('hidden');
-        let nonVictorMessage = document.getElementById('non-victor-message');
-        nonVictorMessage.classList.add('hidden');
-
-        // If the player can, but has not yet, customized their pieces
-        // Highlight the edit button to signify that there's new stuff in the edit menu
-        if (
-            User.victories == 1 &&
-            User.piecesAColor == "#000000" &&
-            User.piecesBColor == "#ffffff" &&
-            User.backgroundColor == "#adadad"
-        ) {
-            const editButton = document.getElementById('edit-button');
-            editButton.style.backgroundColor = User.highlightColor;
-            // Add animation that makes the background color fade in and out
-            editButton.style.animation = 'pulse 3s infinite';
-        }
-    }
-
-    // const user = getCookie('user');
-    const user = User;
-    if (user) {
-        renderProfile(user);
+        // const user = getCookie('user');
+        renderProfile(User);
     } else {
-        window.location.href = '/index.html';
+        // window.location.href = '/frontend/index.html';
     }
 }

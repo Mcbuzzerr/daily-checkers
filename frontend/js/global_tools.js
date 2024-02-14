@@ -25,11 +25,11 @@ const getCookie = (cname) => {
 }
 
 const getUser = () => {
-    return getCookie("user");
+    return JSON.parse(getCookie("user"));
 }
 
 const setUser = (user) => {
-    setCookie("user", user, 1);
+    setCookie("user", JSON.stringify(user), 1);
 }
 
 let inputs = [];

@@ -23,8 +23,7 @@ let PlayerA_inDB = {
 }
 
 let Piece_inGame = {
-    "id": "1-A", // {PieceNumber}-{TeamLetter} A = Black, B = White
-    "promoted": false
+    "1-A": false // {PieceNumber}-{TeamLetter} A = Black, B = White
 }
 
 let Game_inDB = {
@@ -43,13 +42,11 @@ let Game_inDB = {
         [
             null,
             {
-                "id": "1-A",
-                "promoted": false
+                "1-A": false
             },
             null,
             {
-                "id": "2-A",
-                "promoted": false
+                "2-A": false // Repeat this, I want to go to bed instead of manually typing these
             },
             null,
             {
