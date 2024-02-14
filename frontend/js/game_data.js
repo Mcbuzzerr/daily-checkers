@@ -46,60 +46,50 @@ let Game_inDB = {
             },
             null,
             {
-                "2-A": false // Repeat this, I want to go to bed instead of manually typing these
+                "2-A": false
             },
             null,
             {
-                "id": "3-A",
-                "promoted": false
+                "3-A": false
             },
             null,
             {
-                "id": "4-A",
-                "promoted": false
+                "4-A": false
             }
         ],
         [
             {
-                "id": "5-A",
-                "promoted": false
+                "5-A": false
             },
             null,
             {
-                "id": "6-A",
-                "promoted": false
+                "6-A": false
             },
             null,
             {
-                "id": "7-A",
-                "promoted": false
+                "7-A": false
             },
             null,
             {
-                "id": "8-A",
-                "promoted": false
+                "8-A": false
             }
         ],
         [
             null,
             {
-                "id": "9-A",
-                "promoted": false
+                "9-A": false
             },
             null,
             {
-                "id": "10-A",
-                "promoted": false
+                "10-A": false
             },
             null,
             {
-                "id": "11-A",
-                "promoted": false
+                "11-A": false
             },
             null,
             {
-                "id": "12-A",
-                "promoted": false
+                "12-A": false
             }
         ],
         [
@@ -124,66 +114,54 @@ let Game_inDB = {
         ],
         [
             {
-                "id": "1-B",
-                "promoted": false
+                "1-B": false
             },
             null,
             {
-                "id": "2-B",
-                "promoted": false
+                "2-B": false
             },
             null,
             {
-                "id": "3-B",
-                "promoted": false
+                "3-B": false
             },
             null,
             {
-                "id": "4-B",
-                "promoted": false
+                "4-B": false
             }
         ],
         [
             null,
             {
-                "id": "5-B",
-                "promoted": false
+                "5-B": false
             },
             null,
             {
-                "id": "6-B",
-                "promoted": false
+                "6-B": false
             },
             null,
             {
-                "id": "7-B",
-                "promoted": false
+                "7-B": false
             },
             null,
             {
-                "id": "8-B",
-                "promoted": false
+                "8-B": false
             }
         ],
         [
             {
-                "id": "9-B",
-                "promoted": false
+                "9-B": false
             },
             null,
             {
-                "id": "10-B",
-                "promoted": false
+                "10-B": false
             },
             null,
             {
-                "id": "11-B",
-                "promoted": false
+                "11-B": false
             },
             null,
             {
-                "id": "12-B",
-                "promoted": false
+                "12-B": false
             }
         ]
     ]
