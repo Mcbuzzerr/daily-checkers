@@ -33,7 +33,7 @@ const handleLoginClicked = () => {
         "pieces": {
             "1-A": { // {PieceNumber}-{TeamLetter} A = Black, B = Whit: {
 
-                "displayText": "text",
+                "displayText": "",
                 "lifetimeKills": 0,
                 "lifetimeDeaths": 0, //Display ratio on stats page
                 "lifetimePromotions": 0

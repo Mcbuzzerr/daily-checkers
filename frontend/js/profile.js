@@ -147,7 +147,9 @@ const renderProfile = (User) => {
     let pieces = document.getElementsByClassName('piece');
     let itter_count = 0;
     for (let piece of pieces) {
-        piece.innerText = User.pieces[piece.id].displayText;
+        if (User.victories > 0) {
+            piece.innerText = User.pieces[piece.id].displayText;
+        }
         itter_count++;
     }
 

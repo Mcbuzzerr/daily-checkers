@@ -19,29 +19,145 @@ const getGameList = async () => {
     // });
     gameList = [
         {
-            "id": "123123-123123-123123-123213", //Invite Code
-            "from": "213123-123123-123123-123213",
-            "from-name": "Player A",
-            "from-background-color": "#adadad",
-            "from-highlight-color": "#ffe600",
-            "to": "213123-123123-123123-123213",
-        },
-        {
-            "id": "123123-123123-123123-123213", //Invite Code
-            "from": "213123-123123-123123-123213",
-            "from-name": "Player A",
-            "from-background-color": "#adadad",
-            "from-highlight-color": "#ffe600",
-            "to": "213123-123123-123123-123213",
-        },
-        {
-            "id": "123123-123123-123123-123213", //Invite Code
-            "from": "213123-123123-123123-123213",
-            "from-name": "Player A",
-            "from-background-color": "#adadad",
-            "from-highlight-color": "#ffe600",
-            "to": "213123-123123-123123-123213",
-        },
+            "players": {
+                "A": {
+                    "id": "213123-123123-123123-123213",
+                    "lastTurnTakenAt": "TIMESTAMP"
+                },
+                "B": {
+                    "id": "213123-123123-123123-123213",
+                    "lastTurnTakenAt": "TIMESTAMP"
+                }
+            },
+            "turnCount": 0,
+            "board": [
+                [
+                    null,
+                    {
+                        "1-A": false
+                    },
+                    null,
+                    {
+                        "2-A": false
+                    },
+                    null,
+                    {
+                        "3-A": false
+                    },
+                    null,
+                    {
+                        "4-A": false
+                    }
+                ],
+                [
+                    {
+                        "5-A": false
+                    },
+                    null,
+                    {
+                        "6-A": false
+                    },
+                    null,
+                    {
+                        "7-A": false
+                    },
+                    null,
+                    {
+                        "8-A": false
+                    }
+                ],
+                [
+                    null,
+                    {
+                        "9-A": false
+                    },
+                    null,
+                    {
+                        "10-A": false
+                    },
+                    null,
+                    {
+                        "11-A": false
+                    },
+                    null,
+                    {
+                        "12-A": false
+                    }
+                ],
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                [
+                    {
+                        "1-B": false
+                    },
+                    null,
+                    {
+                        "2-B": false
+                    },
+                    null,
+                    {
+                        "3-B": false
+                    },
+                    null,
+                    {
+                        "4-B": false
+                    }
+                ],
+                [
+                    null,
+                    {
+                        "5-B": false
+                    },
+                    null,
+                    {
+                        "6-B": false
+                    },
+                    null,
+                    {
+                        "7-B": false
+                    },
+                    null,
+                    {
+                        "8-B": false
+                    }
+                ],
+                [
+                    {
+                        "9-B": false
+                    },
+                    null,
+                    {
+                        "10-B": false
+                    },
+                    null,
+                    {
+                        "11-B": false
+                    },
+                    null,
+                    {
+                        "12-B": false
+                    }
+                ]
+            ]
+        }
     ];
 
     for (let i = 0; i < gameList.length; i++) {
@@ -72,7 +188,7 @@ const getGameList = async () => {
         inviteElement.innerHTML = `
         <div id="no-invites-message" class="slate hidden">
             <h3>
-                You have no game invites at this time.
+                You have no games    at this time.
             </h3>
         </div>`;
         document.getElementById('game-container').appendChild(inviteElement);
