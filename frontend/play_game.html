@@ -28,12 +28,20 @@
 
         <div class="hori-flex">
             <div class="player-a-panel">
-
+                <div id="player-a-slate" class="slate">
+                    <h3 class="playerName playerAColor">John PlayerName</h3>
+                    <div class="wide-bar">
+                        <label for="name">Friend Code: </label>
+                        <span class="friendCode">[PLAYER ID]</span>
+                    </div>
+                    <div class="wide-bar">
+                        <label class="playerAColor" for="name">Victories: </label>
+                        <span class="playerAColor player-victories">#</span>
+                    </div>
+                </div>
             </div>
 
             <div class="main-panel">
-
-
                 <h1 onclick="window.location.href = 'index.html'">Daily Checkers</h1>
                 <div class="button-bar">
                     <p id="undo-button" class="button disabled" onclick="undo()">Undo</p>
@@ -132,7 +140,17 @@
             </div>
 
             <div class="player-b-panel">
-
+                <div id="player-b-slate" class="slate">
+                    <h3 class="playerName playerBColor">John PlayerName</h3>
+                    <div class="wide-bar">
+                        <label for="friend-code">Friend Code: </label>
+                        <span class="friendCode">[PLAYER ID]</span>
+                    </div>
+                    <div class="wide-bar">
+                        <label class="playerBColor" for="name">Victories: </label>
+                        <span class="playerBColor player-victories">#</span>
+                    </div>
+                </div>
             </div>
         </div>
 

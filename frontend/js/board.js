@@ -31,7 +31,6 @@ const renderBoard = (
         if (game_board[y][x] != null) {
             cells[i].innerHTML = game_board[y][x].id;
             let piece_id = Object.keys(game_board[y][x])[0];
-            console.log(Players[piece_id.split("-")[1]].pieces)
             let pieceText = Players[piece_id.split("-")[1]].pieces[piece_id].displayText;
             let color = piece_id.split("-")[1] === "A" ? "black" : "white";
             cells[i].innerHTML = `<div class="piece ${color}" id="${piece_id}">${pieceText}</div>`;
@@ -122,8 +121,7 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
 
     let old_cell = document.getElementById(`${old_x}-${old_y}`);
     let new_cell = document.getElementById(`${new_x}-${new_y}`);
-    console.log(Players[Object.keys(piece)[0].split("-")[1]])
-    let pieceText = Players[Object.keys(piece)[0].split("-")[1]].pieces[Object.keys(piece)[0]];
+    let pieceText = Players[Object.keys(piece)[0].split("-")[1]].pieces[Object.keys(piece)[0]].displayText;
     new_cell.innerHTML = `<div class="piece ghost ${piece.promoted ? "promoted" : ""}" id="${Object.keys(piece)[0]}">${pieceText}</div>`
     old_cell.innerHTML = `<div class="piece shadow ${piece.promoted ? "promoted" : ""}" id="shadow"></div>`;
     clearSelection();
@@ -456,13 +454,28 @@ const setColors = (players) => {
     root.style.setProperty("--player-b-piece-color-primary", players.B.piecesBColor);
 }
 
+const renderPlayers = () => {
+    let playerA = document.getElementById("player-a-slate");
+    let playerB = document.getElementById("player-b-slate");
+    playerA.style.backgroundColor = Players.A.backgroundColor;
+    playerA.querySelector(".playerName").innerHTML = Players.A.name;
+    playerA.querySelector(".friendCode").innerHTML = Players.A.id;
+    playerA.querySelector(".player-victories").innerHTML = Players.A.victories;
+    playerB.style.backgroundColor = Players.B.backgroundColor;
+    playerB.querySelector(".friendCode").innerHTML = Players.B.id;
+    playerB.querySelector(".playerName").innerHTML = Players.B.name;
+    playerB.querySelector(".player-victories").innerHTML = Players.B.victories;
+    document.documentElement.setAttribute("player-a-outline-color", Players.A.highlightColor);
+    document.documentElement.setAttribute("player-b-outline-color", Players.B.highlightColor);
+}
+
+
 window.onload = async () => {
 
 
     Game = await getGame("asdasd");
-
     loggedInPlayer = await getUser();
-    console.log(loggedInPlayer);
+
 
     if (loggedInPlayer.id === Game.players.A.id) {
         Players.A = loggedInPlayer;
@@ -472,9 +485,10 @@ window.onload = async () => {
         Players.B = loggedInPlayer;
     } else {
         alert("You are not a player in this game");
-        window.location.href = "/home";
+        window.location.href = "frontend/index.html";
     }
 
+    renderPlayers();
 
     // Get Game from backend instead of this ^^^^
     setColors(Players);
