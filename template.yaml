@@ -87,6 +87,14 @@ Resources:
         Type: String
       TableName: UserTable
   
+  NotificationTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+      TableName: NotificationTable
+  
   # SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------
 
   MySqsQueue:
