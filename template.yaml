@@ -45,7 +45,7 @@ Resources:
     Properties:
       CodeUri: auth/user-auth/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Policies:
@@ -59,7 +59,7 @@ Resources:
     Properties:
       CodeUri: auth/admin-auth/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Policies:
@@ -108,9 +108,9 @@ Resources:
   ScheduledEmailSenderFunction:
     Type: AWS::Serverless::Function
     Properties:
-     CodeUri: email/scheduled-sender/
-      Handler: index.handler
-      Runtime: python3.9
+      CodeUri: email/scheduled-sender/
+      Handler: app.handler
+      Runtime: python3.12
       Events:
         ScheduleEvent:
           Type: ScheduleV2
@@ -120,9 +120,9 @@ Resources:
   QueuedEmailSenderFunction:
     Type: AWS::Serverless::Function
     Properties:
-     CodeUri: email/queue-sender/
-      Handler: index.handler
-      Runtime: python3.9
+      CodeUri: email/queue-sender/
+      Handler: app.handler
+      Runtime: python3.12
       Events:
         MySQSEvent:
           Type: SQS
@@ -137,19 +137,22 @@ Resources:
     Properties:
       CodeUri: api/game-concede/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /game/concede/{id}
             Method: post
       Policies:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
+        - DynamoDBCrudPolicy:
+            TableName: 
               !Ref UserTable
 
   GameTakeTurnFunction:
@@ -157,13 +160,14 @@ Resources:
     Properties:
       CodeUri: api/game-take-turn/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /game/take-turn/{id}
             Method: post
       Policies:
@@ -176,13 +180,14 @@ Resources:
     Properties:
       CodeUri: api/game-view/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /game/view/{id}
             Method: get
       Policies:
@@ -195,7 +200,7 @@ Resources:
     Properties:
       CodeUri: api/invite-create/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
@@ -208,6 +213,8 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
+        - DynamoDBCrudPolicy:
+            TableName: 
               !Ref UserTable
   
   InviteAcceptFunction:
@@ -215,19 +222,22 @@ Resources:
     Properties:
       CodeUri: api/invite-accept/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /invite/accept/{id}
             Method: post
       Policies:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
+        - DynamoDBCrudPolicy:
+            TableName: 
               !Ref UserTable
 
   InviteDeclineFunction:
@@ -235,19 +245,22 @@ Resources:
     Properties:
       CodeUri: api/invite-decline/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /invite/decline/{id}
             Method: post
       Policies:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
+        - DynamoDBCrudPolicy:
+            TableName: 
               !Ref UserTable
   
   InviteListFunction:
@@ -255,19 +268,22 @@ Resources:
     Properties:
       CodeUri: api/invite-list/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /invite/list
             Method: get
       Policies:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
+        - DynamoDBCrudPolicy:
+            TableName: 
               !Ref UserTable
   
   UserDeleteFunction:
@@ -275,19 +291,22 @@ Resources:
     Properties:
       CodeUri: api/user-delete/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /user/delete/{id}
             Method: delete
       Policies:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
+        - DynamoDBCrudPolicy:
+            TableName: 
               !Ref UserTable
 
   UserRegisterFunction:
@@ -295,13 +314,14 @@ Resources:
     Properties:
       CodeUri: api/user-register/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /user/register
             Method: post
       Policies:
@@ -314,13 +334,14 @@ Resources:
     Properties:
       CodeUri: api/user-update/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /user/update/{id}
             Method: put
       Policies:
@@ -333,13 +354,14 @@ Resources:
     Properties:
       CodeUri: api/user-view/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Architectures:
       - x86_64
       Events:
         HelloWorld:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /user/view/{id}
             Method: get
       Policies:
