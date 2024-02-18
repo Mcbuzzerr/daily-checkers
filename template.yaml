@@ -207,6 +207,7 @@ Resources:
         HelloWorld:
           Type: Api # More info about API Event Source:
           Properties:
+            RestApiId: !Ref MyApi
             Path: /invite
             Method: post
       Policies:
