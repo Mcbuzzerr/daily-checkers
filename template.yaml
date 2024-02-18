@@ -29,14 +29,12 @@ Resources:
               Headers:
                 - Authorization
               ReauthorizeEvery: 0
-            FunctionPayloadType: REQUEST
-          AdminAuth:
-            FunctionArn: !GetAtt AdminAuth.Arn
+          VictorAuth:
+            FunctionArn: !GetAtt VictorAuth.Arn
             Identity:
               Headers:
                 - Authorization
               ReauthorizeEvery: 0
-            FunctionPayloadType: REQUEST
   
   # Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------ Authorizers ------
   
@@ -54,10 +52,10 @@ Resources:
             TableName: 
               !Ref UserTable
 
-  AdminAuth:
+  VictorAuth:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: auth/admin-auth/
+      CodeUri: auth/victor-auth/
       Handler: app.lambda_handler
       Runtime: python3.12
       Architectures:
