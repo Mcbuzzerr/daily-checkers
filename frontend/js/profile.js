@@ -63,11 +63,6 @@ const handleSavePieces = () => {
     //     });
 };
 
-const handleLogoutClicked = () => {
-    setUser(null);
-    window.location.href = '/frontend/index.html'
-}
-
 const handleEditClicked = () => {
     // Show Hidden Edit Fields
     // Hide the Shown non-edit fields
@@ -149,6 +144,7 @@ const renderProfile = (User) => {
     for (let piece of pieces) {
         if (User.victories > 0) {
             piece.innerText = User.pieces[piece.id].displayText;
+            piece.title = `${piece.innerText}\nLifetime Kills: ${User.pieces[piece.id].lifetimeKills}\nLifetime Deaths: ${User.pieces[piece.id].lifetimeDeaths}\nLifetime Promotions: ${User.pieces[piece.id].lifetimePromotions}`;
         }
         itter_count++;
     }
@@ -183,6 +179,8 @@ window.onload = () => {
     const user_id = urlParams.get('user');
     if (user_id == null) {
         User = getUser();
+        let profileButton = document.getElementById('profile-button');
+        profileButton.classList.add('disabled');
     } else {
         let editButton = document.getElementById('edit-button');
         editButton.classList.add('hidden');

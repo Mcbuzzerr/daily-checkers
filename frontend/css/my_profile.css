@@ -47,9 +47,13 @@
 }
 
 .army-div {
-    width: 666px;
+    min-width: 666px;
     justify-content: start;
     align-items: center;
+}
+
+.row {
+    flex-wrap: nowrap;
 }
 
 .cell {
@@ -187,10 +191,6 @@
 
 .profile-section .button {
     min-width: 60px;
-}
-
-.hidden {
-    display: none;
 }
 
 .profile-section>.slate {

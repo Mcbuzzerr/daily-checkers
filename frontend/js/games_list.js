@@ -363,7 +363,7 @@ const getGameList = async () => {
         inviteElement.innerHTML = `
         <div id="no-invites-message" class="slate hidden">
             <h3>
-                You have no games    at this time.
+                You have no games at this time.
             </h3>
         </div>`;
         document.getElementById('game-container').appendChild(inviteElement);
@@ -380,7 +380,11 @@ const handleConcedeClicked = () => {
     alert(areTheySure)
 }
 
-window.onload = async () => {
-    loggedInUser = await getUser();
-    getGameList();
+window.onload = () => {
+    loggedInUser = getUser();
+    if (!loggedInUser) {
+        window.location.href = '/frontend/index.html';
+    } else {
+        getGameList();
+    }
 };
