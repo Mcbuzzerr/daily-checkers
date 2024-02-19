@@ -56,7 +56,7 @@ document.body.addEventListener("keydown", (event) => {
 const handleLogoutClicked = () => {
     console.log('logging out');
     setUser(null);
-    window.location.href = '/frontend/index.html'
+    window.location.href = 'index.html'
 }
 
 const isUserLoggedIn = () => {

@@ -195,5 +195,5 @@ const handleLoginClicked = () => {
     };
 
     setUser(user);
-    window.location.href = '/frontend/profile.html';
+    window.location.href = 'profile.html';
 }

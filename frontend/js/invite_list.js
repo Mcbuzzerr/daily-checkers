@@ -80,22 +80,21 @@ const getInviteList = async () => {
 
 const acceptInviteClicked = async (inviteId) => {
     console.log(inviteId);
+    alert(`Invite ${inviteId} accepted`);
 };
 
 const declineInviteClicked = async (inviteId) => {
     console.log(inviteId);
+    alert(`Invite ${inviteId} declined`);
 };
 
-const newInviteClicked = () => {
-    //Open model to decide between to options
-    //1. Invite someone by friend code
-    //2. Invite someone random
-};
-
-const sendInviteByFriendCode = async (friendCode) => {
-};
-
-const sendInviteRandom = async () => {
+const handleNewInviteClicked = () => {
+    let friendCode = document.getElementById('friend-code').value;
+    if (friendCode) {
+        alert('Invite sent to friend code: ' + friendCode);
+    } else {
+        alert('Please enter a friend code');
+    }
 };
 
 

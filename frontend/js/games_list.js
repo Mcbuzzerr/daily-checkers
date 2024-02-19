@@ -20,6 +20,7 @@ const getGameList = async () => {
     // });
     gameList = [
         {
+            "id": "123123-123123-123123-123213",
             "players": {
                 "A": {
                     "id": "213123-123123-123123-123213",
@@ -162,6 +163,7 @@ const getGameList = async () => {
             ]
         },
         {
+            "id": "123123-123123-123123-123213",
             "players": {
                 "A": {
                     "id": "113123-123123-123123-123213",
@@ -339,7 +341,7 @@ const getGameList = async () => {
             header3Text = `<span class="player-name bold">${game.players.A["name"]}</span> has invited you to play a game of checkers.`;
         }
 
-
+        console.log(game)
         inviteElement.innerHTML = `
             <h3>
                 ${header3Text}
@@ -371,7 +373,7 @@ const getGameList = async () => {
 };
 
 const playGameClicked = (gameId) => {
-    window.location.href = `/frontend/play_game.html?game=${gameId}`;
+    window.location.href = `play_game.html?game=${gameId}`;
     console.log(gameId)
 };
 
@@ -380,10 +382,14 @@ const handleConcedeClicked = () => {
     alert(areTheySure)
 }
 
+const handleNewGameClicked = () => {
+    alert("Looking for a new game... Game will appear in the list when an opponent is found.");
+};
+
 window.onload = () => {
     loggedInUser = getUser();
     if (!loggedInUser) {
-        window.location.href = '/frontend/index.html';
+        window.location.href = 'index.html';
     } else {
         getGameList();
     }

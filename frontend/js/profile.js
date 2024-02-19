@@ -232,7 +232,5 @@ window.onload = () => {
 
         // const user = getCookie('user');
         renderProfile(User);
-    } else {
-        // window.location.href = '/frontend/index.html';
     }
 }

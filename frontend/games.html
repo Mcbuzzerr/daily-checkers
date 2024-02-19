@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <title>Invites</title>
     <link rel="stylesheet" href="./css/games_list.css">
-    <script src="./js/games_list.js"></script>
+    <script src="./js/games_list.js" defer></script>
 </head>
 
 <body>
@@ -25,7 +25,7 @@
         <h1 onclick="window.location.href = 'index.html'">Daily Checkers</h1>
         <div class="header-bar">
             <h2>Games in Progress</h2>
-            <div id="new-game-button">+</div>
+            <div id="new-game-button" onclick="handleNewGameClicked()">+</div>
         </div>
         <div id="game-container">
 

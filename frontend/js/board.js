@@ -443,7 +443,7 @@ const getPlayer = async (playerId) => {
         "piecesAColor": "#000000",
         "piecesBColor": "#ffffff",
         "highlightColor": "#ffe600",
-        "backgroundColor": "#adadad"
+        "backgroundColor": "#adadfd"
     }
 };
 
@@ -467,6 +467,18 @@ const renderPlayers = () => {
     playerB.querySelector(".player-victories").innerHTML = Players.B.victories;
     document.documentElement.setAttribute("player-a-outline-color", Players.A.highlightColor);
     document.documentElement.setAttribute("player-b-outline-color", Players.B.highlightColor);
+    playerA.addEventListener("click", () => {
+        let areTheySure = confirm(`Leave this game and view ${Players.A.name}'s profile?`);
+        if (areTheySure) {
+            window.location.href = `profile.html?user=${Players.A.id}`;
+        }
+    });
+    playerB.addEventListener("click", () => {
+        let areTheySure = confirm(`Leave this game and view ${Players.B.name}'s profile?`);
+        if (areTheySure) {
+            window.location.href = `profile.html?user=${Players.B.id}`;
+        }
+    });
 }
 
 
@@ -475,6 +487,11 @@ window.onload = async () => {
 
     Game = await getGame("asdasd");
     loggedInPlayer = await getUser();
+
+    if (loggedInPlayer == null) {
+        alert("You are not logged in");
+        window.location.href = "/index.html";
+    }
 
 
     if (loggedInPlayer.id === Game.players.A.id) {
