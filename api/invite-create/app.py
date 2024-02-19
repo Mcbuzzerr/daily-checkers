@@ -1,18 +1,34 @@
 import boto3
-from boto3.dynamodb.conditions import Key
-from boto3.dynamodb.conditions import Attr
 from os import getenv
+from uuid import uuid4
 import json
-from datetime import datetime
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("")
+table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Invites")
 
 
 def lambda_handler(event, context):
-    # path = event["pathParameters"]
-    # id = path["id"]
-    pass
+
+    invite_id = str(uuid4())
+    invite_from = event["from"]
+    invite_from_name = event["from-name"]
+    invite_from_background = event["from-background-color"]
+    invite_from_highlight = event["from-highlight-color"]
+    invite_to = event["to"]
+
+    invite = {
+        "id": invite_id,
+        "from": invite_from,
+        "from-name": invite_from_name,
+        "from-background-color": invite_from_background,
+        "from-highlight-color": invite_from_highlight,
+        "to": invite_to
+    }
+
+    table.put_item(Item=invite)
+    return response(200, invite)
+
+
 
 
 def response(code, body):

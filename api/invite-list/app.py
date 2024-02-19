@@ -1,18 +1,25 @@
 import boto3
-from boto3.dynamodb.conditions import Key
-from boto3.dynamodb.conditions import Attr
 from os import getenv
 import json
-from datetime import datetime
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("")
+table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Invites")
 
 
 def lambda_handler(event, context):
-    # path = event["pathParameters"]
-    # id = path["id"]
-    pass
+
+    if (("pathParameters" in event)):
+
+        path = event["pathParameters"]
+        if path is None or "id" not in path:
+            return response(200, table.scan()["Items"])
+        
+        if path is not None and "id" in path:
+            id = path["id"]
+            output = table.get_item(Key={"id": id})["Item"]
+            return response(200, output)
+
+    return response(200, table.scan()["Items"])
 
 
 def response(code, body):

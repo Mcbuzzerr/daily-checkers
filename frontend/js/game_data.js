@@ -182,6 +182,7 @@ let Piece_inGame = {
 }
 
 let Game_inDB = {
+    "id": "123123-123123-123123-123213", //Game Code
     "players": {
         "A": {
             "id": "213123-123123-123123-123213",

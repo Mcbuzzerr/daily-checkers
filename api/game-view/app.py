@@ -6,13 +6,22 @@ import json
 from datetime import datetime
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("")
+table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Games")
 
 
 def lambda_handler(event, context):
-    # path = event["pathParameters"]
-    # id = path["id"]
-    pass
+    
+        path = event["pathParameters"]
+        if "id" not in path:    
+            return response(200, table.scan()["Items"])
+        
+        id = path["id"]
+        game = table.get_item(Key={"id": id})
+    
+        if game is None:
+            return response(404, {"error": "Game not found"})
+        else:
+            return response(200, game)
 
 
 def response(code, body):
