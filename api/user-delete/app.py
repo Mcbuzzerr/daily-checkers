@@ -12,14 +12,14 @@ def lambda_handler(event, context):
 
     id = event["id"]
 
-    response = table.query(
+    users = table.query(
         KeyConditionExpression=Key("id").eq(id),
     )
 
-    if response["Count"] == 0:
+    if users["Count"] == 0:
         return response(404, {"error": "User not found"})
     else:
-        user = response["Items"][0]
+        user = users["Items"][0]
         table.delete_item(Key={"id": user["id"]})
         return response(200, {"message": "User deleted"})
 

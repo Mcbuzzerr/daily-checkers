@@ -1,4 +1,5 @@
 import boto3
+from boto3.dynamodb.conditions import Attr
 from os import getenv
 import json
 
@@ -12,12 +13,16 @@ def lambda_handler(event, context):
 
         path = event["pathParameters"]
         if path is None or "id" not in path:
-            return response(200, table.scan()["Items"])
+            return response(404, {"error": "No ID specified"})
         
-        if path is not None and "id" in path:
-            id = path["id"]
-            output = table.get_item(Key={"id": id})["Item"]
-            return response(200, output)
+        id = path["id"]
+        invites = table.scan(FilterExpression=Attr("to").eq(id))
+
+        if invites["Count"] == 0:
+            return response(200, {"body": "No invites found"})
+        else:
+            return response(200, invites["Items"])
+        
 
     return response(200, table.scan()["Items"])
 

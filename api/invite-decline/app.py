@@ -13,7 +13,7 @@ def lambda_handler(event, context):
     id = event["id"]
     invite_decliner = event["invite_decliner"]
 
-    response = table.query(
+    response = table.scan(
         KeyConditionExpression=Key("id").eq(id),
         FilterExpression=Attr("to").eq(invite_decliner)
     )

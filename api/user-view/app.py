@@ -1,6 +1,7 @@
 import boto3
 from boto3.dynamodb.conditions import Key
 from os import getenv
+from decimal import Decimal
 import json
 
 region_name = getenv("APP_REGION")
@@ -24,6 +25,12 @@ def response(code, body):
     return {
         "statusCode": code,
         "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(body),
+        "body": json.dumps(body, cls=DecimalEncoder),
         "isBase64Encoded": False,
     }
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return int(o)
+        return super(DecimalEncoder, self).default(o)

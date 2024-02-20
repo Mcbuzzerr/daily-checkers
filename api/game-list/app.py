@@ -1,6 +1,7 @@
 import boto3
 from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.conditions import Attr
+from decimal import Decimal
 from os import getenv
 import json
 from datetime import datetime
@@ -51,6 +52,12 @@ def response(code, body):
     return {
         "statusCode": code,
         "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(body),
+        "body": json.dumps(body, cls=DecimalEncoder),
         "isBase64Encoded": False,
     }
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return int(o)
+        return super(DecimalEncoder, self).default(o)

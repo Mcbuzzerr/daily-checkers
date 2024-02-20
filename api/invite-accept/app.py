@@ -9,21 +9,17 @@ region_name = getenv("APP_REGION")
 invite_table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Invites")
 game_table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Games")
 
-
-# create game
 def lambda_handler(event, context):
     id = event["id"]
-    invite_accepter = event["invite_accepter"]
+    invite_acceptor = event["invite_acceptor"]
 
-    response = invite_table.query(
-        KeyConditionExpression=Key("id").eq(id),
-        FilterExpression=Attr("to").eq(invite_accepter)
-    )
-
-    if response["Count"] == 0:
+    invites = invite_table.get_item(Key={"id": id})
+    if "Item" not in invites:
         return response(404, {"error": "Invite not found"})
     else:
-        invite = response["Items"][0]
+        invite = invites["Item"]
+        if invite["to"] != invite_acceptor:
+            return response(403, {"error": "Unauthorized"})
 
         game = {
             "id": str(uuid4()),
@@ -51,8 +47,7 @@ def lambda_handler(event, context):
         game_table.put_item(Item=game)
 
         invite_table.delete_item(Key={"id": invite["id"]})
-        return response(200, {"message": "Invite accepted"})
-
+        return response(200, {"gameID": game["id"]})
 
 
 
