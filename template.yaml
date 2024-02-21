@@ -74,8 +74,7 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
-      TableName: GameTable
-
+      TableName: DailyCheckers_Games
   
   UserTable:
     Type: AWS::Serverless::SimpleTable
@@ -83,7 +82,15 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
-      TableName: UserTable
+      TableName: DailyCheckers_Users
+  
+  InviteTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+      TableName: DailyCheckers_Invites
   
   NotificationTable:
     Type: AWS::Serverless::SimpleTable
@@ -91,7 +98,7 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
-      TableName: NotificationTable
+      TableName: DailyCheckers_Notifications
   
   # SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------
 
