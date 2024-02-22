@@ -121,6 +121,13 @@ Resources:
           Type: ScheduleV2
           Properties:
             ScheduleExpression: "rate(1 hour)"
+      Environment:
+        Variables:
+          SMTP_HOST: smtp.ethereal.email
+          SMTP_PORT: 587
+          SMTP_USERNAME: isaac.lind93@ethereal.email
+          SMTP_PASSWORD: 6BSWcnhBA8TpVg1TwJ
+          SMTP_NAME: Isaac Lind
     
   QueuedEmailSenderFunction:
     Type: AWS::Serverless::Function
@@ -134,6 +141,13 @@ Resources:
           Properties:
             Queue: !GetAtt MySqsQueue.Arn
             BatchSize: 1
+      Environment:
+        Variables:
+          SMTP_HOST: smtp.ethereal.email
+          SMTP_PORT: 587
+          SMTP_USERNAME: isaac.lind93@ethereal.email
+          SMTP_PASSWORD: 6BSWcnhBA8TpVg1TwJ
+          SMTP_NAME: Isaac Lind
 
   # Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ 
 
