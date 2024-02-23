@@ -1,18 +1,7 @@
 import boto3
-from boto3.dynamodb.conditions import Key
-from boto3.dynamodb.conditions import Attr
+from decimal import Decimal
 from os import getenv
 import json
-from datetime import datetime
-from decimal import Decimal
-
-
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Decimal):
-            return str(obj)
-        return json.JSONEncoder.default(self, obj)
-
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
@@ -61,3 +50,10 @@ def response(code, body):
         "body": json.dumps(body, cls=DecimalEncoder),
         "isBase64Encoded": False,
     }
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return int(o)
+        return super(DecimalEncoder, self).default(o)
