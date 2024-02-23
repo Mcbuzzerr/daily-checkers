@@ -8,11 +8,12 @@ table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers
 
 
 def lambda_handler(event, context):
-    
+    print(event)
     user_id = uuid4()
-    user_name = event["name"]
-    user_email = event["email"]
-    user_password = event["password"]
+    body = json.loads(event["body"])
+    user_name = body["name"]
+    user_email = body["email"]
+    user_password = body["password"]
     user_victories = 0
 
     blankPiece = {
@@ -68,7 +69,6 @@ def lambda_handler(event, context):
 
     table.put_item(Item=user)
     return response(200, user)
-
 
 
 def response(code, body):

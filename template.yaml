@@ -74,7 +74,7 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
-      TableName: DailyCheckers_Games
+      TableName: DailyCheckers_Games_SAM
   
   UserTable:
     Type: AWS::Serverless::SimpleTable
@@ -82,7 +82,7 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
-      TableName: DailyCheckers_Users
+      TableName: DailyCheckers_Users_SAM
   
   InviteTable:
     Type: AWS::Serverless::SimpleTable
@@ -90,7 +90,7 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
-      TableName: DailyCheckers_Invites
+      TableName: DailyCheckers_Invites_SAM
   
   NotificationTable:
     Type: AWS::Serverless::SimpleTable
@@ -98,7 +98,7 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
-      TableName: DailyCheckers_Notifications
+      TableName: DailyCheckers_Notifications_SAM
   
   # SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------
 
@@ -160,13 +160,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        ConcedeGame:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /game/concede/{id}
             Method: post
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
@@ -183,13 +184,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        GameTakeTurn:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /game/take-turn/{id}
             Method: post
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
@@ -203,13 +205,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        GameView:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /game/view/{id}
             Method: get
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
@@ -223,13 +226,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        InviteCreate:
           Type: Api # More info about API Event Source:
           Properties:
             RestApiId: !Ref MyApi
             Path: /invite
             Method: post
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
@@ -246,13 +250,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        InviteAccept:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /invite/accept/{id}
             Method: post
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
@@ -269,13 +274,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        InviteDecline:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /invite/decline/{id}
             Method: post
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
@@ -292,13 +298,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        InviteList:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /invite/list
             Method: get
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
@@ -315,13 +322,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        UserDelete:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /user/delete/{id}
             Method: delete
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
@@ -338,13 +346,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        UserRegister:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /user/register
             Method: post
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
@@ -358,13 +367,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        UserUpdate:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /user/update/{id}
             Method: put
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
@@ -378,13 +388,14 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        HelloWorld:
+        UserView:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /user/view/{id}
             Method: get
       Policies:
+        - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
