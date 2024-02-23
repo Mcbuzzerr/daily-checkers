@@ -1,9 +1,7 @@
 import boto3
-from boto3.dynamodb.conditions import Key
-from boto3.dynamodb.conditions import Attr
+from decimal import Decimal
 from os import getenv
 import json
-from datetime import datetime
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Games")
@@ -16,6 +14,7 @@ def lambda_handler(event, context):
     if game is None:
         return response(404, {"error": "Game not found"})
     else:
+        game = game["Item"]
         game["deleted"] = True
         game["board"] = None
         table.put_item(Item=game)
@@ -26,6 +25,12 @@ def response(code, body):
     return {
         "statusCode": code,
         "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(body),
+        "body": json.dumps(body, cls=DecimalEncoder),
         "isBase64Encoded": False,
     }
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return int(o)
+        return super(DecimalEncoder, self).default(o)
