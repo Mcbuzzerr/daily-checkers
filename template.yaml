@@ -403,7 +403,7 @@ Resources:
   UserLogInFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: api/user-log-in/
+      CodeUri: api/user-login/
       Handler: app.lambda_handler
       Runtime: python3.12
       Architectures:
