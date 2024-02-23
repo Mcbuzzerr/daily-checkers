@@ -399,3 +399,24 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
+  
+  UserLogInFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/user-log-in/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Architectures:
+      - x86_64
+      Events:
+        UserLogIn:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /user/login
+            Method: post
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref UserTable
