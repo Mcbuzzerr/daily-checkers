@@ -33,6 +33,7 @@ def lambda_handler(event, context):
 
     user_or_false = found_in_db(decoded_token)
 
+    allow = "Deny"
     if user_or_false:
         allow = "Allow"
 
