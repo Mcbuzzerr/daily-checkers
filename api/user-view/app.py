@@ -7,11 +7,12 @@ import json
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
 
-def lambda_handler(event, context):    
+
+def lambda_handler(event, context):
     path = event["pathParameters"]
     if "id" not in path:
         return response(200, table.scan()["Items"])
-    
+
     id = path["id"]
 
     user = table.get_item(Key={"id": id})
@@ -21,6 +22,7 @@ def lambda_handler(event, context):
     else:
         return response(200, user)
 
+
 def response(code, body):
     return {
         "statusCode": code,
@@ -28,6 +30,7 @@ def response(code, body):
         "body": json.dumps(body, cls=DecimalEncoder),
         "isBase64Encoded": False,
     }
+
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):

@@ -328,6 +328,8 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /user/delete/{id}
             Method: delete
+            Auth:
+              Authorizer: UserAuth
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
@@ -373,6 +375,8 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /user/update/{id}
             Method: put
+            Auth:
+              Authorizer: UserAuth
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
@@ -394,6 +398,9 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /user/view/{id}
             Method: get
+            Auth:
+              Authorizer: UserAuth
+
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:

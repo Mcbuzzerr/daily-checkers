@@ -8,9 +8,11 @@ table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers
 
 
 def lambda_handler(event, context):
-    # require verification?
+    authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
+    id = event["pathParameters"]["id"]
 
-    id = event["id"]
+    if authenticated_user["id"] != id:
+        return response(403, {"error": "Forbidden"})
 
     users = table.query(
         KeyConditionExpression=Key("id").eq(id),

@@ -19,7 +19,7 @@ table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers
 
 
 def lambda_handler(event, context):
-    auth_token = event["authorizationToken"].split(" ")[1]
+    auth_token = event["authorizationToken"].replace("Bearer ", "")
 
     # generate private key with:
     # openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
@@ -28,8 +28,22 @@ def lambda_handler(event, context):
 
     public_key_env_var = getenv("PUBLIC_KEY")
     public_key = public_key_env_var.replace("\\n", "\n")
-
-    decoded_token = jwt.decode(auth_token, public_key, algorithms=["RS256"])
+    try:
+        decoded_token = jwt.decode(auth_token, public_key, algorithms=["RS256"])
+    except Exception as e:
+        return {
+            "principalId": "unauthorized",
+            "policyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Action": "execute-api:Invoke",
+                        "Effect": "Deny",
+                        "Resource": event["methodArn"],
+                    }
+                ],
+            },
+        }
 
     user_or_false = found_in_db(decoded_token)
 

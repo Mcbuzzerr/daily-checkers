@@ -8,3 +8,8 @@ run API locally
 sam local start-api
 ```
 
+Deploy API
+
+```bash
+sam build && sam deploy --no-confirm-changeset
+```
