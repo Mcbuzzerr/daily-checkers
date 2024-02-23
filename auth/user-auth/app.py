@@ -4,6 +4,15 @@ from boto3.dynamodb.conditions import Attr
 from os import getenv
 import json
 import jwt
+from decimal import Decimal
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)
+
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
@@ -17,7 +26,8 @@ def lambda_handler(event, context):
     # then extract public key with:
     # openssl rsa -pubout -in private_key.pem -out public_key.pem
 
-    public_key = getenv("PUBLIC_KEY")
+    public_key_env_var = getenv("PUBLIC_KEY")
+    public_key = public_key_env_var.replace("\\n", "\n")
 
     decoded_token = jwt.decode(auth_token, public_key, algorithms=["RS256"])
 
@@ -39,7 +49,7 @@ def lambda_handler(event, context):
             ],
         },
         "context": {
-            "user": user_or_false,
+            "user": json.dumps(user_or_false, cls=DecimalEncoder),
         },
     }
 

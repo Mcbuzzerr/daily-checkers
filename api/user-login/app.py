@@ -42,9 +42,7 @@ def generate_jwt(email):
     payload = {"email": email, "exp": datetime.utcnow() + timedelta(days=2)}
     # Generate private key with: openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
     private_key_env_var = os.getenv("PRIVATE_KEY")
-    print(private_key_env_var)
     private_key = private_key_env_var.replace("\\n", "\n")
-    print(private_key)
     token = jwt.encode(payload, private_key, algorithm="RS256")
     return token
 
