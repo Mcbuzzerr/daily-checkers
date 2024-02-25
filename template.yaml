@@ -21,6 +21,10 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: "1"
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
       Auth:
         Authorizers:
           UserAuth:

@@ -5,13 +5,13 @@ const handleRegisterClicked = () => {
     const password = document.getElementById('password').value;
 
     const data = {
-        email,
-        name,
-        password
+        email: email,
+        name: name,
+        password: password
     };
 
     //Not real endpoint
-    const url = "http://localhost:3000/register"
+    const url = "https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/user/register"
     //Not real endpoint
 
     fetch(url, {
@@ -21,9 +21,10 @@ const handleRegisterClicked = () => {
         },
         body: JSON.stringify(data)
     }).then(response => {
+        console.log(response);
         if (response.status === 200) {
             alert('User registered successfully');
-            window.location.href = '/login';
+            // window.location.href = '/login';
         } else {
             response.json().then(data => {
                 alert(data.message);

@@ -25,11 +25,14 @@ def lambda_handler(event, context):
 
     response = table.scan(FilterExpression=Attr("email").eq(email))
 
-    # Be wary of this line
-    user = response["Items"][0]
-    print(user)
+    print(response)
 
-    if "Items" not in response or not (user["password"] == password):
+    if response["Count"] == 0:
+        return format_response(401, {"message": "Authentication failed"})
+
+    user = response["Items"][0]
+
+    if user["password"] != password:
         return format_response(401, {"message": "Authentication failed"})
 
     token = generate_jwt(email)
@@ -50,7 +53,12 @@ def generate_jwt(email):
 def format_response(code, body):
     return {
         "statusCode": code,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
         "body": json.dumps(body, cls=DecimalEncoder),
         "isBase64Encoded": False,
     }
