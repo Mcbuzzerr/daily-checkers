@@ -214,20 +214,6 @@ window.onload = () => {
             customizationStation.classList.remove('hidden');
             let nonVictorMessage = document.getElementById('non-victor-message');
             nonVictorMessage.classList.add('hidden');
-
-            // If the player can, but has not yet, customized their pieces
-            // Highlight the edit button to signify that there's new stuff in the edit menu
-            if (
-                User.victories == 1 &&
-                User.piecesAColor == "#000000" &&
-                User.piecesBColor == "#ffffff" &&
-                User.backgroundColor == "#adadad"
-            ) {
-                const editButton = document.getElementById('edit-button');
-                editButton.style.backgroundColor = User.highlightColor;
-                // Add animation that makes the background color fade in and out
-                editButton.style.animation = 'pulse 3s infinite';
-            }
         }
 
         // const user = getCookie('user');

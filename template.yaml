@@ -383,6 +383,29 @@ Resources:
             TableName: 
               !Ref UserTable
   
+  UserUpdateCustomizationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/user_customization-update/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Architectures:
+      - x86_64
+      Events:
+        UserUpdatePieces:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /user/update-customization/{id}
+            Method: put
+            Auth:
+              Authorizer: VictorAuth
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref UserTable
+
   UserViewFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -398,8 +421,6 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /user/view/{id}
             Method: get
-            Auth:
-              Authorizer: UserAuth
 
       Policies:
         - AmazonDynamoDBFullAccess

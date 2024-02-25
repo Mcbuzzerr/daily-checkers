@@ -26,7 +26,7 @@
         <h1 onclick="window.location.href = 'index.html'">Daily Checkers</h1>
         <div class="hori-flex">
             <div class="profile-section">
-                <h2>Your Profile</h2>
+                <h2 id="profile-title">Your Profile</h2>
                 <div id="player-slate" class="slate">
                     <h3 id="playerName" class="playerColor">John PlayerName</h3>
                     <div class="wide-bar">
@@ -61,12 +61,21 @@
                         <label for="password">Confirm Password: </label>
                         <input type="password" id="confirm-password-field" name="confirm-password">
                     </div>
+                    <div class="bar">
+                        <p class="button submit" onclick="handleSaveClicker()">Save</p>
+                        <p class="button" onclick="handleCancelClicked()">Cancel</p>
+                        <p class="button cancel" onclick="handleDeleteClicked()">Delete</p>
+                    </div>
+                </div>
+                <div id="customization-slate" class="slate">
                     <h3>Customization</h3>
                     <div class="bar">
-                        <label for="highlight-color">Highlight Color: </label>
-                        <input type="color" id="highlight-color" name="highlight-color">
                     </div>
                     <div class="hidden" id="customization-station">
+                        <div class="bar">
+                            <label for="highlight-color">Highlight Color: </label>
+                            <input type="color" id="highlight-color" name="highlight-color">
+                        </div>
                         <div class="bar">
                             <label for="background-color">Background Color: </label>
                             <input type="color" id="background-color" name="background-color">
@@ -79,16 +88,16 @@
                             <label for="piece-b-color">White Piece Color: </label>
                             <input type="color" id="pieces-b-color" name="piece-b-color">
                         </div>
+                        <div class="bar">
+                            <p class="button submit">
+                                Update Customization
+                            </p>
+                        </div>
                     </div>
                     <div id="non-victor-message">
                         <p class="bar">
-                            Win a single game to unlock more customization options!
+                            Win a single game to unlock customization options!
                         </p>
-                    </div>
-                    <div class="bar">
-                        <p class="button submit" onclick="handleSaveClicker()">Save</p>
-                        <p class="button" onclick="handleCancelClicked()">Cancel</p>
-                        <p class="button cancel" onclick="handleDeleteClicked()">Delete</p>
                     </div>
                 </div>
             </div>

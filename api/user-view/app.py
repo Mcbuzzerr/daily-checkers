@@ -16,11 +16,11 @@ def lambda_handler(event, context):
     id = path["id"]
 
     user = table.get_item(Key={"id": id})
-
-    if user is None:
+    print(user)
+    if "Item" not in user:
         return response(404, {"error": "User not found"})
     else:
-        return response(200, user)
+        return response(200, user["Item"])
 
 
 def response(code, body):

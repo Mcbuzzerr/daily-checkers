@@ -27,8 +27,8 @@
 .bar {
     display: flex;
     justify-content: space-between;
-    padding: 2.5px 40px;
-    width: calc(100% - 80px);
+    padding: 2.5px 20px;
+    width: calc(100% - 40px);
 }
 
 .wide-bar {
@@ -215,6 +215,10 @@
 #player-slate,
 #editor-slate {
     background-color: var(--current-player-background-color);
+}
+
+#customization-slate {
+    margin-top: 25px;
 }
 
 .button.edit {

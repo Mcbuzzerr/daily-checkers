@@ -14,7 +14,6 @@ def lambda_handler(event, context):
     name = None
     email = None
     password = None
-    highlight_color = None
 
     if "name" in body:
         name = body["name"]
@@ -22,8 +21,6 @@ def lambda_handler(event, context):
         email = body["email"]
     if "password" in body:
         password = body["password"]
-    if "highlight-color" in body:
-        highlight_color = body["highlight-color"]
 
     user = table.get_item(Key={"id": id})["Item"]
 
@@ -36,8 +33,6 @@ def lambda_handler(event, context):
             user["email"] = email
         if password is not None:
             user["password"] = password
-        if highlight_color is not None:
-            user["highlight-color"] = highlight_color
         print(user)
         table.put_item(Item=user)
         return response(200, user)
