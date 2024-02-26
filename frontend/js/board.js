@@ -490,7 +490,7 @@ window.onload = async () => {
 
     if (loggedInPlayer == null) {
         alert("You are not logged in");
-        window.location.href = "/index.html";
+        window.location.href = "index.html";
     }
 
 
@@ -502,7 +502,7 @@ window.onload = async () => {
         Players.B = loggedInPlayer;
     } else {
         alert("You are not a player in this game");
-        window.location.href = "frontend/index.html";
+        window.location.href = "index.html";
     }
 
     renderPlayers();

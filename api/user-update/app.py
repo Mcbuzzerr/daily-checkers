@@ -11,6 +11,7 @@ def lambda_handler(event, context):
 
     authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
     id = event["pathParameters"]["id"]
+
     if authenticated_user["id"] != id:
         return response(403, {"error": "Forbidden"})
 
