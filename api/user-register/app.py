@@ -74,7 +74,12 @@ def lambda_handler(event, context):
 def response(code, body):
     return {
         "statusCode": code,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
         "body": json.dumps(body),
         "isBase64Encoded": False,
     }

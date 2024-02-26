@@ -58,11 +58,11 @@
                         <input type="password" id="new-password-field" name="new-password">
                     </div>
                     <div class="bar">
-                        <label for="password">Confirm Password: </label>
+                        <label for="password">Confirm Password<span style="color: red;">*</span>: </label>
                         <input type="password" id="confirm-password-field" name="confirm-password">
                     </div>
                     <div class="bar">
-                        <p class="button submit" onclick="handleSaveClicker()">Save</p>
+                        <p class="button submit" onclick="handleSaveClicked()">Save</p>
                         <p class="button" onclick="handleCancelClicked()">Cancel</p>
                         <p class="button cancel" onclick="handleDeleteClicked()">Delete</p>
                     </div>
@@ -89,7 +89,7 @@
                             <input type="color" id="pieces-b-color" name="piece-b-color">
                         </div>
                         <div class="bar">
-                            <p class="button submit">
+                            <p class="button submit" onclick="handleSaveCustomizeClicked()">
                                 Update Customization
                             </p>
                         </div>

@@ -85,7 +85,12 @@ def found_in_db(decoded_token):
 def response(code, body):
     return {
         "statusCode": code,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
         "body": json.dumps(body),
         "isBase64Encoded": False,
     }

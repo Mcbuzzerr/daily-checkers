@@ -15,6 +15,7 @@ const handleLoginClicked = () => {
         .then(data => {
             if (data.user) {
                 setUser(data.user);
+                setCookie('token', data.token, 1);
                 window.location.href = 'profile.html';
             } else {
                 alert('Invalid username or password');

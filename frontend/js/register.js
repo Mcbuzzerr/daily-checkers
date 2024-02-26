@@ -24,7 +24,7 @@ const handleRegisterClicked = () => {
         console.log(response);
         if (response.status === 200) {
             alert('User registered successfully');
-            // window.location.href = '/login';
+            window.location.href = 'login.html';
         } else {
             response.json().then(data => {
                 alert(data.message);

@@ -15,9 +15,9 @@ def lambda_handler(event, context):
         return response(403, {"error": "Forbidden"})
 
     body = json.loads(event["body"])
-    name = None
-    email = None
-    password = None
+
+    if "confirmPassword" not in body:
+        return response(400, {"error": "Confirm password is required"})
 
     if "name" in body:
         name = body["name"]
@@ -27,6 +27,9 @@ def lambda_handler(event, context):
         password = body["password"]
 
     user = table.get_item(Key={"id": id})["Item"]
+
+    if body["confirmPassword"] != user["password"]:
+        return response(400, {"error": "Password confirmation failed"})
 
     if user is None:
         return response(404, {"error": "User not found"})
@@ -45,7 +48,12 @@ def lambda_handler(event, context):
 def response(code, body):
     return {
         "statusCode": code,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
         "body": json.dumps(body, cls=DecimalEncoder),
         "isBase64Encoded": False,
     }

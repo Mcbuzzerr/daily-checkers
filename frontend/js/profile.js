@@ -21,7 +21,6 @@ const handleClickPiece = (event) => {
 
     const eventListenerEvent = (event) => {
         piece.innerHTML = label.value;
-        handleSavePieces();
     }
 
     label.addEventListener('blur', eventListenerEvent);
@@ -31,36 +30,6 @@ const handleClickPiece = (event) => {
         }
     });
 
-};
-
-const handleSavePieces = () => {
-    const pieces = document.getElementsByClassName('piece');
-    const pieceData = [];
-    for (let piece of pieces) {
-        pieceData.push({
-            id: piece.id,
-            displayText: piece.innerHTML,
-        });
-    }
-    User.pieces
-    console.log(pieceData);
-    // const url = 'http://localhost:3000/pieces' //Not real endpoint
-    // fetch(url, {
-    //     method: 'PUT',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(pieceData),
-    // })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         console.log('Success:', data);
-    //         alert('Pieces saved successfully');
-    //     })
-    //     .catch((error) => {
-    //         console.error('Error:', error);
-    //         alert('An error occurred. Please try again later.');
-    //     });
 };
 
 const handleEditClicked = () => {
@@ -78,41 +47,38 @@ const handleSaveClicked = () => {
     let playerEmailField = document.getElementById('email-field');
     let playerNewPassword = document.getElementById('new-password-field');
     let playerConfirmPassword = document.getElementById('confirm-password-field');
-    let highlightColor = document.getElementById('highlight-color');
-    let backgroundColor = document.getElementById('background-color');
-    let piecesAColor = document.getElementById('pieces-a-color');
-    let piecesBColor = document.getElementById('pieces-b-color');
+
     const user = {
         id: playerIdElement.innerHTML,
         name: playerNameField.value,
         email: playerEmailField.value,
         newPassword: playerNewPassword.value,
         confirmPassword: playerConfirmPassword.value,
-        highlightColor: highlightColor.value,
-        backgroundColor: backgroundColor.value,
-        piecesAColor: piecesAColor.value,
-        piecesBColor: piecesBColor.value,
     };
-    console.log(user);
-    // const url = 'http://localhost:3000/profile' //Not real endpoint
-    // fetch(url, {
-    //     method: 'PUT',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(user),
-    // })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         console.log('Success:', data);
-    //         renderProfile(data);
-    //         setCookie('user', JSON.stringify(data), 22);
-    //         handleCancelClicked();
-    //     })
-    //     .catch((error) => {
-    //         console.error('Error:', error);
-    //         alert('An error occurred. Please try again later.')
-    //     });
+    // console.log(user);
+    const url = 'https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/user/update/' + user.id;
+    const token = getCookie('token');
+    console.log(token);
+    alert('This feature is not yet implemented');
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+        },
+        body: JSON.stringify(user),
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            renderProfile(data);
+            setCookie('user', JSON.stringify(data), 2);
+            handleCancelClicked();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.')
+        });
 };
 
 const handleCancelClicked = () => {
@@ -172,6 +138,39 @@ const renderProfile = (User) => {
     piecesBColor.value = User.piecesBColor;
 };
 
+const handleSaveCustomizeClicked = () => {
+    let highlightColor = document.getElementById('highlight-color');
+    let backgroundColor = document.getElementById('background-color');
+    let piecesAColor = document.getElementById('pieces-a-color');
+    let piecesBColor = document.getElementById('pieces-b-color');
+    let pieces = getUser().pieces;
+    let id = getUser().id;
+    let body = {
+        highlightColor: highlightColor.value,
+        backgroundColor: backgroundColor.value,
+        piecesAColor: piecesAColor.value,
+        piecesBColor: piecesBColor.value,
+        pieces: pieces,
+    }
+    const url = "https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/user/update-customization/" + id;
+    const token = getCookie('token');
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+        },
+        body: JSON.stringify(body)
+    }).then(response => response.json()).then(data => {
+        console.log('Success:', data);
+        setCookie('user', JSON.stringify(data), 2);
+        renderProfile(data);
+    }).catch((error) => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again later.')
+    });
+}
+
 window.onload = () => {
     // Get the user's profile
     const queryString = window.location.search;
@@ -216,7 +215,6 @@ window.onload = () => {
             nonVictorMessage.classList.add('hidden');
         }
 
-        // const user = getCookie('user');
         renderProfile(User);
     }
 }

@@ -5,7 +5,9 @@ from os import getenv
 import json
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Invites")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Invites"
+)
 
 
 # delete invite
@@ -15,7 +17,7 @@ def lambda_handler(event, context):
 
     response = table.scan(
         KeyConditionExpression=Key("id").eq(id),
-        FilterExpression=Attr("to").eq(invite_decliner)
+        FilterExpression=Attr("to").eq(invite_decliner),
     )
 
     if response["Count"] == 0:
@@ -29,7 +31,12 @@ def lambda_handler(event, context):
 def response(code, body):
     return {
         "statusCode": code,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
         "body": json.dumps(body),
         "isBase64Encoded": False,
     }
