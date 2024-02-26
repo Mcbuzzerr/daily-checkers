@@ -15,7 +15,7 @@ game_table = boto3.resource("dynamodb", region_name=region_name).Table(
 
 
 def lambda_handler(event, context):
-    id = event["id"]
+    id = event["pathParameters"]["id"]
     invite_acceptor = event["invite_acceptor"]
 
     invites = invite_table.get_item(Key={"id": id})

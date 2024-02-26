@@ -12,7 +12,7 @@ table = boto3.resource("dynamodb", region_name=region_name).Table(
 
 # delete invite
 def lambda_handler(event, context):
-    id = event["id"]
+    id = event["pathParameters"]["id"]
     invite_decliner = event["invite_decliner"]
 
     response = table.scan(

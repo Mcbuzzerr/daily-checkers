@@ -17,7 +17,7 @@ def lambda_handler(event, context):
         if path is None or "id" not in path:
             return response(404, {"error": "No ID specified"})
 
-        id = path["id"]
+        id = event["pathParameters"]["id"]
         invites = table.scan(FilterExpression=Attr("to").eq(id))
 
         if invites["Count"] == 0:

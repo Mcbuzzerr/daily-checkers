@@ -8,7 +8,7 @@ table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers
 
 
 def lambda_handler(event, context):
-    id = event["id"]
+    id = event["pathParameters"]["id"]
     game = table.get_item(Key={"id": id})
 
     if game is None:
