@@ -1,5 +1,11 @@
-const handleRegisterClicked = () => {
-
+const handleRegisterClicked = (event) => {
+    let button = event.target;
+    if (button.classList.contains('disabled')) {
+        return;
+    } else {
+        button.classList.add('disabled');
+        button.innerText = 'Registering...';
+    }
     const email = document.getElementById('email').value;
     const name = document.getElementById('name').value;
     const password = document.getElementById('password').value;
@@ -22,6 +28,8 @@ const handleRegisterClicked = () => {
         body: JSON.stringify(data)
     }).then(response => {
         console.log(response);
+        button.classList.remove('disabled');
+        button.innerText = 'Register';
         if (response.status === 200) {
             alert('User registered successfully');
             window.location.href = 'login.html';

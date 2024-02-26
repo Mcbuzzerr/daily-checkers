@@ -5,8 +5,6 @@ const handleClickPiece = (event) => {
     // Open up a menu allowing the user to edit the piece's text
     // (and possibly view per-piece stats)
     // ONLY AVAILABLE TO VICTORS
-    console.log(event.target);
-    console.log(event.target.innerHTML);
     const piece = event.target;
     const pieceText = piece.innerHTML;
     const pieceId = piece.id;
@@ -41,7 +39,14 @@ const handleEditClicked = () => {
     playerSlate.classList.add('hidden');
 };
 
-const handleSaveClicked = () => {
+const handleSaveClicked = (event) => {
+    let button = event.target;
+    if (button.classList.contains('disabled')) {
+        return;
+    } else {
+        button.classList.add('disabled');
+        button.innerText = 'Saving...';
+    }
     let playerIdElement = document.getElementById('player-id');
     let playerNameField = document.getElementById('name-field');
     let playerEmailField = document.getElementById('email-field');
@@ -55,11 +60,9 @@ const handleSaveClicked = () => {
         newPassword: playerNewPassword.value,
         confirmPassword: playerConfirmPassword.value,
     };
-    // console.log(user);
+
     const url = 'https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/user/update/' + user.id;
     const token = getCookie('token');
-    console.log(token);
-    alert('This feature is not yet implemented');
     fetch(url, {
         method: 'PUT',
         headers: {
@@ -70,10 +73,11 @@ const handleSaveClicked = () => {
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Success:', data);
             renderProfile(data);
             setCookie('user', JSON.stringify(data), 2);
             handleCancelClicked();
+            button.classList.remove('disabled');
+            button.innerHTML = 'Save';
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -138,7 +142,14 @@ const renderProfile = (User) => {
     piecesBColor.value = User.piecesBColor;
 };
 
-const handleSaveCustomizeClicked = () => {
+const handleSaveCustomizeClicked = (event) => {
+    let button = event.target;
+    if (button.classList.contains('disabled')) {
+        return;
+    } else {
+        button.classList.add('disabled');
+        button.innerText = 'Saving...';
+    }
     let highlightColor = document.getElementById('highlight-color');
     let backgroundColor = document.getElementById('background-color');
     let piecesAColor = document.getElementById('pieces-a-color');
@@ -162,13 +173,171 @@ const handleSaveCustomizeClicked = () => {
         },
         body: JSON.stringify(body)
     }).then(response => response.json()).then(data => {
-        console.log('Success:', data);
         setCookie('user', JSON.stringify(data), 2);
         renderProfile(data);
+        button.classList.remove('disabled');
+        button.innerHTML = 'Update Customization';
     }).catch((error) => {
         console.error('Error:', error);
         alert('An error occurred. Please try again later.')
     });
+}
+
+const emptyUser = {
+    "victories": "0",
+    "piecesAColor": "#000000",
+    "piecesBColor": "#ffffff",
+    "highlightColor": "#ff0000",
+    "pieces": {
+        "12-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "12-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "11-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "11-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "10-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "10-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "1-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "2-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "1-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "3-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "2-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "4-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "3-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "5-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "4-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "6-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "5-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "7-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "6-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "8-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "7-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "9-A": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "8-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        },
+        "9-B": {
+            "displayText": "",
+            "lifetimeKills": "0",
+            "lifetimeDeaths": "0",
+            "lifetimePromotions": "0"
+        }
+    },
+    "id": "93a1c909-d471-4c34-80dc-c4b2f89d3996",
+    "email": "Spinto@gmail.com",
+    "backgroundColor": "#050505",
+    "name": "User Not Found"
 }
 
 window.onload = () => {
@@ -180,19 +349,38 @@ window.onload = () => {
         User = getUser();
         let profileButton = document.getElementById('profile-button');
         profileButton.classList.add('disabled');
+        let customizationSlate = document.getElementById('customization-slate');
+        customizationSlate.classList.remove('hidden');
     } else {
         let editButton = document.getElementById('edit-button');
         editButton.classList.add('hidden');
-        // const url = `http://localhost:3000/profile/${user_id}` //Not real endpoint
-        // fetch(url)
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         User = data;
-        //     })
-        //     .catch((error) => {
-        //         console.error('Error:', error);
-        //         alert('An error occurred. Please try again later.');
-        //     });
+        const url = `https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/user/view/${user_id}`;
+        fetch(url)
+            .then(
+                response => {
+                    if (response.status === 404) {
+                        renderProfile(emptyUser);
+                        return null;
+                    }
+                    return response.json()
+                })
+            .then(data => {
+                if (data === null) {
+                    return;
+                }
+                User = data;
+                renderProfile(User);
+                let profileTitle = document.getElementById('profile-title');
+                profileTitle.innerText = `${User.name}'s Profile`;
+                if (User.victories < 1) {
+                    let customizationStation = document.getElementById('customization-slate');
+                    customizationStation.classList.add('hidden');
+                }
+            })
+            .catch((error) => {
+                console.log('Error:', error);
+                alert('An error occurred. Please try again later.');
+            });
     }
     if (User) {
         if (User.victories > 0) {

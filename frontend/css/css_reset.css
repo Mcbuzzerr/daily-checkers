@@ -245,6 +245,7 @@ h3 {
     background-color: white;
     box-shadow: 4px 4px 0px black;
     text-align: center;
+    text-wrap: nowrap;
 }
 
 .button:hover {
@@ -263,7 +264,7 @@ h3 {
 }
 
 .button.disabled {
-    filter: brightness(0.6);
+    filter: grayscale(100%) brightness(0.6);
     cursor: not-allowed;
     transform: translate(4px, 4px);
     box-shadow: none;

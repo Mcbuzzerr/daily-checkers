@@ -77,7 +77,7 @@ main {
     border: solid 1px black;
     background-color: white;
     box-shadow: 3px 3px 0px black;
-    width: 75px;
+    min-width: 75px;
     text-align: center;
 }
 

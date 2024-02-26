@@ -1,4 +1,11 @@
-const handleLoginClicked = () => {
+const handleLoginClicked = (event) => {
+    let button = event.target;
+    if (button.classList.contains('disabled')) {
+        return;
+    } else {
+        button.classList.add('disabled');
+        button.innerText = 'Logging in...';
+    }
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const data = { email: email, password: password };
@@ -13,6 +20,8 @@ const handleLoginClicked = () => {
     })
         .then(response => response.json())
         .then(data => {
+            button.classList.remove('disabled');
+            button.innerText = 'Login';
             if (data.user) {
                 setUser(data.user);
                 setCookie('token', data.token, 1);
