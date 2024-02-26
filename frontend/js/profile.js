@@ -94,9 +94,51 @@ const handleCancelClicked = () => {
     playerSlate.classList.remove('hidden');
 };
 
-const handleDeleteClicked = () => {
+const handleDeleteClicked = (event) => {
     let areTheySure = confirm('Are you sure you want to delete your account? This action cannot be undone.');
-    alert(areTheySure);
+    if (!areTheySure) {
+        return;
+    } else {
+        let areTheyReallySure = confirm('Are you really sure? This action cannot be undone!!');
+        if (!areTheyReallySure) {
+            return;
+        }
+    }
+
+    let button = event.target;
+    if (button.classList.contains('disabled')) {
+        return;
+    } else {
+        button.classList.add('disabled');
+        button.innerText = 'Deleting...';
+    }
+
+    const user = getUser();
+    const url = 'https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/user/delete/' + user.id;
+    const token = getCookie('token');
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+        },
+    })
+        .then(response => {
+            button.classList.remove('disabled');
+            button.innerHTML = 'Delete';
+            if (response.status === 200) {
+                setUser(null);
+                setCookie('token', '', 0);
+                alert('Account deleted successfully.');
+                window.location.href = 'index.html';
+            } else {
+                alert('An error occurred. Please try again later.');
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.')
+        });
 };
 
 const renderProfile = (User) => {
@@ -359,7 +401,6 @@ window.onload = () => {
             .then(
                 response => {
                     if (response.status === 404) {
-                        renderProfile(emptyUser);
                         return null;
                     }
                     return response.json()
@@ -404,5 +445,7 @@ window.onload = () => {
         }
 
         renderProfile(User);
+    } else {
+        renderProfile(emptyUser);
     }
 }
