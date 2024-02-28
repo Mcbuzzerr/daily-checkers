@@ -10,9 +10,9 @@ table = boto3.resource("dynamodb", region_name=region_name).Table("")
 
 
 def lambda_handler(event, context):
-    # path = event["pathParameters"]
-    # id = path["id"]
-    pass
+    print(event)
+    message = json.loads(event["Records"][0]["body"])
+    return response(200, event)
 
 
 def response(code, body):

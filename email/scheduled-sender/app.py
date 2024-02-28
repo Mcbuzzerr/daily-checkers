@@ -18,7 +18,6 @@ class Message(BaseModel):
     recipient_email: str
     recipient_name: str
     email_text: str
-    email_html: str
 
 
 class Notification(BaseModel):
@@ -71,7 +70,7 @@ def lambda_handler(event, context):
     return response(200, {"message": "Emails sent successfully"})
 
 
-def build_email(subject_line, recipient_email, recipient_name, email_text, email_html):
+def build_email(subject_line, recipient_email, recipient_name, email_text):
     email_message = EmailMessage()
 
     email_message["Subject"] = subject_line
@@ -92,9 +91,7 @@ def build_email(subject_line, recipient_email, recipient_name, email_text, email
     # https://docs.python.org/3/library/email.examples.html (Ctrl+F "asparagus" to find the example)
 
     text_content = email_text
-    html = email_html
     email_message.set_content(text_content)
-    email_message.add_alternative(html, subtype="html")
 
     return email_message
 

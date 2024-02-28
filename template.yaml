@@ -118,7 +118,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: email/scheduled-sender/
-      Handler: app.handler
+      Handler: app.lambda_handler
       Runtime: python3.12
       Events:
         ScheduleEvent:
@@ -137,7 +137,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: email/queue-sender/
-      Handler: app.handler
+      Handler: app.lambda_handler
       Runtime: python3.12
       Events:
         MySQSEvent:
@@ -152,6 +152,8 @@ Resources:
           SMTP_USERNAME: isaac.lind93@ethereal.email
           SMTP_PASSWORD: 6BSWcnhBA8TpVg1TwJ
           SMTP_NAME: Isaac Lind
+      Policies:
+        - AmazonSQSFullAccess
 
   # Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ 
 
@@ -178,6 +180,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
+        - AmazonSQSFullAccess
 
   GameTakeTurnFunction:
     Type: AWS::Serverless::Function
@@ -199,6 +202,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
+        - AmazonSQSFullAccess
   
   GameViewFunction:
     Type: AWS::Serverless::Function
@@ -244,6 +248,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
+        - AmazonSQSFullAccess
   
   InviteAcceptFunction:
     Type: AWS::Serverless::Function
@@ -268,6 +273,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
+        - AmazonSQSFullAccess
 
   InviteDeclineFunction:
     Type: AWS::Serverless::Function
@@ -342,6 +348,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
+        - AmazonSQSFullAccess
 
   UserRegisterFunction:
     Type: AWS::Serverless::Function
@@ -363,6 +370,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
+        - AmazonSQSFullAccess
   
   UserUpdateFunction:
     Type: AWS::Serverless::Function
@@ -386,7 +394,8 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
-  
+        - AmazonSQSFullAccess
+
   UserUpdateCustomizationFunction:
     Type: AWS::Serverless::Function
     Properties:
