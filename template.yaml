@@ -227,6 +227,32 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref GameTable
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref UserTable
+  
+  GameListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/game-list/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Architectures:
+      - x86_64
+      Events:
+        GameList:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: /game/list
+            Method: get
+            Auth:
+              Authorizer: UserAuth
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref GameTable
   
   InviteCreateFunction:
     Type: AWS::Serverless::Function #
@@ -437,7 +463,6 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /user/view/{id}
             Method: get
-
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:

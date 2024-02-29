@@ -7,305 +7,18 @@ let loggedInUser = null;
 
 const getGameList = async () => {
     let gameList = [];
-    // fetch('/api/invite/list', {
-    //     method: 'GET',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    // }).then((response) => {
-    //     return response.json();
-    // }).then((data) => {
-    //     console.log(data);
-    //     inviteList = data;
-    // });
-    gameList = [
-        {
-            "id": "123123-123123-123123-123213",
-            "players": {
-                "A": {
-                    "id": "213123-123123-123123-123213",
-                    "name": "Player 1",
-                    "lastTurnTakenAt": "TIMESTAMP"
-                },
-                "B": {
-                    "id": "213123-123123-123123-123213",
-                    "name": "Player 2",
-                    "lastTurnTakenAt": "TIMESTAMP"
-                }
-            },
-            "turnCount": 0,
-            "board": [
-                [
-                    null,
-                    {
-                        "1-A": false
-                    },
-                    null,
-                    {
-                        "2-A": false
-                    },
-                    null,
-                    {
-                        "3-A": false
-                    },
-                    null,
-                    {
-                        "4-A": false
-                    }
-                ],
-                [
-                    {
-                        "5-A": false
-                    },
-                    null,
-                    {
-                        "6-A": false
-                    },
-                    null,
-                    {
-                        "7-A": false
-                    },
-                    null,
-                    {
-                        "8-A": false
-                    }
-                ],
-                [
-                    null,
-                    {
-                        "9-A": false
-                    },
-                    null,
-                    {
-                        "10-A": false
-                    },
-                    null,
-                    {
-                        "11-A": false
-                    },
-                    null,
-                    {
-                        "12-A": false
-                    }
-                ],
-                [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                [
-                    {
-                        "1-B": false
-                    },
-                    null,
-                    {
-                        "2-B": false
-                    },
-                    null,
-                    {
-                        "3-B": false
-                    },
-                    null,
-                    {
-                        "4-B": false
-                    }
-                ],
-                [
-                    null,
-                    {
-                        "5-B": false
-                    },
-                    null,
-                    {
-                        "6-B": false
-                    },
-                    null,
-                    {
-                        "7-B": false
-                    },
-                    null,
-                    {
-                        "8-B": false
-                    }
-                ],
-                [
-                    {
-                        "9-B": false
-                    },
-                    null,
-                    {
-                        "10-B": false
-                    },
-                    null,
-                    {
-                        "11-B": false
-                    },
-                    null,
-                    {
-                        "12-B": false
-                    }
-                ]
-            ]
+    let url = "https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/game/list"
+    gameList = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getCookie('token')}`,
         },
-        {
-            "id": "123123-123123-123123-123213",
-            "players": {
-                "A": {
-                    "id": "113123-123123-123123-123213",
-                    "name": "Player 1",
-                    "lastTurnTakenAt": "TIMESTAMP"
-                },
-                "B": {
-                    "id": "213123-123123-123123-123213",
-                    "name": "Player 2",
-                    "lastTurnTakenAt": "TIMESTAMP"
-                }
-            },
-            "turnCount": 1,
-            "board": [
-                [
-                    null,
-                    {
-                        "1-A": false
-                    },
-                    null,
-                    {
-                        "2-A": false
-                    },
-                    null,
-                    {
-                        "3-A": false
-                    },
-                    null,
-                    {
-                        "4-A": false
-                    }
-                ],
-                [
-                    {
-                        "5-A": false
-                    },
-                    null,
-                    {
-                        "6-A": false
-                    },
-                    null,
-                    {
-                        "7-A": false
-                    },
-                    null,
-                    {
-                        "8-A": false
-                    }
-                ],
-                [
-                    null,
-                    {
-                        "9-A": false
-                    },
-                    null,
-                    {
-                        "10-A": false
-                    },
-                    null,
-                    {
-                        "11-A": false
-                    },
-                    null,
-                    {
-                        "12-A": false
-                    }
-                ],
-                [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                [
-                    {
-                        "1-B": false
-                    },
-                    null,
-                    {
-                        "2-B": false
-                    },
-                    null,
-                    {
-                        "3-B": false
-                    },
-                    null,
-                    {
-                        "4-B": false
-                    }
-                ],
-                [
-                    null,
-                    {
-                        "5-B": false
-                    },
-                    null,
-                    {
-                        "6-B": false
-                    },
-                    null,
-                    {
-                        "7-B": false
-                    },
-                    null,
-                    {
-                        "8-B": false
-                    }
-                ],
-                [
-                    {
-                        "9-B": false
-                    },
-                    null,
-                    {
-                        "10-B": false
-                    },
-                    null,
-                    {
-                        "11-B": false
-                    },
-                    null,
-                    {
-                        "12-B": false
-                    }
-                ]
-            ]
-        }
-    ];
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        return data;
+    });
 
     for (let i = 0; i < gameList.length; i++) {
         let game = gameList[i];
@@ -316,15 +29,17 @@ const getGameList = async () => {
         let totalWhite = 0;
         let totalBlack = 0;
 
-        for (let iter = 0; iter < game.board.length; iter++) {
-            let row = game.board[iter];
-            for (let j = 0; j < row.length; j++) {
-                let cell = row[j];
-                if (cell !== null) {
-                    if (Object.keys(cell)[0].split("-")[1] == "A") {
-                        totalBlack++;
-                    } else {
-                        totalWhite++;
+        if (game.board !== null) {
+            for (let iter = 0; iter < game.board.length; iter++) {
+                let row = game.board[iter];
+                for (let j = 0; j < row.length; j++) {
+                    let cell = row[j];
+                    if (cell !== null) {
+                        if (Object.keys(cell)[0].split("-")[1] == "A") {
+                            totalBlack++;
+                        } else {
+                            totalWhite++;
+                        }
                     }
                 }
             }

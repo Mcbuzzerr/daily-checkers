@@ -133,320 +133,20 @@ const undo = () => {
 }
 
 const getGame = async (gameId) => {
-    return {
-        "players": {
-            "A": {
-                "id": "213123-123123-123123-123213",
-                "lastTurnTakenAt": "TIMESTAMP"
-            },
-            "B": {
-                "id": "213123-123123-123123-123213",
-                "lastTurnTakenAt": "TIMESTAMP"
-            }
+    let url = `https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/game/view/${gameId}`;
+    let gameData = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
         },
-        "turnCount": 0,
-        "board": [
-            [
-                null,
-                {
-                    "1-A": false
-                },
-                null,
-                {
-                    "2-A": false
-                },
-                null,
-                {
-                    "3-A": false
-                },
-                null,
-                {
-                    "4-A": false
-                }
-            ],
-            [
-                {
-                    "5-A": false
-                },
-                null,
-                {
-                    "6-A": false
-                },
-                null,
-                {
-                    "7-A": false
-                },
-                null,
-                {
-                    "8-A": false
-                }
-            ],
-            [
-                null,
-                {
-                    "9-A": false
-                },
-                null,
-                {
-                    "10-A": false
-                },
-                null,
-                {
-                    "11-A": false
-                },
-                null,
-                {
-                    "12-A": false
-                }
-            ],
-            [
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            ],
-            [
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            ],
-            [
-                {
-                    "1-B": false
-                },
-                null,
-                {
-                    "2-B": false
-                },
-                null,
-                {
-                    "3-B": false
-                },
-                null,
-                {
-                    "4-B": false
-                }
-            ],
-            [
-                null,
-                {
-                    "5-B": false
-                },
-                null,
-                {
-                    "6-B": false
-                },
-                null,
-                {
-                    "7-B": false
-                },
-                null,
-                {
-                    "8-B": false
-                }
-            ],
-            [
-                {
-                    "9-B": false
-                },
-                null,
-                {
-                    "10-B": false
-                },
-                null,
-                {
-                    "11-B": false
-                },
-                null,
-                {
-                    "12-B": false
-                }
-            ]
-        ]
-    };
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        return data;
+    });
+    console.log(gameData);
+    return gameData;
 };
-
-const getPlayer = async (playerId) => {
-    return {
-        "id": playerId, //Friend Code
-        "name": "Player Template",
-        "email": "playerA@email.com",
-        "password": "shhhhhhhhhhhhh",
-        "victories": 1,
-        "pieces": {
-            "1-A": { // {PieceNumber}-{TeamLetter} A = Black, B = Whit: {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0, //Display ratio on stats page
-                "lifetimePromotions": 0
-            },
-            "2-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "3-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "4-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "5-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "6-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "7-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "8-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "9-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "10-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "11-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "12-A": {
-
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "1-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "2-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "3-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "4-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "5-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "6-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "7-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "8-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "9-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "10-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "11-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            },
-            "12-B": {
-                "displayText": "text",
-                "lifetimeKills": 0,
-                "lifetimeDeaths": 0,
-                "lifetimePromotions": 0
-            }
-        },
-        "piecesAColor": "#000000",
-        "piecesBColor": "#ffffff",
-        "highlightColor": "#ffe600",
-        "backgroundColor": "#adadfd"
-    }
-};
-
 
 const setColors = (players) => {
     let root = document.documentElement;
@@ -457,35 +157,38 @@ const setColors = (players) => {
 const renderPlayers = () => {
     let playerA = document.getElementById("player-a-slate");
     let playerB = document.getElementById("player-b-slate");
-    playerA.style.backgroundColor = Players.A.backgroundColor;
-    playerA.querySelector(".playerName").innerHTML = Players.A.name;
-    playerA.querySelector(".friendCode").innerHTML = Players.A.id;
-    playerA.querySelector(".player-victories").innerHTML = Players.A.victories;
-    playerB.style.backgroundColor = Players.B.backgroundColor;
-    playerB.querySelector(".friendCode").innerHTML = Players.B.id;
-    playerB.querySelector(".playerName").innerHTML = Players.B.name;
-    playerB.querySelector(".player-victories").innerHTML = Players.B.victories;
-    document.documentElement.setAttribute("player-a-outline-color", Players.A.highlightColor);
-    document.documentElement.setAttribute("player-b-outline-color", Players.B.highlightColor);
+    playerA.style.backgroundColor = Players.A.account.backgroundColor;
+    playerA.querySelector(".playerName").innerHTML = Players.A.account.name;
+    playerA.querySelector(".friendCode").innerHTML = Players.A.account.id;
+    playerA.querySelector(".player-victories").innerHTML = Players.A.account.victories;
+    playerB.style.backgroundColor = Players.B.account.backgroundColor;
+    playerB.querySelector(".friendCode").innerHTML = Players.B.account.id;
+    playerB.querySelector(".playerName").innerHTML = Players.B.account.name;
+    playerB.querySelector(".player-victories").innerHTML = Players.B.account.victories;
+    document.documentElement.setAttribute("player-a-outline-color", Players.A.account.highlightColor);
+    document.documentElement.setAttribute("player-b-outline-color", Players.B.account.highlightColor);
     playerA.addEventListener("click", () => {
-        let areTheySure = confirm(`Leave this game and view ${Players.A.name}'s profile?`);
+        let areTheySure = confirm(`Leave this game and view ${Players.A.account.name}'s profile?`);
         if (areTheySure) {
-            window.location.href = `profile.html?user=${Players.A.id}`;
+            window.location.href = `profile.html?user=${Players.A.account.id}`;
         }
     });
     playerB.addEventListener("click", () => {
-        let areTheySure = confirm(`Leave this game and view ${Players.B.name}'s profile?`);
+        let areTheySure = confirm(`Leave this game and view ${Players.B.account.name}'s profile?`);
         if (areTheySure) {
-            window.location.href = `profile.html?user=${Players.B.id}`;
+            window.location.href = `profile.html?user=${Players.B.account.id}`;
         }
     });
 }
 
 
 window.onload = async () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const game_id = urlParams.get('game');
+    console.log(game_id);
 
-
-    Game = await getGame("asdasd");
+    Game = await getGame(game_id);
     loggedInPlayer = await getUser();
 
     if (loggedInPlayer == null) {
@@ -493,17 +196,9 @@ window.onload = async () => {
         window.location.href = "index.html";
     }
 
-
-    if (loggedInPlayer.id === Game.players.A.id) {
-        Players.A = loggedInPlayer;
-        Players.B = await getPlayer(Game.players.B.id);
-    } else if (loggedInPlayer.id === Game.players.B.id) {
-        Players.A = await getPlayer(Game.players.A.id);
-        Players.B = loggedInPlayer;
-    } else {
-        alert("You are not a player in this game");
-        window.location.href = "index.html";
-    }
+    Players.A = Game.players.A
+    Players.B = Game.players.B
+    console.log(Players);
 
     renderPlayers();
 

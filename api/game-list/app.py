@@ -16,12 +16,8 @@ user_table = boto3.resource("dynamodb", region_name=region_name).Table(
 
 
 def lambda_handler(event, context):
-
-    path = event["pathParameters"]
-    if "id" not in path:
-        return response(200, game_table.scan()["Items"])
-
-    id = path["id"]
+    authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
+    id = authenticated_user["id"]
     games = game_table.scan(
         FilterExpression=Attr("players.A.id").eq(id) | Attr("players.B.id").eq(id)
     )
