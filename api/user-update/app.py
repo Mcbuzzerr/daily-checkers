@@ -5,6 +5,7 @@ import json
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
+sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
@@ -41,9 +42,30 @@ def lambda_handler(event, context):
             user["email"] = email
         if password is not None:
             user["password"] = password
-        print(user)
         table.put_item(Item=user)
+
+        sqs.send_message(
+            QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
+            MessageBody=notification(
+                authenticated_user["email"],
+                authenticated_user["name"],
+                "Your account has been updated",
+                "Someone has successfully updated your account, hopefully it was you! Chances are it was because who would want to hack a checkers account?",
+            ),
+        )
+
         return response(200, user)
+
+
+def notification(recipient_email, recipient_name, subject, contents):
+    return json.dumps(
+        {
+            "recipient_email": recipient_email,
+            "recipient_name": recipient_name,
+            "subject": subject,
+            "email_text": contents,
+        }
+    )
 
 
 def response(code, body):

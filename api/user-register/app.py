@@ -2,6 +2,8 @@ import boto3
 from os import getenv
 import json
 from uuid import uuid4
+from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Attr
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
@@ -16,6 +18,11 @@ def lambda_handler(event, context):
     user_email = body["email"]
     user_password = body["password"]
     user_victories = 0
+
+    user_with_email = table.scan(FilterExpression=Attr("email").eq(user_email))
+
+    if user_with_email["Items"]:
+        return response(400, {"error": "Email already in use"})
 
     blankPiece = {
         "displayText": "",

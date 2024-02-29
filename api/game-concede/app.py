@@ -5,9 +5,14 @@ import json
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Games")
+user_table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Users"
+)
+sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
+    authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
     id = event["pathParameters"]["id"]
     game = table.get_item(Key={"id": id})
 
@@ -18,6 +23,22 @@ def lambda_handler(event, context):
         game["deleted"] = True
         game["board"] = None
         table.put_item(Item=game)
+
+        if game["players"]["A"]["id"] == authenticated_user["id"]:
+            user = user_table.get_item(Key={"id": game["players"]["B"]["id"]})["Item"]
+        else:
+            user = user_table.get_item(Key={"id": game["players"]["A"]["id"]})["Item"]
+
+        sqs.send_message(
+            QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
+            MessageBody=notification(
+                user["email"],
+                user["name"],
+                "Your opponent has conceded the game",
+                "Your opponent has conceded the game. Unfortunately, this does not count as a win for you otherwise it would be too easy to unlock customizations! Good luck in your next game!",
+            ),
+        )
+
         return response(200, game)
 
 
@@ -40,3 +61,14 @@ class DecimalEncoder(json.JSONEncoder):
         if isinstance(o, Decimal):
             return int(o)
         return super(DecimalEncoder, self).default(o)
+
+
+def notification(recipient_email, recipient_name, subject, contents):
+    return json.dumps(
+        {
+            "recipient_email": recipient_email,
+            "recipient_name": recipient_name,
+            "subject": subject,
+            "email_text": contents,
+        }
+    )

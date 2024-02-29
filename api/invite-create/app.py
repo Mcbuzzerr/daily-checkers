@@ -7,6 +7,7 @@ region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Invites"
 )
+sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
@@ -28,6 +29,19 @@ def lambda_handler(event, context):
     }
 
     table.put_item(Item=invite)
+
+    URL = "localhost:5500"
+
+    sqs.send_message(
+        QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
+        MessageBody=notification(
+            invite_to,
+            "Daily Checkers User",
+            "You've been invited to play a match of Checkers",
+            f"You've been invited (Dare I say Challenged?) to play Checkers by {invite_from_name}. Click here to view your pending invites: https://{URL}/invites",
+        ),
+    )
+
     return response(200, invite)
 
 
@@ -43,3 +57,14 @@ def response(code, body):
         "body": json.dumps(body),
         "isBase64Encoded": False,
     }
+
+
+def notification(recipient_email, recipient_name, subject, contents):
+    return json.dumps(
+        {
+            "recipient_email": recipient_email,
+            "recipient_name": recipient_name,
+            "subject": subject,
+            "email_text": contents,
+        }
+    )

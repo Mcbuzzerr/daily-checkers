@@ -5,6 +5,7 @@ import json
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
+sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
@@ -23,6 +24,17 @@ def lambda_handler(event, context):
     else:
         user = users["Items"][0]
         table.delete_item(Key={"id": user["id"]})
+
+        sqs.send_message(
+            QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
+            MessageBody=notification(
+                authenticated_user["email"],
+                authenticated_user["name"],
+                "Your account has been deleted",
+                "Someone has successfully deleted your account, hopefully it was you! It was probably you, because why would someone else want to delete your account? A juicy rivalry? Anyways, if this was a mistake let us know and we can try to pull some necromancy on your account!",
+            ),
+        )
+
         return response(200, {"message": "User deleted"})
 
 
@@ -38,3 +50,14 @@ def response(code, body):
         "body": json.dumps(body),
         "isBase64Encoded": False,
     }
+
+
+def notification(recipient_email, recipient_name, subject, contents):
+    return json.dumps(
+        {
+            "recipient_email": recipient_email,
+            "recipient_name": recipient_name,
+            "subject": subject,
+            "email_text": contents,
+        }
+    )

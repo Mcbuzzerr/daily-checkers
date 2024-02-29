@@ -86,10 +86,6 @@ def build_email(subject_line, recipient_email, recipient_name, email_text):
         recipient_email.split("@")[1],
     )
 
-    # Here is probably where we want to add the user's name and other personalized data 🐢💭
-    # We might need to do image shenanigans like the "asparagus" example in the email module docs
-    # https://docs.python.org/3/library/email.examples.html (Ctrl+F "asparagus" to find the example)
-
     text_content = email_text
     email_message.set_content(text_content)
 
