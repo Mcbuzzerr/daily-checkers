@@ -2,10 +2,17 @@ import boto3
 from os import getenv
 from uuid import uuid4
 import json
+import mysql.connector
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Invites"
+user_table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Users"
+)
+table = mysql.connector.connect(
+    host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
+    user="trumpetbeast",
+    password="2JDfC1YtMiKLa17cdscj",
+    database="dailycheckers_invites",
 )
 sqs = boto3.client("sqs", region_name=region_name)
 
@@ -18,17 +25,22 @@ def lambda_handler(event, context):
     invite_from_background = event["from-background-color"]
     invite_from_highlight = event["from-highlight-color"]
     invite_to = event["to"]
+    invite_to_name = None
 
-    invite = {
-        "id": invite_id,
-        "from": invite_from,
-        "from-name": invite_from_name,
-        "from-background-color": invite_from_background,
-        "from-highlight-color": invite_from_highlight,
-        "to": invite_to,
-    }
+    # Validate invite_to id and retrieve name if valid
+    recipient = user_table.get_item(Key={"id": invite_to})
+    if "Item" not in recipient:
+        return response(404, {"error": "Recipient not found"})
+    else:
+        invite_to_name = recipient["Item"]["name"]
 
-    table.put_item(Item=invite)
+    # Insert invite into database
+    cursor = table.cursor()
+    cursor.execute(
+        f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`, `to`, `to-name`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}', '{invite_to}', '{invite_to_name}')"
+    )
+    table.commit()
+    cursor.close()
 
     URL = "localhost:5500"
 
@@ -42,7 +54,7 @@ def lambda_handler(event, context):
         ),
     )
 
-    return response(200, invite)
+    return response(200, {"inviteID": invite_id})
 
 
 def response(code, body):
