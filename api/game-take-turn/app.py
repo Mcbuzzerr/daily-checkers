@@ -10,6 +10,9 @@ table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Users"
 )
+notification_table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Notifications_SAM"
+)
 sqs = boto3.client("sqs", region_name=region_name)
 
 
@@ -116,11 +119,12 @@ def lambda_handler(event, context):
 
     # update the game state
 
-    table.update_item(
-        Key={"id": game_id},
-        UpdateExpression="SET board = :b, turnCount = turnCount + :c",
-        ExpressionAttributeValues={":b": new_board, ":c": 1},
-    )
+    new_game_state["turnCount"] += 1
+    new_game_state["players"][authenticated_user_team][
+        "lastTurnTakenAt"
+    ] = datetime.now().isoformat()
+
+    table.put_item(Item=new_game_state)
 
     # send a notification to the other player
 
