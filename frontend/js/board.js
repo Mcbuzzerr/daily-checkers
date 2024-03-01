@@ -31,7 +31,7 @@ const renderBoard = (
         if (game_board[y][x] != null) {
             cells[i].innerHTML = game_board[y][x].id;
             let piece_id = Object.keys(game_board[y][x])[0];
-            let pieceText = Players[piece_id.split("-")[1]].pieces[piece_id].displayText;
+            let pieceText = Players[piece_id.split("-")[1]].account.pieces[piece_id].displayText;
             let color = piece_id.split("-")[1] === "A" ? "black" : "white";
             cells[i].innerHTML = `<div class="piece ${color}" id="${piece_id}">${pieceText}</div>`;
             if (game.turnCount % 2 === 0 && piece_id.split("-")[1] === "A" || game.turnCount % 2 !== 0 && piece_id.split("-")[1] === "B") {
@@ -121,7 +121,7 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
 
     let old_cell = document.getElementById(`${old_x}-${old_y}`);
     let new_cell = document.getElementById(`${new_x}-${new_y}`);
-    let pieceText = Players[Object.keys(piece)[0].split("-")[1]].pieces[Object.keys(piece)[0]].displayText;
+    let pieceText = Players[Object.keys(piece)[0].split("-")[1]].account.pieces[Object.keys(piece)[0]].displayText;
     new_cell.innerHTML = `<div class="piece ghost ${piece.promoted ? "promoted" : ""}" id="${Object.keys(piece)[0]}">${pieceText}</div>`
     old_cell.innerHTML = `<div class="piece shadow ${piece.promoted ? "promoted" : ""}" id="shadow"></div>`;
     clearSelection();
@@ -130,6 +130,10 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
 
 const undo = () => {
     location.reload();
+}
+
+const handleSubmitMove = async () => {
+    console.log(Game);
 }
 
 const getGame = async (gameId) => {
@@ -144,14 +148,13 @@ const getGame = async (gameId) => {
     }).then((data) => {
         return data;
     });
-    console.log(gameData);
     return gameData;
 };
 
 const setColors = (players) => {
     let root = document.documentElement;
-    root.style.setProperty("--player-a-piece-color-primary", players.A.piecesAColor);
-    root.style.setProperty("--player-b-piece-color-primary", players.B.piecesBColor);
+    root.style.setProperty("--player-a-piece-color-primary", players.A.account.piecesAColor);
+    root.style.setProperty("--player-b-piece-color-primary", players.B.account.piecesBColor);
 }
 
 const renderPlayers = () => {
@@ -186,7 +189,6 @@ window.onload = async () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const game_id = urlParams.get('game');
-    console.log(game_id);
 
     Game = await getGame(game_id);
     loggedInPlayer = await getUser();

@@ -35,7 +35,6 @@ def lambda_handler(event, context):
             for user in users["Items"]:
                 if user["id"] == game["Item"]["players"][player]["id"]:
                     del user["password"]
-                    del user["id"]
                     game["Item"]["players"][player]["account"] = user
 
         return response(200, game["Item"])

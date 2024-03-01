@@ -172,6 +172,8 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /game/concede/{id}
             Method: post
+            Auth:
+              Authorizer: UserAuth
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
@@ -195,8 +197,10 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
-            Path: /game/take-turn/{id}
+            Path: /game/take-turn
             Method: post
+            Auth:
+              Authorizer: UserAuth
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
@@ -269,6 +273,8 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /invite
             Method: post
+            Auth:
+              Authorizer: UserAuth
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
@@ -294,6 +300,8 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /invite/accept/{id}
             Method: post
+            Auth:
+              Authorizer: UserAuth
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
@@ -319,6 +327,8 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /invite/decline/{id}
             Method: post
+            Auth:
+              Authorizer: UserAuth
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:
@@ -343,6 +353,8 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /invite/list
             Method: get
+            Auth:
+              Authorizer: UserAuth
       Policies:
         - AmazonDynamoDBFullAccess
         - DynamoDBCrudPolicy:

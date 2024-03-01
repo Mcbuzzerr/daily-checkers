@@ -17,6 +17,7 @@ const getGameList = async () => {
     }).then((response) => {
         return response.json();
     }).then((data) => {
+        document.getElementById('loading-slate').style.display = "none";
         return data;
     });
 
