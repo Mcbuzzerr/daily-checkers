@@ -2,33 +2,44 @@ import boto3
 from os import getenv
 from uuid import uuid4
 import json
+import pymysql.cursors
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Invites"
+user_table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Users"
+)
+table = pymysql.connect(
+    host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
+    user="trumpetbeast",
+    password="2JDfC1YtMiKLa17cdscj",
+    database="dailycheckers_invites",
+    cursorclass=pymysql.cursors.DictCursor,
 )
 sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
-
+    authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
     invite_id = str(uuid4())
-    invite_from = event["from"]
-    invite_from_name = event["from-name"]
-    invite_from_background = event["from-background-color"]
-    invite_from_highlight = event["from-highlight-color"]
-    invite_to = event["to"]
+    invite_to = event["pathParameters"]["id"]
+    invite_from = authenticated_user["id"]
+    invite_from_name = authenticated_user["name"]
+    invite_from_background = authenticated_user["backgroundColor"]
+    invite_from_highlight = authenticated_user["highlightColor"]
 
-    invite = {
-        "id": invite_id,
-        "from": invite_from,
-        "from-name": invite_from_name,
-        "from-background-color": invite_from_background,
-        "from-highlight-color": invite_from_highlight,
-        "to": invite_to,
-    }
+    # Validate invite_to id and retrieve name if valid
+    recipient = user_table.get_item(Key={"id": invite_to})
+    if "Item" not in recipient:
+        return response(404, {"error": "Recipient not found"})
+    else:
+        invite_to_name = recipient["Item"]["name"]
 
-    table.put_item(Item=invite)
+    with table:
+        with table.cursor() as cursor:
+            cursor.execute(
+                f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`, `to`, `to-name`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}', '{invite_to}', '{invite_to_name}')"
+            )
+        table.commit()
 
     URL = "localhost:5500"
 
@@ -42,7 +53,7 @@ def lambda_handler(event, context):
         ),
     )
 
-    return response(200, invite)
+    return response(200, {"inviteID": invite_id})
 
 
 def response(code, body):

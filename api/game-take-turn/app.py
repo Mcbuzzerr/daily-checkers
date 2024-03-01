@@ -53,13 +53,56 @@ def lambda_handler(event, context):
         for cell in row:
             if cell != None:
                 for key in cell:
-                    previously_alive_pieces.append(key)
+                    previously_alive_pieces.append(
+                        {
+                            "key": key,
+                            "position": f"{old_board.index(row)}-{row.index(cell)}",
+                        }
+                    )
 
     for row in new_board:
         for cell in row:
             if cell != None:
                 for key in cell:
-                    currently_alive_pieces.append(key)
+                    currently_alive_pieces.append(
+                        {
+                            "key": key,
+                            "position": f"{new_board.index(row)}-{row.index(cell)}",
+                        }
+                    )
+
+    for piece in previously_alive_pieces:
+        if piece["key"] not in currently_alive_pieces:
+            piece_team = piece["key"].split("-")[1]
+            if piece_team == "A":
+                user_a["pieces"][piece["key"]]["lifetimeDeaths"] += 1
+            elif piece_team == "B":
+                user_b["pieces"][piece["key"]]["lifetimeDeaths"] += 1
+
+    print("Checking for movement")
+    for piece in currently_alive_pieces:
+        for piece_b in previously_alive_pieces:
+            if piece_b["key"] == piece["key"]:
+                print(piece)
+                print(piece_b)
+                print(piece["position"])
+                print(piece_b["position"])
+
+    # Check for promotions
+    # untested copilot code 😎
+    if authenticated_user_team == "A":
+        for cell in new_board[0]:
+            if cell != None:
+                for key in cell:
+                    if "A" in key:
+                        new_board[0][new_board[0].index(cell)] = {key: True}
+    elif authenticated_user_team == "B":
+        for cell in new_board[7]:
+            if cell != None:
+                for key in cell:
+                    if "B" in key:
+                        new_board[7][new_board[7].index(cell)] = {key: True}
+    # untested copilot code 😎
 
     return response(
         200,
@@ -68,8 +111,6 @@ def lambda_handler(event, context):
             "currently_alive_pieces": currently_alive_pieces,
         },
     )
-
-    # Iterate over the list and get the keys
 
     # check if the game is over
 
