@@ -124,12 +124,21 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
     let pieceText = Players[Object.keys(piece)[0].split("-")[1]].account.pieces[Object.keys(piece)[0]].displayText;
     new_cell.innerHTML = `<div class="piece ghost ${piece.promoted ? "promoted" : ""}" id="${Object.keys(piece)[0]}">${pieceText}</div>`
     old_cell.innerHTML = `<div class="piece shadow ${piece.promoted ? "promoted" : ""}" id="shadow"></div>`;
+
+    gameBoard = Game.board;
+    gameBoard[new_y][new_x] = piece;
+    gameBoard[old_y][old_x] = null;
+
     clearSelection();
     clearHighlights();
 }
 
 const undo = () => {
     location.reload();
+    // To speed up we could maybe save board state to a cookie
+    // Then onload check if there's a cached board state and load it
+    // Then remove the cached board state
+    // otherwise just load the board state from the backend
 }
 
 const handleSubmitMove = async () => {
