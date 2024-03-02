@@ -8,13 +8,6 @@ region_name = getenv("APP_REGION")
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Users"
 )
-table = pymysql.connect(
-    host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
-    user="trumpetbeast",
-    password="2JDfC1YtMiKLa17cdscj",
-    database="dailycheckers_invites",
-    cursorclass=pymysql.cursors.DictCursor,
-)
 sqs = boto3.client("sqs", region_name=region_name)
 
 
@@ -27,6 +20,12 @@ def lambda_handler(event, context):
     invite_from_background = authenticated_user["backgroundColor"]
     invite_from_highlight = authenticated_user["highlightColor"]
 
+    if invite_to == "random":
+        # Look for another invite with no recipient
+        # If found, use that invite's id
+        # If not found, create a new invite
+        pass
+
     # Validate invite_to id and retrieve name if valid
     recipient = user_table.get_item(Key={"id": invite_to})
     if "Item" not in recipient:
@@ -34,7 +33,13 @@ def lambda_handler(event, context):
     else:
         invite_to_name = recipient["Item"]["name"]
 
-    with table:
+    with pymysql.connect(
+        host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
+        user="trumpetbeast",
+        password="2JDfC1YtMiKLa17cdscj",
+        database="dailycheckers_invites",
+        cursorclass=pymysql.cursors.DictCursor,
+    ) as table:
         with table.cursor() as cursor:
             cursor.execute(
                 f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`, `to`, `to-name`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}', '{invite_to}', '{invite_to_name}')"

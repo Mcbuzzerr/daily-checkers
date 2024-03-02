@@ -143,6 +143,42 @@ const undo = () => {
 
 const handleSubmitMove = async () => {
     console.log(Game);
+    let url = `https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/game/take-turn`;
+    let data = {
+        "id": Game.id,
+        "board": gameBoard,
+        "players": {
+            "A": {
+                "id": Players.A.id,
+                "lastTurnTakenAt": Players.A.lastTurnTakenAt
+            },
+            "B": {
+                "id": Players.B.id,
+                "lastTurnTakenAt": Players.B.lastTurnTakenAt
+            }
+        },
+        "turnCount": Game.turnCount
+    }
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getCookie('token')}`,
+        },
+        body: JSON.stringify(data)
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        console.log(data);
+        if (data["error"]) {
+            alert(data["error"]);
+        } else {
+            window.location.href = `play_game.html?game=${Game.id}`;
+        }
+    }).catch((error) => {
+        console.error('Error:', error);
+        alert('Error submitting move');
+    });
 }
 
 const getGame = async (gameId) => {

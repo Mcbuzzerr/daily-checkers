@@ -7,13 +7,6 @@ import pymysql.cursors
 import json
 
 region_name = getenv("APP_REGION")
-invite_table = pymysql.connect(
-    host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
-    user="trumpetbeast",
-    password="2JDfC1YtMiKLa17cdscj",
-    database="dailycheckers_invites",
-    cursorclass=pymysql.cursors.DictCursor,
-)
 game_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Games"
 )
@@ -25,7 +18,13 @@ def lambda_handler(event, context):
     id = event["pathParameters"]["id"]
     invite_acceptor = authenticated_user["id"]
 
-    with invite_table:
+    with pymysql.connect(
+        host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
+        user="trumpetbeast",
+        password="2JDfC1YtMiKLa17cdscj",
+        database="dailycheckers_invites",
+        cursorclass=pymysql.cursors.DictCursor,
+    ) as invite_table:
         with invite_table.cursor() as cursor:
             cursor.execute(f"SELECT * FROM invites WHERE id = '{id}'")
             invite = cursor.fetchone()

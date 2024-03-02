@@ -76,3 +76,7 @@ h2 {
     box-shadow: none;
     transform: translate(7px, 7px);
 }
+
+main {
+    overflow-y: auto;
+}

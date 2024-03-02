@@ -88,14 +88,6 @@ Resources:
         Type: String
       TableName: DailyCheckers_Users_SAM
   
-  InviteTable:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      PrimaryKey:
-        Name: id
-        Type: String
-      TableName: DailyCheckers_Invites_SAM
-  
   NotificationTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -355,14 +347,6 @@ Resources:
             Method: get
             Auth:
               Authorizer: UserAuth
-      Policies:
-        - AmazonDynamoDBFullAccess
-        - DynamoDBCrudPolicy:
-            TableName: 
-              !Ref GameTable
-        - DynamoDBCrudPolicy:
-            TableName: 
-              !Ref UserTable
   
   UserDeleteFunction:
     Type: AWS::Serverless::Function

@@ -6,13 +6,6 @@ import pymysql.cursors
 import json
 
 region_name = getenv("APP_REGION")
-table = pymysql.connect(
-    host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
-    user="trumpetbeast",
-    password="2JDfC1YtMiKLa17cdscj",
-    database="dailycheckers_invites",
-    cursorclass=pymysql.cursors.DictCursor,
-)
 
 
 def lambda_handler(event, context):
@@ -20,7 +13,13 @@ def lambda_handler(event, context):
     id = event["pathParameters"]["id"]
     invite_decliner = authenticated_user["id"]
 
-    with table:
+    with pymysql.connect(
+        host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
+        user="trumpetbeast",
+        password="2JDfC1YtMiKLa17cdscj",
+        database="dailycheckers_invites",
+        cursorclass=pymysql.cursors.DictCursor,
+    ) as table:
         with table.cursor() as cursor:
             cursor = table.cursor()
             cursor.execute(f"SELECT * FROM invites WHERE id = '{id}'")

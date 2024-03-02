@@ -58,3 +58,7 @@ h2 {
 #friend-code {
     width: 270px;
 }
+
+main {
+    overflow-y: auto;
+}
