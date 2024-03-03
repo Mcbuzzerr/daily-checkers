@@ -25,7 +25,11 @@ const getCookie = (cname) => {
 }
 
 const getUser = () => {
-    return JSON.parse(getCookie("user"));
+    try {
+        return JSON.parse(getCookie("user"));
+    } catch (e) {
+        return null;
+    }
 }
 
 const setUser = (user) => {

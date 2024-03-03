@@ -195,6 +195,7 @@ main {
     padding: 10px 0px;
     border: solid 1px black;
     box-shadow: 4px 4px 0px black;
+    position: relative;
 }
 
 .button {
@@ -244,4 +245,14 @@ main {
 
 .playerBColor {
     color: var(--player-b-outline-color);
+}
+
+#loading-slate {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    padding: 2rem;
+    font-size: 2rem;
 }

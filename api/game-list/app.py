@@ -29,11 +29,10 @@ def lambda_handler(event, context):
         for game in games["Items"]:
             for player in game["players"]:
                 if game["players"][player]["id"] == id:
-                    game["players"][player]["name"] = "self"
+                    game["players"][player]["name"] = authenticated_user["name"]
                 else:
                     user_ids.append(game["players"][player]["id"])
 
-        # maybe change to a dictionary or something more efficient later?
         users = user_table.scan(FilterExpression=Attr("id").is_in(user_ids))
 
         for game in games["Items"]:

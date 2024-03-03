@@ -20,6 +20,9 @@
 <!-- flex-items containing player-A and player-B info -->
 
 <body>
+    <div class="slate" id="loading-slate">
+        Getting game data...
+    </div>
     <main>
         <p id="profile-button" class="button profile" onclick="window.location.href='profile.html'">Profile</p>
         <p id="invite-button" class="button invites" onclick="window.location.href='invites.html'">Invites</p>
@@ -43,9 +46,10 @@
 
             <div class="main-panel">
                 <h1 onclick="window.location.href = 'index.html'">Daily Checkers</h1>
-                <div class="button-bar">
-                    <p id="undo-button" class="button disabled" onclick="undo()">Undo</p>
-                    <p id="submit-button" class="button submit disabled" onclick="handleSubmitMove()">Submit Move</p>
+                <div class="button-bar" id="button-bar">
+                    <p id="undo-button" class="button disabled" onclick="undo(event)">Undo</p>
+                    <p id="submit-button" class="button submit disabled" onclick="handleSubmitMove(event)">Submit Move
+                    </p>
                 </div>
                 <div class="board">
                     <div class="row">

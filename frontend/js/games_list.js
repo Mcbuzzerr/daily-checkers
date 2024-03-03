@@ -4,6 +4,7 @@ let loggedInUser = null;
 // Accept Invites
 // Decline Invites
 // Send Invites
+let gameListGlobal = [];
 
 const getGameList = async () => {
     let gameList = [];
@@ -22,7 +23,17 @@ const getGameList = async () => {
     });
 
     for (let i = 0; i < gameList.length; i++) {
+        if (gameList[i].gameOver) {
+            console.log("Game Over")
+            gameList.push(gameList[i]);
+            gameList.splice(i, 1);
+        }
+    }
+
+    for (let i = 0; i < gameList.length; i++) {
         let game = gameList[i];
+
+
         let inviteElement = document.createElement('div');
         inviteElement.classList.add('slate');
         inviteElement.classList.add('game');
@@ -48,13 +59,15 @@ const getGameList = async () => {
 
 
         let header3Text = null;
-        // Check if the invite is from the current user
-        // Change the invite text if so
-        // Display Game data such as turn number, current turn, etc.
-        if (game.players.A.id === loggedInUser.id) {
-            header3Text = `You have invited <span class="player-name bold">${game.players.B["name"]}</span> to play a game of checkers.`;
+        let winner = getWinner(game);
+        if (game.gameOver) {
+            header3Text = `Game Over! <span class="player-name bold">${game.players[winner].name}</span> has won!`;
         } else {
-            header3Text = `<span class="player-name bold">${game.players.A["name"]}</span> has invited you to play a game of checkers.`;
+            if (game.players.B.id === loggedInUser.id) {
+                header3Text = `You have invited <span class="player-name bold">${game.players.A["name"]}</span> to play a game of checkers.`;
+            } else {
+                header3Text = `<span class="player-name bold">${game.players.B["name"]}</span> has invited you to play a game of checkers.`;
+            }
         }
 
         console.log(game)
@@ -68,7 +81,7 @@ const getGameList = async () => {
                 <h3 class="no-margin">
                     <span style="color: black;">${totalBlack}</span> vs. <span style="color: white;">${totalWhite}</span>
                 </h1>
-                <p class="button cancel" onclick="handleConcedeClicked()">Concede</p>
+                <p class="button cancel" style="visibility: ${game.gameOver ? "hidden" : "visible"};" onclick="handleConcedeClicked()">Concede</p>
             </div>`; // turncount % 2 = 1 or 0, 0 is black or white idk yet
 
         document.getElementById('game-container').appendChild(inviteElement);
@@ -101,6 +114,30 @@ const handleConcedeClicked = () => {
 const handleNewGameClicked = () => {
     alert("Looking for a new game... Game will appear in the list when an opponent is found.");
 };
+
+const getWinner = (game) => {
+    // Check who has more pieces left
+    let totalWhite = 0;
+    let totalBlack = 0;
+    for (let iter = 0; iter < game.board.length; iter++) {
+        let row = game.board[iter];
+        for (let j = 0; j < row.length; j++) {
+            let cell = row[j];
+            if (cell !== null) {
+                if (Object.keys(cell)[0].split("-")[1] == "A") {
+                    totalBlack++;
+                } else {
+                    totalWhite++;
+                }
+            }
+        }
+    }
+    if (totalBlack > totalWhite) {
+        return "A";
+    } else if (totalWhite > totalBlack) {
+        return "B";
+    }
+}
 
 window.onload = () => {
     loggedInUser = getUser();

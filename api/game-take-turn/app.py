@@ -19,7 +19,6 @@ sqs = boto3.client("sqs", region_name=region_name)
 def lambda_handler(event, context):
     authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
     new_game_state = json.loads(event["body"])
-    new_game_state["turnCount"] += 1
     game_id = new_game_state["id"]
     print(new_game_state)
     print(game_id)
@@ -32,19 +31,29 @@ def lambda_handler(event, context):
 
     old_game_state = game["Item"]
 
+    if old_game_state["gameOver"]:
+        return response(400, {"error": "The game is over."})
+
+    if new_game_state["turnCount"] != old_game_state["turnCount"]:
+        return response(400, {"error": "Invalid turn count."})
+
     # check if it's the authenticated user's turn
 
     authenticated_user_team = (
         "A" if old_game_state["players"]["A"]["id"] == authenticated_user["id"] else "B"
     )
 
-    # if old_game_state["turnCount"] % 2 == 0:
-    #     if authenticated_user_team != "A":
-    #         return response(400, {"error": "It's not your turn."})
-    # elif old_game_state["turnCount"] % 2 == 1:
-    #     if authenticated_user_team != "B":
-    #         return response(400, {"error": "It's not your turn."})
+    if old_game_state["turnCount"] % 2 == 0:
+        if authenticated_user_team != "A":
+            return response(400, {"error": "It's not your turn."})
+    elif old_game_state["turnCount"] % 2 == 1:
+        if authenticated_user_team != "B":
+            return response(400, {"error": "It's not your turn."})
 
+    new_game_state["players"][authenticated_user_team][
+        "lastTurnTakenAt"
+    ] = datetime.now().isoformat()
+    new_game_state["turnCount"] += 1
     # check which pieces are alive
 
     old_board = old_game_state["board"]
@@ -81,94 +90,91 @@ def lambda_handler(event, context):
                         currently_alive_team_a_pieces.append(key)
                     elif "B" in key:
                         currently_alive_team_b_pieces.append(key)
+    piecesKilled = 0
 
+    print(previously_alive_pieces)
+    print(currently_alive_pieces)
     for old_piece in previously_alive_pieces:
-        if old_piece["key"] not in currently_alive_pieces:
-            piece_team = old_piece["key"].split("-")[1]
-            if piece_team == "A":
+        isPieceStillAlive = False
+        print("Checking if piece is still alive")
+        print(old_piece)
+        for new_piece in currently_alive_pieces:
+            print(new_piece)
+            if old_piece["key"] == new_piece["key"]:
+                isPieceStillAlive = True
+                print("Piece is still alive")
+                break
+        if not isPieceStillAlive:
+            print("Piece is dead")
+            print(old_piece["key"])
+            if "A" in old_piece["key"]:
                 user_a["pieces"][old_piece["key"]]["lifetimeDeaths"] += 1
-            elif piece_team == "B":
+                print(user_b["pieces"][old_piece["key"]])
+                piecesKilled += 1
+            elif "B" in old_piece["key"]:
                 user_b["pieces"][old_piece["key"]]["lifetimeDeaths"] += 1
+                print(user_a["pieces"][old_piece["key"]])
+                piecesKilled += 1
 
-    print("Checking for movement")
-    for piece_new in currently_alive_pieces:
-        for piece_old in previously_alive_pieces:
-            if piece_old["key"] == piece_new["key"]:
-                print(piece_new)
-                print(piece_old)
-                movement_x = int(piece_new["position"].split("-")[0]) - int(
-                    piece_old["position"].split("-")[0]
-                )
-                movement_y = int(piece_new["position"].split("-")[1]) - int(
-                    piece_old["position"].split("-")[1]
-                )
-                print(movement_x)
-                print(movement_y)
-                # untested copilot code 😎
-                if movement_x == 2 or movement_x == -2:
-                    if movement_y == 2 or movement_y == -2:
-                        print("Jump detected")
-                        jumped_x = int(piece_old["position"].split("-")[0]) + (
-                            movement_x // 2
-                        )
-                        jumped_y = int(piece_old["position"].split("-")[1]) + (
-                            movement_y // 2
-                        )
-                        print(jumped_x)
-                        print(jumped_y)
-                        jumped_piece = new_board[jumped_x][jumped_y]
-                        print(jumped_piece)
-                        if jumped_piece != None:
-                            for key in jumped_piece:
-                                print(key)
-                                if piece_old["key"].split("-")[1] != key.split("-")[1]:
-                                    print("Jumped piece is enemy")
-                                    if piece_old["key"].split("-")[1] == "A":
-                                        user_b["pieces"][key]["lifetimeDeaths"] += 1
-                                    elif piece_old["key"].split("-")[1] == "B":
-                                        user_a["pieces"][key]["lifetimeDeaths"] += 1
-                # untested copilot code 😎
+    print(piecesKilled)
+    if piecesKilled > 0:
+        for piece_prev in previously_alive_pieces:
+            for piece_curr in currently_alive_pieces:
+                if piece_prev["key"] == piece_curr["key"]:
+                    if piece_prev["position"] != piece_curr["position"]:
+                        print("Piece moved")
+                        print(piece_prev["key"])
+                        if "A" in piece_prev["key"]:
+                            user_a["pieces"][piece_prev["key"]][
+                                "lifetimeKills"
+                            ] += piecesKilled
+                        elif "B" in piece_prev["key"]:
+                            user_b["pieces"][piece_prev["key"]][
+                                "lifetimeKills"
+                            ] += piecesKilled
 
     # Check for promotions
-    # untested copilot code 😎
     if authenticated_user_team == "A":
-        for cell in new_board[0]:
-            if cell != None:
-                for key in cell:
-                    if "A" in key:
-                        new_board[0][new_board[0].index(cell)] = {key: True}
-    elif authenticated_user_team == "B":
         for cell in new_board[7]:
             if cell != None:
                 for key in cell:
-                    if "B" in key:
+                    if "A" in key:
+                        print("I deserve a promotion! - ", key)
                         new_board[7][new_board[7].index(cell)] = {key: True}
-    # untested copilot code 😎
+                        user_a["pieces"][key]["lifetimePromotions"] += 1
+    elif authenticated_user_team == "B":
+        for cell in new_board[0]:
+            if cell != None:
+                for key in cell:
+                    if "B" in key:
+                        print("I deserve a promotion! - ", key)
+                        new_board[0][new_board[0].index(cell)] = {key: True}
+                        user_b["pieces"][key]["lifetimePromotions"] += 1
 
     # check if the game is over
     if len(currently_alive_team_a_pieces) == 0:
         # team B wins
         user_b["victories"] += 1
-        user_a["defeats"] += 1
         new_game_state["gameOver"] = True
         send_game_end_notification(user_b, user_a)
         table.put_item(Item=new_game_state)
+        user_table.put_item(Item=user_a)
+        user_table.put_item(Item=user_b)
         return response(200, {"message": "Game over. Team B wins."})
     elif len(currently_alive_team_b_pieces) == 0:
         # team A wins
         user_a["victories"] += 1
-        user_b["defeats"] += 1
         new_game_state["gameOver"] = True
         send_game_end_notification(user_a, user_b)
         table.put_item(Item=new_game_state)
+        user_table.put_item(Item=user_a)
+        user_table.put_item(Item=user_b)
         return response(200, {"message": "Game over. Team A wins."})
 
+    # update the user stats
+    user_table.put_item(Item=user_a)
+    user_table.put_item(Item=user_b)
     # update the game state
-
-    new_game_state["players"][authenticated_user_team][
-        "lastTurnTakenAt"
-    ] = datetime.now().isoformat()
-
     table.put_item(Item=new_game_state)
 
     # send a notification to the other player

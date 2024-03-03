@@ -9,6 +9,7 @@ let Players = {
     "B": null
 }
 let loggedInPlayer = null;
+let whoseTurn = null;
 
 
 const renderBoard = (
@@ -20,6 +21,8 @@ const renderBoard = (
     let x = 0;
     let y = 0;
     let game_board = game.board;
+    let available_jumps = checkForAvailableJumps();
+    console.log("Available jumps", available_jumps);
 
     for (let i = 0; i < cells.length; i++) {
 
@@ -32,10 +35,16 @@ const renderBoard = (
             cells[i].innerHTML = game_board[y][x].id;
             let piece_id = Object.keys(game_board[y][x])[0];
             let pieceText = Players[piece_id.split("-")[1]].account.pieces[piece_id].displayText;
+            let isPromoted = game_board[y][x][piece_id];
+            // console.log("Is promoted", isPromoted);
             let color = piece_id.split("-")[1] === "A" ? "black" : "white";
-            cells[i].innerHTML = `<div class="piece ${color}" id="${piece_id}">${pieceText}</div>`;
-            if (game.turnCount % 2 === 0 && piece_id.split("-")[1] === "A" || game.turnCount % 2 !== 0 && piece_id.split("-")[1] === "B") {
-                cells[i].addEventListener("click", selectPiece);
+            cells[i].innerHTML = `<div class="piece ${color} ${isPromoted ? "promoted" : ""}" id="${piece_id}">${pieceText}</div>`;
+            if (whoseTurn == "A" && piece_id.split("-")[1] === "A" && loggedInPlayer.id == Players.A.id || whoseTurn == "B" && piece_id.split("-")[1] === "B" && loggedInPlayer.id == Players.B.id) {
+                if (available_jumps && checkForAvailableJumpsForPiece(piece_id)) {
+                    cells[i].addEventListener("click", selectPiece);
+                } else if (!available_jumps) {
+                    cells[i].addEventListener("click", selectPiece);
+                }
             }
         } else {
             cells[i].innerHTML = "";
@@ -47,9 +56,132 @@ const renderBoard = (
     }
 }
 
+
+const checkForAvailableJumps = () => {
+    let game_board = Game.board;
+    let available_jumps = false;
+    for (let i = 0; i < Object.keys(Players[whoseTurn].account.pieces).length; i++) {
+        let piece_id = Object.keys(Players[whoseTurn].account.pieces)[i];
+        if (piece_id.split("-")[1] === whoseTurn) {
+            let coords = getPieceCoordinates(piece_id, Game);
+            let x = null;
+            let y = null;
+            if (coords != null) {
+                x = coords.x;
+                y = coords.y;
+                for (let j = -1; j <= 1; j += 2) {
+                    let isPromoted = game_board[y][x][piece_id];
+                    let x_check = parseInt(x) + j;
+
+                    if (isPromoted) {
+                        for (let k = -1; k <= 1; k += 2) {
+                            let y_check = parseInt(y) + k;
+                            if (x_check >= 0 && x_check <= 7 && y_check >= 0 && y_check <= 7) {
+                                if (game_board[y_check][x_check] != null) {
+                                    let checked_piece_id = Object.keys(game_board[y_check][x_check])[0];
+                                    if (checked_piece_id.split("-")[1] !== whoseTurn) {
+                                        let x_jump = x_check + j;
+                                        let y_jump = y_check + k;
+                                        if (x_jump >= 0 && x_jump <= 7 && y_jump >= 0 && y_jump <= 7) {
+                                            if (game_board[y_jump][x_jump] === null) {
+                                                console.log("Available jump", piece_id);
+                                                available_jumps = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        let y_check = parseInt(y) + (whoseTurn === "A" ? 1 : -1);
+                        if (x_check >= 0 && x_check <= 7 && y_check >= 0 && y_check <= 7) {
+                            if (game_board[y_check][x_check] != null) {
+                                let checked_piece_id = Object.keys(game_board[y_check][x_check])[0];
+                                if (checked_piece_id.split("-")[1] !== whoseTurn) {
+                                    let x_jump = x_check + j;
+                                    let y_jump = y_check + (whoseTurn === "A" ? 1 : -1);
+                                    if (x_jump >= 0 && x_jump <= 7 && y_jump >= 0 && y_jump <= 7) {
+                                        if (game_board[y_jump][x_jump] === null) {
+                                            console.log("Available jump", piece_id);
+                                            available_jumps = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return available_jumps;
+}
+
+// AI Assistant Generated Code Snippet
+const getPieceCoordinates = (pieceId, gameData) => {
+    const board = gameData.board;
+    for (let y = 0; y < board.length; y++) {
+        for (let x = 0; x < board[y].length; x++) {
+            const cell = board[y][x];
+            if (cell && cell.hasOwnProperty(pieceId)) {
+                return { x, y };
+            }
+        }
+    }
+    return null;  // Return null if the piece is not found on the board
+};
+// End AI Assistant Generated Code Snippet
+
+
+// AI Assistant Generated Code Snippet
+const checkForAvailableJumpsForPiece = (piece_id) => {
+    let coords = getPieceCoordinates(piece_id, Game);
+    let game_board = Game.board;
+    let available_jumps = false;
+
+    if (coords == null) {
+        return false;
+    }
+
+    let { x, y } = coords;
+    let isPromoted = game_board[y][x][piece_id];
+
+    for (let j = -1; j <= 1; j += 2) {
+        let x_check = parseInt(x) + j;
+
+        let y_directions = isPromoted ? [-1, 1] : [(whoseTurn === "A" ? 1 : -1)];
+        for (let k of y_directions) {
+            let y_check = parseInt(y) + k;
+            if (x_check >= 0 && x_check <= 7 && y_check >= 0 && y_check <= 7) {
+                if (game_board[y_check][x_check] != null) {
+                    let checked_piece_id = Object.keys(game_board[y_check][x_check])[0];
+                    if (checked_piece_id.split("-")[1] !== whoseTurn) {
+                        let x_jump = x_check + j;
+                        let y_jump = y_check + k;
+                        if (x_jump >= 0 && x_jump <= 7 && y_jump >= 0 && y_jump <= 7) {
+                            if (game_board[y_jump][x_jump] === null) {
+                                available_jumps = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return available_jumps;
+};
+// End AI Assistant Generated Code Snippet
+
+
+
 const selectPiece = (event) => {
+    console.log("Selecting piece");
     clearHighlights();
     clearSelection();
+    if (event.target.classList.contains("cell")) {
+        return;
+    }
+
     let piece = event.target;
     let cell = event.target.parentElement;
     let x = cell.id.split("-")[0];
@@ -64,31 +196,62 @@ const selectPiece = (event) => {
 const highlightMoves = (x, y) => {
     let piece = selected_piece;
     let piece_player = Object.keys(piece)[0].split("-")[1];
+    let isPromoted = piece[Object.keys(piece)[0]];
+    console.log(piece);
 
     for (let i = -1; i <= 1; i += 2) {
         let x_check = parseInt(x) + i;
-        let y_check = parseInt(y) + (piece_player === "A" ? 1 : -1);
-        if (x_check >= 0 && x_check <= 7 && y_check >= 0 && y_check <= 7) {
-            if (Game.board[y_check][x_check] === null) {
-                let cell = document.getElementById(`${x_check}-${y_check}`);
-                cell.classList.add("highlighted");
-                cell.addEventListener("click", () => {
-                    planMovePiece(piece, x, y, x_check, y_check);
-                });
 
-
-
-            } else if (Object.keys(Game.board[y_check][x_check])[0].split("-")[1] !== piece_player) {
-                let x_jump = x_check + i;
-                let y_jump = y_check + (piece_player === "A" ? 1 : -1);
-                if (x_jump >= 0 && x_jump <= 7 && y_jump >= 0 && y_jump <= 7) {
-                    if (Game.board[y_jump][x_jump] === null) {
-                        let cell = document.getElementById(`${x_jump}-${y_jump}`);
+        if (isPromoted) {
+            for (let j = -1; j <= 1; j += 2) {
+                let y_check = parseInt(y) + j;
+                if (x_check >= 0 && x_check <= 7 && y_check >= 0 && y_check <= 7) {
+                    if (Game.board[y_check][x_check] != null && Object.keys(Game.board[y_check][x_check])[0].split("-")[1] !== piece_player) {
+                        let x_jump = x_check + i;
+                        let y_jump = y_check + j;
+                        if (x_jump >= 0 && x_jump <= 7 && y_jump >= 0 && y_jump <= 7) {
+                            if (Game.board[y_jump][x_jump] === null) {
+                                let cell = document.getElementById(`${x_jump}-${y_jump}`);
+                                cell.classList.add("highlighted");
+                                cell.addEventListener("click", () => {
+                                    planMovePiece(piece, x, y, x_jump, y_jump);
+                                });
+                            }
+                        }
+                    }
+                    if (Game.board[y_check][x_check] === null && !checkForAvailableJumpsForPiece(Object.keys(piece)[0])) {
+                        let cell = document.getElementById(`${x_check}-${y_check}`);
                         cell.classList.add("highlighted");
                         cell.addEventListener("click", () => {
-                            planMovePiece(piece, x, y, x_jump, y_jump);
+                            planMovePiece(piece, x, y, x_check, y_check);
                         });
                     }
+                }
+            }
+        } else {
+
+            let y_check = parseInt(y) + (piece_player === "A" ? 1 : -1);
+            if (x_check >= 0 && x_check <= 7 && y_check >= 0 && y_check <= 7) {
+                if (Game.board[y_check][x_check] != null && Object.keys(Game.board[y_check][x_check])[0].split("-")[1] !== piece_player) {
+                    let x_jump = x_check + i;
+                    let y_jump = y_check + (piece_player === "A" ? 1 : -1);
+                    if (x_jump >= 0 && x_jump <= 7 && y_jump >= 0 && y_jump <= 7) {
+                        if (Game.board[y_jump][x_jump] === null) {
+                            let cell = document.getElementById(`${x_jump}-${y_jump}`);
+                            cell.classList.add("highlighted");
+                            cell.addEventListener("click", () => {
+                                planMovePiece(piece, x, y, x_jump, y_jump);
+                            });
+
+                        }
+                    }
+                }
+                if (Game.board[y_check][x_check] === null && !checkForAvailableJumpsForPiece(Object.keys(piece)[0])) {
+                    let cell = document.getElementById(`${x_check}-${y_check}`);
+                    cell.classList.add("highlighted");
+                    cell.addEventListener("click", () => {
+                        planMovePiece(piece, x, y, x_check, y_check);
+                    });
                 }
             }
         }
@@ -113,7 +276,6 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
         return;
     }
     if (selected_piece == null) return;
-    pieceMoved = true;
     let undoButton = document.getElementById("undo-button");
     undoButton.classList.remove("disabled");
     let submitButton = document.getElementById("submit-button");
@@ -129,11 +291,27 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
     gameBoard[new_y][new_x] = piece;
     gameBoard[old_y][old_x] = null;
 
-    clearSelection();
+    let jumped_piece = null;
+    if (Math.abs(new_x - old_x) > 1) {
+        let x_jump = (parseInt(new_x) + parseInt(old_x)) / 2;
+        let y_jump = (parseInt(new_y) + parseInt(old_y)) / 2;
+        jumped_piece = Game.board[y_jump][x_jump];
+        Game.board[y_jump][x_jump] = null;
+        let jumped_cell = document.getElementById(`${x_jump}-${y_jump}`);
+        jumped_cell.innerHTML = "";
+    }
+
     clearHighlights();
+    console.log("selected piece", selected_piece);
+    if (jumped_piece != null && checkForAvailableJumpsForPiece(Object.keys(selected_piece)[0])) {
+        highlightMoves(new_x, new_y);
+    }
 }
 
-const undo = () => {
+const undo = (event) => {
+    if (event.target.classList.contains("disabled")) {
+        return;
+    }
     location.reload();
     // To speed up we could maybe save board state to a cookie
     // Then onload check if there's a cached board state and load it
@@ -141,8 +319,29 @@ const undo = () => {
     // otherwise just load the board state from the backend
 }
 
-const handleSubmitMove = async () => {
-    console.log(Game);
+const handleSubmitMove = async (event) => {
+    pieceMoved = true;
+    if (event.target.classList.contains("disabled")) {
+        return;
+    }
+    if (loggedInPlayer.id === Game.players.A.id && whoseTurn !== "A") {
+        alert("It's not your turn");
+        return;
+    } else if (loggedInPlayer.id === Game.players.B.id && whoseTurn !== "B") {
+        alert("It's not your turn");
+        return;
+    }
+
+    if (!gameBoard) {
+        alert("You must move a piece before submitting");
+        return;
+    }
+
+    event.target.classList.add("disabled");
+    event.target.innerHTML = "Submitting...";
+    document.getElementById("undo-button").classList.add("disabled");
+
+
     let url = `https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/game/take-turn`;
     let data = {
         "id": Game.id,
@@ -157,6 +356,7 @@ const handleSubmitMove = async () => {
                 "lastTurnTakenAt": Players.B.lastTurnTakenAt
             }
         },
+        "gameOver": false,
         "turnCount": Game.turnCount
     }
     fetch(url, {
@@ -176,6 +376,9 @@ const handleSubmitMove = async () => {
             window.location.href = `play_game.html?game=${Game.id}`;
         }
     }).catch((error) => {
+        event.target.classList.remove("disabled");
+        event.target.innerHTML = "Submit Move";
+        document.getElementById("undo-button").classList.remove("disabled");
         console.error('Error:', error);
         alert('Error submitting move');
     });
@@ -191,6 +394,7 @@ const getGame = async (gameId) => {
     }).then((response) => {
         return response.json();
     }).then((data) => {
+        document.getElementById("loading-slate").style.display = "none";
         return data;
     });
     return gameData;
@@ -229,6 +433,29 @@ const renderPlayers = () => {
     });
 }
 
+const getWinner = (game) => {
+    // Check who has more pieces left
+    let totalWhite = 0;
+    let totalBlack = 0;
+    for (let iter = 0; iter < game.board.length; iter++) {
+        let row = game.board[iter];
+        for (let j = 0; j < row.length; j++) {
+            let cell = row[j];
+            if (cell !== null) {
+                if (Object.keys(cell)[0].split("-")[1] == "A") {
+                    totalBlack++;
+                } else {
+                    totalWhite++;
+                }
+            }
+        }
+    }
+    if (totalBlack > totalWhite) {
+        return "A";
+    } else if (totalWhite > totalBlack) {
+        return "B";
+    }
+}
 
 window.onload = async () => {
     const queryString = window.location.search;
@@ -245,13 +472,32 @@ window.onload = async () => {
 
     Players.A = Game.players.A
     Players.B = Game.players.B
-    console.log(Players);
+    if (Game.turnCount % 2 == 0) {
+        whoseTurn = "A"
+    } else {
+        whoseTurn = "B"
+    }
+
+    if (Game.players.A.id !== loggedInPlayer.id && Game.players.B.id !== loggedInPlayer.id) {
+        alert("You are not a player in this game");
+        window.location.href = "index.html";
+    }
 
     renderPlayers();
 
     // Get Game from backend instead of this ^^^^
     setColors(Players);
     renderBoard(Game);
+
+    if (Game.gameOver) {
+        let winner = getWinner();
+        let winnerHighlightColor = Players[winner].account.highlightColor;
+        let winnerName = Players[winner].account.name;
+        let buttonBar = document.getElementById("button-bar");
+        buttonBar.innerHTML = "<h3 style='color: " + winnerHighlightColor + ";'>" + winnerName + " has won the game!</h3>";
+
+    }
+
     document.addEventListener("dblclick", () => {
         clearSelection();
         clearHighlights();
