@@ -3,7 +3,8 @@ from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.conditions import Attr
 from os import getenv
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+from uuid import uuid4
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Games")
@@ -42,6 +43,14 @@ def lambda_handler(event, context):
     authenticated_user_team = (
         "A" if old_game_state["players"]["A"]["id"] == authenticated_user["id"] else "B"
     )
+
+    if old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"] != None:
+        last_turn_taken_at = datetime.fromisoformat(
+            old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"]
+        )
+        print((datetime.now() - last_turn_taken_at))
+        if (datetime.now() - last_turn_taken_at).days < 1:
+            return response(400, {"error": "You can only take one turn every 24 hours"})
 
     if old_game_state["turnCount"] % 2 == 0:
         if authenticated_user_team != "A":
@@ -171,6 +180,30 @@ def lambda_handler(event, context):
         user_table.put_item(Item=user_b)
         return response(200, {"message": "Game over. Team A wins."})
 
+    send_at_24_hours_from_now = datetime.now() + timedelta(hours=24)
+
+    notification_table.put_item(
+        Item=scheduled_notification(
+            send_at_24_hours_from_now.isoformat(),
+            authenticated_user["email"],
+            authenticated_user["name"],
+            "Your next turn is ready!",
+            "It's your turn again in your game of checkers!",
+        )
+    )
+
+    opponent = user_a if authenticated_user_team == "B" else user_b
+
+    sqs.send_message(
+        QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
+        MessageBody=notification(
+            opponent["email"],
+            opponent["name"],
+            "Your opponent has taken their turn",
+            "Your opponent has taken their turn in your game of checkers!",
+        ),
+    )
+
     # update the user stats
     user_table.put_item(Item=user_a)
     user_table.put_item(Item=user_b)
@@ -235,3 +268,14 @@ def notification(recipient_email, recipient_name, subject, contents):
             "email_text": contents,
         }
     )
+
+
+def scheduled_notification(send_at, recipient_email, recipient_name, subject, contents):
+    return {
+        "id": str(uuid4()),
+        "send_at": send_at,
+        "recipient_email": recipient_email,
+        "recipient_name": recipient_name,
+        "subject": subject,
+        "email_text": contents,
+    }

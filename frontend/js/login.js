@@ -1,5 +1,5 @@
-const handleLoginClicked = (event) => {
-    let button = event.target;
+const handleLoginClicked = () => {
+    let button = document.getElementById('login-button');
     if (button.classList.contains('disabled')) {
         return;
     } else {
@@ -33,8 +33,10 @@ const handleLoginClicked = (event) => {
             console.error('Error:', error);
             alert('An error occurred. Please try again later.')
         });
-
-
-
-
 }
+
+document.getElementById('password').addEventListener('keyup', (event) => {
+    if (event.key === 'Enter') {
+        handleLoginClicked();
+    }
+});

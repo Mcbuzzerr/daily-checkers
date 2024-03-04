@@ -8,6 +8,9 @@ region_name = getenv("APP_REGION")
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Users"
 )
+game_table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Games"
+)
 sqs = boto3.client("sqs", region_name=region_name)
 
 
@@ -20,19 +23,6 @@ def lambda_handler(event, context):
     invite_from_background = authenticated_user["backgroundColor"]
     invite_from_highlight = authenticated_user["highlightColor"]
 
-    if invite_to == "random":
-        # Look for another invite with no recipient
-        # If found, use that invite's id
-        # If not found, create a new invite
-        pass
-
-    # Validate invite_to id and retrieve name if valid
-    recipient = user_table.get_item(Key={"id": invite_to})
-    if "Item" not in recipient:
-        return response(404, {"error": "Recipient not found"})
-    else:
-        invite_to_name = recipient["Item"]["name"]
-
     with pymysql.connect(
         host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
         user="trumpetbeast",
@@ -41,24 +31,143 @@ def lambda_handler(event, context):
         cursorclass=pymysql.cursors.DictCursor,
     ) as table:
         with table.cursor() as cursor:
-            cursor.execute(
-                f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`, `to`, `to-name`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}', '{invite_to}', '{invite_to_name}')"
+            if invite_to == "random":
+                # Look for another invite with no recipient
+                cursor.execute(
+                    "SELECT * FROM invites WHERE `to` IS NULL ORDER BY RAND() LIMIT 1"
+                )
+                result = cursor.fetchone()
+                if result:
+                    invite_to = result["from"]
+
+                    opponent = user_table.get_item(Key={"id": invite_to})
+
+                    game = {
+                        "id": str(uuid4()),
+                        "players": {
+                            "A": {
+                                "id": authenticated_user["id"],
+                                "lastTurnTakenAt": None,
+                            },
+                            "B": {"id": opponent["id"], "lastTurnTakenAt": None},
+                        },
+                        "turnCount": 0,
+                        "board": [
+                            [
+                                None,
+                                {"1-A": False},
+                                None,
+                                {"2-A": False},
+                                None,
+                                {"3-A": False},
+                                None,
+                                {"4-A": False},
+                            ],
+                            [
+                                {"5-A": False},
+                                None,
+                                {"6-A": False},
+                                None,
+                                {"7-A": False},
+                                None,
+                                {"8-A": False},
+                                None,
+                            ],
+                            [
+                                None,
+                                {"9-A": False},
+                                None,
+                                {"10-A": False},
+                                None,
+                                {"11-A": False},
+                                None,
+                                {"12-A": False},
+                            ],
+                            [None, None, None, None, None, None, None, None],
+                            [None, None, None, None, None, None, None, None],
+                            [
+                                {"1-B": False},
+                                None,
+                                {"2-B": False},
+                                None,
+                                {"3-B": False},
+                                None,
+                                {"4-B": False},
+                                None,
+                            ],
+                            [
+                                None,
+                                {"5-B": False},
+                                None,
+                                {"6-B": False},
+                                None,
+                                {"7-B": False},
+                                None,
+                                {"8-B": False},
+                            ],
+                            [
+                                {"9-B": False},
+                                None,
+                                {"10-B": False},
+                                None,
+                                {"11-B": False},
+                                None,
+                                {"12-B": False},
+                                None,
+                            ],
+                        ],
+                    }
+                    game_table.put_item(Item=game)
+
+                    sqs.send_message(
+                        QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
+                        MessageBody=notification(
+                            opponent["email"],
+                            opponent["name"],
+                            "Daily Checkers User",
+                            "You've been invited to play a match of Checkers",
+                            f"You've been invited (Dare I say Challenged?) to play Checkers by {invite_from_name}. Click here to view your pending invites: https://{URL}/invites",
+                        ),
+                    )
+
+                    return response(200, {"gameID": game["id"]})
+
+                else:
+                    # If not found, create a new invite
+                    cursor.execute(
+                        f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}')"
+                    )
+                    table.commit()
+                    return response(
+                        200,
+                        {"message": "Game will be created when an opponent is found"},
+                    )
+
+            # Validate invite_to id and retrieve name if valid
+            recipient = user_table.get_item(Key={"id": invite_to})
+            if "Item" not in recipient:
+                return response(404, {"error": "Recipient not found"})
+            else:
+                invite_to_name = recipient["Item"]["name"]
+
+                cursor.execute(
+                    f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`, `to`, `to-name`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}', '{invite_to}', '{invite_to_name}')"
+                )
+                table.commit()
+
+            URL = "localhost:5500"
+
+            sqs.send_message(
+                QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
+                MessageBody=notification(
+                    invite_to,
+                    "Daily Checkers User",
+                    "You've been invited to play a match of Checkers",
+                    f"You've been invited (Dare I say Challenged?) to play Checkers by {invite_from_name}. Click here to view your pending invites: https://{URL}/invites",
+                ),
             )
-        table.commit()
 
-    URL = "localhost:5500"
-
-    sqs.send_message(
-        QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
-        MessageBody=notification(
-            invite_to,
-            "Daily Checkers User",
-            "You've been invited to play a match of Checkers",
-            f"You've been invited (Dare I say Challenged?) to play Checkers by {invite_from_name}. Click here to view your pending invites: https://{URL}/invites",
-        ),
-    )
-
-    return response(200, {"inviteID": invite_id})
+        return response(200, {"inviteID": invite_id})
 
 
 def response(code, body):

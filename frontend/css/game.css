@@ -237,6 +237,11 @@ main {
     justify-content: center;
     align-items: center;
     height: 100%;
+    gap: 1rem;
+}
+
+.time-panel {
+    text-align: center;
 }
 
 .playerAColor {

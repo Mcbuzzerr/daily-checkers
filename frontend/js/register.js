@@ -1,5 +1,5 @@
-const handleRegisterClicked = (event) => {
-    let button = event.target;
+const handleRegisterClicked = () => {
+    let button = document.getElementById('register-button');
     if (button.classList.contains('disabled')) {
         return;
     } else {
@@ -43,3 +43,9 @@ const handleRegisterClicked = (event) => {
         alert('An error occurred. Please try again later.')
     });
 }
+
+document.getElementById('password').addEventListener('keyup', (event) => {
+    if (event.key === 'Enter') {
+        handleRegisterClicked();
+    }
+});

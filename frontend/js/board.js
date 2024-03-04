@@ -10,7 +10,7 @@ let Players = {
 }
 let loggedInPlayer = null;
 let whoseTurn = null;
-
+let rateLimitActive = true;
 
 const renderBoard = (
     game
@@ -22,7 +22,6 @@ const renderBoard = (
     let y = 0;
     let game_board = game.board;
     let available_jumps = checkForAvailableJumps();
-    console.log("Available jumps", available_jumps);
 
     for (let i = 0; i < cells.length; i++) {
 
@@ -36,13 +35,12 @@ const renderBoard = (
             let piece_id = Object.keys(game_board[y][x])[0];
             let pieceText = Players[piece_id.split("-")[1]].account.pieces[piece_id].displayText;
             let isPromoted = game_board[y][x][piece_id];
-            // console.log("Is promoted", isPromoted);
             let color = piece_id.split("-")[1] === "A" ? "black" : "white";
             cells[i].innerHTML = `<div class="piece ${color} ${isPromoted ? "promoted" : ""}" id="${piece_id}">${pieceText}</div>`;
             if (whoseTurn == "A" && piece_id.split("-")[1] === "A" && loggedInPlayer.id == Players.A.id || whoseTurn == "B" && piece_id.split("-")[1] === "B" && loggedInPlayer.id == Players.B.id) {
-                if (available_jumps && checkForAvailableJumpsForPiece(piece_id)) {
+                if (available_jumps && checkForAvailableJumpsForPiece(piece_id) && !rateLimitActive) {
                     cells[i].addEventListener("click", selectPiece);
-                } else if (!available_jumps) {
+                } else if (!available_jumps && !rateLimitActive) {
                     cells[i].addEventListener("click", selectPiece);
                 }
             }
@@ -84,7 +82,6 @@ const checkForAvailableJumps = () => {
                                         let y_jump = y_check + k;
                                         if (x_jump >= 0 && x_jump <= 7 && y_jump >= 0 && y_jump <= 7) {
                                             if (game_board[y_jump][x_jump] === null) {
-                                                console.log("Available jump", piece_id);
                                                 available_jumps = true;
                                             }
                                         }
@@ -102,7 +99,6 @@ const checkForAvailableJumps = () => {
                                     let y_jump = y_check + (whoseTurn === "A" ? 1 : -1);
                                     if (x_jump >= 0 && x_jump <= 7 && y_jump >= 0 && y_jump <= 7) {
                                         if (game_board[y_jump][x_jump] === null) {
-                                            console.log("Available jump", piece_id);
                                             available_jumps = true;
                                         }
                                     }
@@ -172,10 +168,7 @@ const checkForAvailableJumpsForPiece = (piece_id) => {
 };
 // End AI Assistant Generated Code Snippet
 
-
-
 const selectPiece = (event) => {
-    console.log("Selecting piece");
     clearHighlights();
     clearSelection();
     if (event.target.classList.contains("cell")) {
@@ -197,7 +190,6 @@ const highlightMoves = (x, y) => {
     let piece = selected_piece;
     let piece_player = Object.keys(piece)[0].split("-")[1];
     let isPromoted = piece[Object.keys(piece)[0]];
-    console.log(piece);
 
     for (let i = -1; i <= 1; i += 2) {
         let x_check = parseInt(x) + i;
@@ -302,7 +294,6 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
     }
 
     clearHighlights();
-    console.log("selected piece", selected_piece);
     if (jumped_piece != null && checkForAvailableJumpsForPiece(Object.keys(selected_piece)[0])) {
         highlightMoves(new_x, new_y);
     }
@@ -369,7 +360,6 @@ const handleSubmitMove = async (event) => {
     }).then((response) => {
         return response.json();
     }).then((data) => {
-        console.log(data);
         if (data["error"]) {
             alert(data["error"]);
         } else {
@@ -431,6 +421,52 @@ const renderPlayers = () => {
             window.location.href = `profile.html?user=${Players.B.account.id}`;
         }
     });
+    renderTimeSinceLastTurn();
+}
+
+const renderTimeSinceLastTurn = () => {
+    if (Players === null || Game === null) {
+        return;
+    }
+    let playerASinceLastTurn = document.getElementById("time-since-last-turn-player-a");
+    let playerBSinceLastTurn = document.getElementById("time-since-last-turn-player-b");
+    let lastTurnA = new Date(Players.A.lastTurnTakenAt);
+    // convert from UTC to local time
+    lastTurnA.setMinutes(lastTurnA.getMinutes() - lastTurnA.getTimezoneOffset());
+    let lastTurnB = new Date(Players.B.lastTurnTakenAt);
+    lastTurnB.setMinutes(lastTurnB.getMinutes() - lastTurnB.getTimezoneOffset());
+    let now = new Date();
+    let timeSinceLastTurnA = now - lastTurnA;
+    let timeSinceLastTurnB = now - lastTurnB;
+    // Format as a string DD:HH:MM:SS
+    let timeSinceLastTurnAString = formatTimeSinceLastTurn(timeSinceLastTurnA);
+    let timeSinceLastTurnBString = formatTimeSinceLastTurn(timeSinceLastTurnB);
+
+    playerASinceLastTurn.innerHTML = timeSinceLastTurnAString;
+    playerBSinceLastTurn.innerHTML = timeSinceLastTurnBString;
+
+    let hoursSinceLastTurn = getHoursSinceLastTurn(whoseTurn === "A" ? Players.A.lastTurnTakenAt : Players.B.lastTurnTakenAt);
+    if (hoursSinceLastTurn >= 24) {
+        rateLimitActive = false;
+    } else {
+        rateLimitActive = true;
+    }
+}
+
+const formatTimeSinceLastTurn = (time) => {
+    let days = Math.floor(time / (1000 * 60 * 60 * 24));
+    let hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((time % (1000 * 60)) / 1000);
+    return `${days}:${hours}:${minutes}:${seconds}`;
+}
+
+const getHoursSinceLastTurn = (time) => {
+    let now = new Date();
+    let lastTurn = new Date(time);
+    lastTurn.setMinutes(lastTurn.getMinutes() - lastTurn.getTimezoneOffset());
+    let hours = Math.floor((now - lastTurn) / (1000 * 60 * 60));
+    return hours;
 }
 
 const getWinner = (game) => {
@@ -503,3 +539,5 @@ window.onload = async () => {
         clearHighlights();
     })
 }
+
+setInterval(renderTimeSinceLastTurn, 1000);

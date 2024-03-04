@@ -16,19 +16,16 @@ def lambda_handler(event, context):
     id = event["pathParameters"]["id"]
     game = table.get_item(Key={"id": id})
 
-    if game is None:
+    if "Item" not in game:
         return response(404, {"error": "Game not found"})
     else:
         game = game["Item"]
-        game["deleted"] = True
-        game["board"] = None
-        table.put_item(Item=game)
-
         if game["players"]["A"]["id"] == authenticated_user["id"]:
             user = user_table.get_item(Key={"id": game["players"]["B"]["id"]})["Item"]
         else:
             user = user_table.get_item(Key={"id": game["players"]["A"]["id"]})["Item"]
 
+        table.delete_item(Key={"id": id})
         sqs.send_message(
             QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
             MessageBody=notification(

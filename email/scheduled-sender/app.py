@@ -56,7 +56,6 @@ def lambda_handler(event, context):
                     item["message"]["recipient_email"],
                     item["message"]["recipient_name"],
                     item["message"]["email_text"],
-                    item["message"]["email_html"],
                 )
             )
             item["status"] = "sent"
