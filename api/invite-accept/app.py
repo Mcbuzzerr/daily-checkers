@@ -42,6 +42,7 @@ def lambda_handler(event, context):
                         "B": {"id": invite["from"], "lastTurnTakenAt": None},
                     },
                     "turnCount": 0,
+                    "gameOver": False,
                     "board": [
                         [
                             None,
@@ -109,7 +110,7 @@ def lambda_handler(event, context):
                 }
 
                 game_table.put_item(Item=game)
-                URL = "localhost:5500"
+                URL = "localhost:5500/frontend"
                 sqs.send_message(
                     QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
                     MessageBody=notification(

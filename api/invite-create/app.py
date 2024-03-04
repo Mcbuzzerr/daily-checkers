@@ -22,6 +22,7 @@ def lambda_handler(event, context):
     invite_from_name = authenticated_user["name"]
     invite_from_background = authenticated_user["backgroundColor"]
     invite_from_highlight = authenticated_user["highlightColor"]
+    URL = "localhost:5500/frontend"
 
     with pymysql.connect(
         host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
@@ -40,7 +41,7 @@ def lambda_handler(event, context):
                 if result:
                     invite_to = result["from"]
 
-                    opponent = user_table.get_item(Key={"id": invite_to})
+                    opponent = user_table.get_item(Key={"id": invite_to})["Item"]
 
                     game = {
                         "id": str(uuid4()),
@@ -52,6 +53,7 @@ def lambda_handler(event, context):
                             "B": {"id": opponent["id"], "lastTurnTakenAt": None},
                         },
                         "turnCount": 0,
+                        "gameOver": False,
                         "board": [
                             [
                                 None,
@@ -119,14 +121,15 @@ def lambda_handler(event, context):
                     }
                     game_table.put_item(Item=game)
 
+                    cursor.execute(f"DELETE FROM invites WHERE `id` = '{result['id']}'")
+                    table.commit()
                     sqs.send_message(
                         QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
                         MessageBody=notification(
                             opponent["email"],
                             opponent["name"],
-                            "Daily Checkers User",
-                            "You've been invited to play a match of Checkers",
-                            f"You've been invited (Dare I say Challenged?) to play Checkers by {invite_from_name}. Click here to view your pending invites: https://{URL}/invites",
+                            "Your random invite has been accepted!",
+                            f"Your random invite has been accepted by {invite_from_name}. Click here to view your games: https://{URL}/games",
                         ),
                     )
 
@@ -154,8 +157,6 @@ def lambda_handler(event, context):
                     f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`, `to`, `to-name`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}', '{invite_to}', '{invite_to_name}')"
                 )
                 table.commit()
-
-            URL = "localhost:5500"
 
             sqs.send_message(
                 QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
