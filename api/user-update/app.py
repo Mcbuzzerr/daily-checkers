@@ -26,11 +26,11 @@ def lambda_handler(event, context):
     if "email" in body:
         email = body["email"]
     if "password" in body:
-        password = body["password"]
+        password = hash(body["password"])
 
     user = table.get_item(Key={"id": id})["Item"]
 
-    if body["confirmPassword"] != user["password"]:
+    if hash(body["confirmPassword"]) != user["password"]:
         return response(400, {"error": "Password confirmation failed"})
 
     if user is None:
