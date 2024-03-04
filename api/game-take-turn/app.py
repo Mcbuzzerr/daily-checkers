@@ -225,7 +225,7 @@ def send_game_end_notification(winner, loser):
 
     if winner["victories"] == 0:
         winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! With this victory, you have unlocked the ability to customize your pieces and profile! Go to the settings page to check it out!"
-
+        add_text_to_winner_pieces(winner)
     else:
         winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! You now have {winner['victories']} victories!"
 
@@ -255,18 +255,28 @@ def add_text_to_winner_pieces(winner):
     winner_pieces[0]["displyText"] = "Click"
     winner_pieces[1]["displyText"] = "Piece"
     winner_pieces[2]["displyText"] = "To"
-    winner_pieces[3]["displyText"] = "Customize"
-    winner_pieces[4]["displyText"] = "Your"
-    winner_pieces[5]["displyText"] = "Pieces"
-    winner_pieces[6]["displyText"] = "Names"
-    winner_pieces[7]["displyText"] = "And"
-    winner_pieces[8]["displyText"] = "Hover"
-    winner_pieces[9]["displyText"] = "Over"
-    winner_pieces[10]["displyText"] = "Them"
-    winner_pieces[11]["displyText"] = "To"
-    winner_pieces[12]["displyText"] = "See"
-    winner_pieces[13]["displyText"] = "Their"
-    winner_pieces[14]["displyText"] = "Stats"
+    winner_pieces[3]["displyText"] = "Change"
+    winner_pieces[4]["displyText"] = "Their"
+    winner_pieces[5]["displyText"] = "Text"
+    winner_pieces[6]["displyText"] = "!!!"
+    winner_pieces[7]["displyText"] = "This"
+    winner_pieces[8]["displyText"] = "Includ"
+    winner_pieces[9]["displyText"] = "es"
+    winner_pieces[10]["displyText"] = "Emoji!"
+    winner_pieces[11]["displyText"] = "🦐"
+
+    winner_pieces[12]["displyText"] = "Hover"
+    winner_pieces[13]["displyText"] = "Over"
+    winner_pieces[14]["displyText"] = "Piece"
+    winner_pieces[15]["displyText"] = "To"
+    winner_pieces[16]["displyText"] = "See"
+    winner_pieces[17]["displyText"] = "Their"
+    winner_pieces[18]["displyText"] = "Stats"
+    winner_pieces[19]["displyText"] = "!!!"
+    winner_pieces[20]["displyText"] = "Updat"
+    winner_pieces[21]["displyText"] = "es"
+    winner_pieces[22]["displyText"] = "On"
+    winner_pieces[23]["displyText"] = "Login"
 
 
 def response(code, body):
