@@ -394,6 +394,8 @@ const setColors = (players) => {
     let root = document.documentElement;
     root.style.setProperty("--player-a-piece-color-primary", players.A.account.piecesAColor);
     root.style.setProperty("--player-b-piece-color-primary", players.B.account.piecesBColor);
+    root.style.setProperty("--player-a-outline-color", Players.A.account.highlightColor);
+    root.style.setProperty("--player-b-outline-color", Players.B.account.highlightColor);
 }
 
 const renderPlayers = () => {
@@ -407,8 +409,6 @@ const renderPlayers = () => {
     playerB.querySelector(".friendCode").innerHTML = Players.B.account.id;
     playerB.querySelector(".playerName").innerHTML = Players.B.account.name;
     playerB.querySelector(".player-victories").innerHTML = Players.B.account.victories;
-    document.documentElement.setAttribute("player-a-outline-color", Players.A.account.highlightColor);
-    document.documentElement.setAttribute("player-b-outline-color", Players.B.account.highlightColor);
     playerA.addEventListener("click", () => {
         let areTheySure = confirm(`Leave this game and view ${Players.A.account.name}'s profile?`);
         if (areTheySure) {
@@ -442,15 +442,25 @@ const renderTimeSinceLastTurn = () => {
     let timeSinceLastTurnAString = formatTimeSinceLastTurn(timeSinceLastTurnA);
     let timeSinceLastTurnBString = formatTimeSinceLastTurn(timeSinceLastTurnB);
 
-    playerASinceLastTurn.innerHTML = timeSinceLastTurnAString;
-    playerBSinceLastTurn.innerHTML = timeSinceLastTurnBString;
+
+    if (lastTurnA.getSeconds() === 0) {
+        playerASinceLastTurn.innerHTML = "First Turn";
+    } else {
+        playerASinceLastTurn.innerHTML = timeSinceLastTurnAString;
+    }
+    if (lastTurnB.getSeconds() === 0) {
+        playerBSinceLastTurn.innerHTML = "First Turn";
+    } else {
+        playerBSinceLastTurn.innerHTML = timeSinceLastTurnBString;
+    }
 
     let hoursSinceLastTurn = getHoursSinceLastTurn(whoseTurn === "A" ? Players.A.lastTurnTakenAt : Players.B.lastTurnTakenAt);
-    if (hoursSinceLastTurn >= 24) {
-        rateLimitActive = false;
-    } else {
-        rateLimitActive = true;
-    }
+    // if (hoursSinceLastTurn >= 24) {
+    //     rateLimitActive = false;
+    // } else {
+    //     rateLimitActive = true;
+    // }
+    rateLimitActive = false;
 }
 
 const formatTimeSinceLastTurn = (time) => {
@@ -526,7 +536,7 @@ window.onload = async () => {
     renderBoard(Game);
 
     if (Game.gameOver) {
-        let winner = getWinner();
+        let winner = getWinner(Game);
         let winnerHighlightColor = Players[winner].account.highlightColor;
         let winnerName = Players[winner].account.name;
         let buttonBar = document.getElementById("button-bar");

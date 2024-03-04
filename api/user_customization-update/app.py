@@ -12,7 +12,9 @@ class DecimalEncoder(json.JSONEncoder):
 
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Users_SAM"
+)
 
 
 def lambda_handler(event, context):
@@ -22,6 +24,12 @@ def lambda_handler(event, context):
         return response(403, {"error": "Forbidden"})
 
     body = json.loads(event["body"])
+    pieces = None
+    highlight_color = None
+    background_color = None
+    pieces_a_color = None
+    pieces_b_color = None
+
     if "pieces" in body:
         pieces = body["pieces"]
     if "highlightColor" in body:
@@ -50,6 +58,7 @@ def lambda_handler(event, context):
         if pieces_b_color is not None:
             user["piecesBColor"] = pieces_b_color
         table.put_item(Item=user)
+        del user["password"]
         return response(200, user)
 
 

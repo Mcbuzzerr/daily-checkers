@@ -4,9 +4,11 @@ from os import getenv
 import json
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Games")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Games_SAM"
+)
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Users"
+    "DailyCheckers_Users_SAM"
 )
 sqs = boto3.client("sqs", region_name=region_name)
 
@@ -36,7 +38,7 @@ def lambda_handler(event, context):
             ),
         )
 
-        return response(200, game)
+        return response(200, {"message": "Game deleted"})
 
 
 def response(code, body):

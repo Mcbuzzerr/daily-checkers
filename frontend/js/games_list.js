@@ -1,10 +1,4 @@
 let loggedInUser = null;
-// Fetch Invites
-// Generate Invite List
-// Accept Invites
-// Decline Invites
-// Send Invites
-let gameListGlobal = [];
 
 const getGameList = async () => {
     let gameList = [];
@@ -19,6 +13,17 @@ const getGameList = async () => {
         return response.json();
     }).then((data) => {
         document.getElementById('loading-slate').style.display = "none";
+        if (data.hasOwnProperty("message")) {
+            if (data.message == "No games found") {
+                console.log("No games found")
+                document.getElementById('game-container').innerHTML = `
+                <div id="no-invites-message" class="slate">
+                    <h3>
+                        You have no games at this time.
+                    </h3>
+                </div>`;
+            }
+        }
         return data;
     });
 
@@ -153,7 +158,6 @@ const handleConcedeClicked = (gameId) => {
 }
 
 const handleNewGameClicked = () => {
-    alert("Looking for a new game... Game will appear in the list when an opponent is found.");
     fetch("https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/invite/random",
         {
             method: 'POST',
@@ -166,7 +170,7 @@ const handleNewGameClicked = () => {
         }).then((data) => {
             if (data.hasOwnProperty("message")) {
                 alert(data.message);
-            } else {
+            } else if (data.hasOwnProperty("gameID")) {
                 window.location.href = "play_game.html?game=" + data.gameID;
             }
         }).catch((error) => {

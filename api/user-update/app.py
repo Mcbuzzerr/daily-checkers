@@ -4,7 +4,9 @@ from os import getenv
 import json
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Users_SAM"
+)
 sqs = boto3.client("sqs", region_name=region_name)
 
 
@@ -17,6 +19,9 @@ def lambda_handler(event, context):
         return response(403, {"error": "Forbidden"})
 
     body = json.loads(event["body"])
+    name = None
+    email = None
+    newPassword = None
 
     if "confirmPassword" not in body:
         return response(400, {"error": "Confirm password is required"})
@@ -26,7 +31,7 @@ def lambda_handler(event, context):
     if "email" in body:
         email = body["email"]
     if "password" in body:
-        password = body["password"]
+        newPassword = body["newPassword"]
 
     user = table.get_item(Key={"id": id})["Item"]
 
@@ -40,8 +45,8 @@ def lambda_handler(event, context):
             user["name"] = name
         if email is not None:
             user["email"] = email
-        if password is not None:
-            user["password"] = password
+        if newPassword is not None:
+            user["password"] = newPassword
         table.put_item(Item=user)
 
         sqs.send_message(
@@ -53,6 +58,8 @@ def lambda_handler(event, context):
                 "Someone has successfully updated your account, hopefully it was you! Chances are it was because who would want to hack a checkers account?",
             ),
         )
+
+        del user["password"]
 
         return response(200, user)
 

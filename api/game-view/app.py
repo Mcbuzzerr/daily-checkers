@@ -7,9 +7,11 @@ from datetime import datetime
 from decimal import Decimal
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Games")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Games_SAM"
+)
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Users"
+    "DailyCheckers_Users_SAM"
 )
 
 
@@ -34,7 +36,8 @@ def lambda_handler(event, context):
         for player in game["Item"]["players"]:
             for user in users["Items"]:
                 if user["id"] == game["Item"]["players"][player]["id"]:
-                    del user["password"]
+                    if "password" in user:
+                        del user["password"]
                     game["Item"]["players"][player]["account"] = user
 
         return response(200, game["Item"])

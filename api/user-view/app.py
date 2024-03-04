@@ -5,7 +5,9 @@ from decimal import Decimal
 import json
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Users_SAM"
+)
 
 
 def lambda_handler(event, context):
@@ -16,11 +18,13 @@ def lambda_handler(event, context):
     id = path["id"]
 
     user = table.get_item(Key={"id": id})
+    user = user["Item"]
+    del user["password"]
     print(user)
     if "Item" not in user:
         return response(404, {"error": "User not found"})
     else:
-        return response(200, user["Item"])
+        return response(200, user)
 
 
 def response(code, body):

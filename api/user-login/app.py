@@ -15,7 +15,7 @@ class DecimalEncoder(json.JSONEncoder):
 
 
 dynamodb = boto3.resource("dynamodb", region_name=os.getenv("APP_REGION"))
-table = dynamodb.Table("DailyCheckers_Users")
+table = dynamodb.Table("DailyCheckers_Users_SAM")
 
 
 def lambda_handler(event, context):
@@ -36,7 +36,7 @@ def lambda_handler(event, context):
         return format_response(401, {"message": "Authentication failed"})
 
     token = generate_jwt(email)
-    user.pop("password")
+    del user["password"]
 
     return format_response(200, {"token": token, "user": user})
 

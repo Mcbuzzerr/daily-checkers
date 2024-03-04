@@ -7,9 +7,11 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Games")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Games_SAM"
+)
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Users"
+    "DailyCheckers_Users_SAM"
 )
 notification_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Notifications_SAM"
@@ -21,8 +23,6 @@ def lambda_handler(event, context):
     authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
     new_game_state = json.loads(event["body"])
     game_id = new_game_state["id"]
-    print(new_game_state)
-    print(game_id)
     game = table.get_item(Key={"id": game_id})
     user_a = user_table.get_item(Key={"id": game["Item"]["players"]["A"]["id"]})["Item"]
     user_b = user_table.get_item(Key={"id": game["Item"]["players"]["B"]["id"]})["Item"]
@@ -44,13 +44,13 @@ def lambda_handler(event, context):
         "A" if old_game_state["players"]["A"]["id"] == authenticated_user["id"] else "B"
     )
 
-    if old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"] != None:
-        last_turn_taken_at = datetime.fromisoformat(
-            old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"]
-        )
-        print((datetime.now() - last_turn_taken_at))
-        if (datetime.now() - last_turn_taken_at).days < 1:
-            return response(400, {"error": "You can only take one turn every 24 hours"})
+    # if old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"] != None:
+    #     last_turn_taken_at = datetime.fromisoformat(
+    #         old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"]
+    #     )
+    #     print((datetime.now() - last_turn_taken_at))
+    #     if (datetime.now() - last_turn_taken_at).days < 1:
+    #         return response(400, {"error": "You can only take one turn every 24 hours"})
 
     if old_game_state["turnCount"] % 2 == 0:
         if authenticated_user_team != "A":
@@ -118,12 +118,14 @@ def lambda_handler(event, context):
             print(old_piece["key"])
             if "A" in old_piece["key"]:
                 user_a["pieces"][old_piece["key"]]["lifetimeDeaths"] += 1
-                print(user_b["pieces"][old_piece["key"]])
                 piecesKilled += 1
+                print("Lifetime deaths added to ", old_piece["key"])
+                print(user_a["pieces"][old_piece["key"]])
             elif "B" in old_piece["key"]:
                 user_b["pieces"][old_piece["key"]]["lifetimeDeaths"] += 1
-                print(user_a["pieces"][old_piece["key"]])
                 piecesKilled += 1
+                print("Lifetime deaths added to ", old_piece["key"])
+                print(user_b["pieces"][old_piece["key"]])
 
     print(piecesKilled)
     if piecesKilled > 0:
@@ -131,16 +133,18 @@ def lambda_handler(event, context):
             for piece_curr in currently_alive_pieces:
                 if piece_prev["key"] == piece_curr["key"]:
                     if piece_prev["position"] != piece_curr["position"]:
-                        print("Piece moved")
-                        print(piece_prev["key"])
                         if "A" in piece_prev["key"]:
                             user_a["pieces"][piece_prev["key"]][
                                 "lifetimeKills"
                             ] += piecesKilled
+                            print("Lifetime kills added to ", piece_prev["key"])
+                            print(user_a["pieces"][piece_prev["key"]])
                         elif "B" in piece_prev["key"]:
                             user_b["pieces"][piece_prev["key"]][
                                 "lifetimeKills"
                             ] += piecesKilled
+                            print("Lifetime kills added to ", piece_prev["key"])
+                            print(user_b["pieces"][piece_prev["key"]])
 
     # Check for promotions
     if authenticated_user_team == "A":
@@ -221,6 +225,7 @@ def send_game_end_notification(winner, loser):
 
     if winner["victories"] == 0:
         winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! With this victory, you have unlocked the ability to customize your pieces and profile! Go to the settings page to check it out!"
+
     else:
         winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! You now have {winner['victories']} victories!"
 
@@ -243,6 +248,25 @@ def send_game_end_notification(winner, loser):
             f"Sorry, {loser['name']}. You just lost a game of checkers against {winner['name']}. Better luck next time!",
         ),
     )
+
+
+def add_text_to_winner_pieces(winner):
+    winner_pieces = winner["pieces"]
+    winner_pieces[0]["displyText"] = "Click"
+    winner_pieces[1]["displyText"] = "Piece"
+    winner_pieces[2]["displyText"] = "To"
+    winner_pieces[3]["displyText"] = "Customize"
+    winner_pieces[4]["displyText"] = "Your"
+    winner_pieces[5]["displyText"] = "Pieces"
+    winner_pieces[6]["displyText"] = "Names"
+    winner_pieces[7]["displyText"] = "And"
+    winner_pieces[8]["displyText"] = "Hover"
+    winner_pieces[9]["displyText"] = "Over"
+    winner_pieces[10]["displyText"] = "Them"
+    winner_pieces[11]["displyText"] = "To"
+    winner_pieces[12]["displyText"] = "See"
+    winner_pieces[13]["displyText"] = "Their"
+    winner_pieces[14]["displyText"] = "Stats"
 
 
 def response(code, body):

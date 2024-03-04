@@ -6,7 +6,9 @@ from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.conditions import Attr
 
 region_name = getenv("APP_REGION")
-table = boto3.resource("dynamodb", region_name=region_name).Table("DailyCheckers_Users")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Users_SAM"
+)
 sqs = boto3.client("sqs", region_name=region_name)
 
 
@@ -87,7 +89,7 @@ def lambda_handler(event, context):
         ),
     )
 
-    return response(200, user)
+    return response(200, {"message": "User created successfully"})
 
 
 def notification(recipient_email, recipient_name, subject, contents):

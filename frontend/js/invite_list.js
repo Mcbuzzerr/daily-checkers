@@ -126,9 +126,19 @@ const handleNewInviteClicked = async () => {
                 'Authorization': `Bearer ${getCookie('token')}`,
             },
         }).then((response) => {
+            if (response.status === 404) {
+                alert('User not found');
+                return;
+            }
+
+            if (response.status !== 200) {
+                alert('Error sending invite');
+                return;
+            }
+
             return response.json();
         }).then((data) => {
-            console.log(data);
+            if (!data) return;
             document.getElementById('friend-code').value = "";
             alert('Invite sent');
         }).catch((error) => {

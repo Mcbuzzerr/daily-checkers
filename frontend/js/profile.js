@@ -43,15 +43,29 @@ const handleSaveClicked = (event) => {
     let button = event.target;
     if (button.classList.contains('disabled')) {
         return;
-    } else {
-        button.classList.add('disabled');
-        button.innerText = 'Saving...';
     }
+
     let playerIdElement = document.getElementById('player-id');
     let playerNameField = document.getElementById('name-field');
     let playerEmailField = document.getElementById('email-field');
     let playerNewPassword = document.getElementById('new-password-field');
     let playerConfirmPassword = document.getElementById('confirm-password-field');
+
+    if (!playerConfirmPassword.value) {
+        alert('For your own security, the Confirm Password field cannot be empty.');
+        return;
+    }
+    if (!playerNameField.value) {
+        alert('The Name field cannot be empty.');
+        return;
+    }
+    if (!playerEmailField.value) {
+        alert('The Email field cannot be empty.');
+        return;
+    }
+
+    button.classList.add('disabled');
+    button.innerText = 'Saving...';
 
     const user = {
         id: playerIdElement.innerHTML,
@@ -71,17 +85,27 @@ const handleSaveClicked = (event) => {
         },
         body: JSON.stringify(user),
     })
-        .then(response => response.json())
+        .then(response => {
+            console.log(response);
+            if (response.status !== 200) {
+                button.classList.remove('disabled');
+                button.innerHTML = 'Save';
+                throw new Error('An error occurred. Please try again later.');
+            }
+
+            return response.json();
+        })
         .then(data => {
             renderProfile(data);
             setCookie('user', JSON.stringify(data), 2);
             handleCancelClicked();
             button.classList.remove('disabled');
             button.innerHTML = 'Save';
+            playerConfirmPassword.value = '';
         })
         .catch((error) => {
             console.error('Error:', error);
-            alert('An error occurred. Please try again later.')
+            alert('Account changes could not be saved. Please check your password and try again later.')
         });
 };
 
@@ -214,7 +238,16 @@ const handleSaveCustomizeClicked = (event) => {
             'Authorization': token,
         },
         body: JSON.stringify(body)
-    }).then(response => response.json()).then(data => {
+    }).then(response => {
+        console.log(response);
+        if (response.status !== 200) {
+            button.classList.remove('disabled');
+            button.innerHTML = 'Update Customization';
+            throw new Error('An error occurred. Please try again later.');
+        }
+
+        return response.json();
+    }).then(data => {
         setCookie('user', JSON.stringify(data), 2);
         renderProfile(data);
         button.classList.remove('disabled');
@@ -389,10 +422,55 @@ window.onload = () => {
     const user_id = urlParams.get('user');
     if (user_id == null) {
         User = getUser();
+        let id = User.id;
         let profileButton = document.getElementById('profile-button');
         profileButton.classList.add('disabled');
         let customizationSlate = document.getElementById('customization-slate');
         customizationSlate.classList.remove('hidden');
+        const url = `https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/user/view/${id}`;
+        fetch(url)
+            .then(
+                response => {
+                    if (response.status === 404) {
+                        return null;
+                    }
+                    return response.json()
+                })
+            .then(data => {
+                if (data === null) {
+                    return;
+                }
+                User = data;
+                renderProfile(User);
+                let profileTitle = document.getElementById('profile-title');
+                profileTitle.innerText = `${User.name}'s Profile`;
+                if (User.victories < 1) {
+                    let customizationStation = document.getElementById('customization-slate');
+                    customizationStation.classList.add('hidden');
+                } else {
+                    // Initialize the interactable JavaScript bits
+                    let pieces = document.getElementsByClassName('piece');
+                    let itter_count = 0;
+                    for (let piece of pieces) {
+                        piece.addEventListener('click', handleClickPiece);
+                        if (itter_count < 12) {
+                            piece.id = `${itter_count + 1}-A`;
+                        } else {
+                            piece.id = `${itter_count - 11}-B`;
+                        }
+                        itter_count++;
+                    }
+
+                    let customizationStation = document.getElementById('customization-station');
+                    customizationStation.classList.remove('hidden');
+                    let nonVictorMessage = document.getElementById('non-victor-message');
+                    nonVictorMessage.classList.add('hidden');
+                }
+            })
+            .catch((error) => {
+                console.log('Error:', error);
+                alert('An error occurred. Please try again later.');
+            });
     } else {
         let editButton = document.getElementById('edit-button');
         editButton.classList.add('hidden');

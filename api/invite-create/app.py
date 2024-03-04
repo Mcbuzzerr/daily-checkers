@@ -6,10 +6,10 @@ import pymysql.cursors
 
 region_name = getenv("APP_REGION")
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Users"
+    "DailyCheckers_Users_SAM"
 )
 game_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Games"
+    "DailyCheckers_Games_SAM"
 )
 sqs = boto3.client("sqs", region_name=region_name)
 
@@ -23,6 +23,9 @@ def lambda_handler(event, context):
     invite_from_background = authenticated_user["backgroundColor"]
     invite_from_highlight = authenticated_user["highlightColor"]
     URL = "localhost:5500/frontend"
+
+    if invite_to == invite_from:
+        return response(400, {"error": "You cannot invite yourself to a game"})
 
     with pymysql.connect(
         host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
@@ -42,6 +45,11 @@ def lambda_handler(event, context):
                     invite_to = result["from"]
 
                     opponent = user_table.get_item(Key={"id": invite_to})["Item"]
+
+                    if opponent["id"] == invite_from:
+                        return response(
+                            400, {"message": "You cannot invite yourself to a game"}
+                        )
 
                     game = {
                         "id": str(uuid4()),
@@ -149,7 +157,7 @@ def lambda_handler(event, context):
             # Validate invite_to id and retrieve name if valid
             recipient = user_table.get_item(Key={"id": invite_to})
             if "Item" not in recipient:
-                return response(404, {"error": "Recipient not found"})
+                return response(404, {"message": "Recipient not found"})
             else:
                 invite_to_name = recipient["Item"]["name"]
 

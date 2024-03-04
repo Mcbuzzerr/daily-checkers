@@ -8,7 +8,7 @@ import json
 
 region_name = getenv("APP_REGION")
 game_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Games"
+    "DailyCheckers_Games_SAM"
 )
 sqs = boto3.client("sqs", region_name=region_name)
 

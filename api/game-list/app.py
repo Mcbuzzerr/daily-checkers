@@ -8,10 +8,10 @@ from datetime import datetime
 
 region_name = getenv("APP_REGION")
 game_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Games"
+    "DailyCheckers_Games_SAM"
 )
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Users"
+    "DailyCheckers_Users_SAM"
 )
 
 
@@ -23,7 +23,7 @@ def lambda_handler(event, context):
     )
 
     if games["Count"] == 0:
-        return response(200, {"body": "No games found"})
+        return response(200, {"message": "No games found"})
     else:
         user_ids = []
         for game in games["Items"]:
