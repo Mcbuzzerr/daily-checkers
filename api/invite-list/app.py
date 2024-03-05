@@ -10,18 +10,15 @@ table = boto3.resource("dynamodb", region_name=region_name).Table(
 
 
 def lambda_handler(event, context):
+    authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
+    id = authenticated_user["id"]
 
     if "pathParameters" in event:
 
-        path = event["pathParameters"]
-        if path is None or "id" not in path:
-            return response(404, {"error": "No ID specified"})
-
-        id = event["pathParameters"]["id"]
         invites = table.scan(FilterExpression=Attr("to").eq(id))
 
         if invites["Count"] == 0:
-            return response(200, {"body": "No invites found"})
+            return response(200, {"message": "No invites found"})
         else:
             return response(200, invites["Items"])
 

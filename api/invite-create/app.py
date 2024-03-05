@@ -1,6 +1,8 @@
 import boto3
 from os import getenv
 from uuid import uuid4
+from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Attr
 import json
 import random
 
@@ -32,8 +34,7 @@ def lambda_handler(event, context):
     if invite_to == "random":
         # Look for another invite with no recipient
         random_invites = invite_table.scan(
-            FilterExpression="to = :to",
-            ExpressionAttributeValues={":to": None},
+            FilterExpression=Attr("to").eq(None) & Attr("from").ne(invite_from)
         )
 
         if random_invites["Count"] > 0:
@@ -147,7 +148,7 @@ def lambda_handler(event, context):
     # Validate invite_to id and retrieve name if valid
     recipient = user_table.get_item(Key={"id": invite_to})
     if "Item" not in recipient:
-        return response(404, {"message": "Recipient not found"})
+        return response(404, {"error": "Recipient not found"})
     else:
         invite_to_name = recipient["Item"]["name"]
 

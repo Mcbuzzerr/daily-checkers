@@ -29,12 +29,12 @@ def lambda_handler(event, context):
     print(response)
 
     if response["Count"] == 0:
-        return format_response(401, {"message": "Authentication failed"})
+        return format_response(401, {"error": "Authentication failed"})
 
     user = response["Items"][0]
 
     if user["password"] != password:
-        return format_response(401, {"message": "Authentication failed"})
+        return format_response(401, {"error": "Authentication failed"})
 
     token = generate_jwt(email)
     del user["password"]
