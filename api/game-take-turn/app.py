@@ -152,17 +152,19 @@ def lambda_handler(event, context):
             if cell != None:
                 for key in cell:
                     if "A" in key:
-                        print("I deserve a promotion! - ", key)
-                        new_board[7][new_board[7].index(cell)] = {key: True}
-                        user_a["pieces"][key]["lifetimePromotions"] += 1
+                        if new_board[7][new_board[7].index(cell)] != {key: True}:
+                            print("I deserve a promotion! - ", key)
+                            new_board[7][new_board[7].index(cell)] = {key: True}
+                            user_a["pieces"][key]["lifetimePromotions"] += 1
     elif authenticated_user_team == "B":
         for cell in new_board[0]:
             if cell != None:
                 for key in cell:
                     if "B" in key:
-                        print("I deserve a promotion! - ", key)
-                        new_board[0][new_board[0].index(cell)] = {key: True}
-                        user_b["pieces"][key]["lifetimePromotions"] += 1
+                        if new_board[0][new_board[0].index(cell)] != {key: True}:
+                            print("I deserve a promotion! - ", key)
+                            new_board[0][new_board[0].index(cell)] = {key: True}
+                            user_b["pieces"][key]["lifetimePromotions"] += 1
 
     # check if the game is over
     if len(currently_alive_team_a_pieces) == 0:
