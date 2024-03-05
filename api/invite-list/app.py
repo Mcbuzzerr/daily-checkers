@@ -1,30 +1,31 @@
-# AI-generated code snippet
-
-import pymysql.cursors
-import json
+import boto3
+from boto3.dynamodb.conditions import Attr
 from os import getenv
+import json
+
+region_name = getenv("APP_REGION")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Invites_SAM"
+)
 
 
 def lambda_handler(event, context):
-    # Establish a new database connection for each invocation
-    with pymysql.connect(
-        host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
-        user="trumpetbeast",
-        password="2JDfC1YtMiKLa17cdscj",
-        database="dailycheckers_invites",
-        cursorclass=pymysql.cursors.DictCursor,
-    ) as connection:
-        authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
-        with connection.cursor() as cursor:
-            cursor.execute(
-                f"SELECT * FROM invites WHERE `to` = '{authenticated_user['id']}'"
-            )
-            invites = cursor.fetchall()
 
-            if not invites:
-                return response(200, {"invites": []})
+    if "pathParameters" in event:
 
-            return response(200, {"invites": invites})
+        path = event["pathParameters"]
+        if path is None or "id" not in path:
+            return response(404, {"error": "No ID specified"})
+
+        id = event["pathParameters"]["id"]
+        invites = table.scan(FilterExpression=Attr("to").eq(id))
+
+        if invites["Count"] == 0:
+            return response(200, {"body": "No invites found"})
+        else:
+            return response(200, invites["Items"])
+
+    return response(200, table.scan()["Items"])
 
 
 def response(code, body):

@@ -2,7 +2,7 @@ import boto3
 from os import getenv
 from uuid import uuid4
 import json
-import pymysql.cursors
+import random
 
 region_name = getenv("APP_REGION")
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
@@ -10,6 +10,9 @@ user_table = boto3.resource("dynamodb", region_name=region_name).Table(
 )
 game_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Games_SAM"
+)
+invite_table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Invites_SAM"
 )
 
 
@@ -26,134 +29,140 @@ def lambda_handler(event, context):
     if invite_to == invite_from:
         return response(400, {"error": "You cannot invite yourself to a game"})
 
-    with pymysql.connect(
-        host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
-        user="trumpetbeast",
-        password="2JDfC1YtMiKLa17cdscj",
-        database="dailycheckers_invites",
-        cursorclass=pymysql.cursors.DictCursor,
-    ) as table:
-        with table.cursor() as cursor:
-            if invite_to == "random":
-                # Look for another invite with no recipient
-                cursor.execute(
-                    "SELECT * FROM invites WHERE `to` IS NULL ORDER BY RAND() LIMIT 1"
-                )
-                result = cursor.fetchone()
-                if result:
-                    invite_to = result["from"]
+    if invite_to == "random":
+        # Look for another invite with no recipient
+        random_invites = invite_table.scan(
+            FilterExpression="to = :to",
+            ExpressionAttributeValues={":to": None},
+        )
 
-                    opponent = user_table.get_item(Key={"id": invite_to})["Item"]
+        if random_invites["Count"] > 0:
+            random_index = random.randint(0, random_invites["Count"] - 1)
+            invite = random_invites["Items"][random_index]
 
-                    if opponent["id"] == invite_from:
-                        return response(
-                            400, {"message": "You cannot invite yourself to a game"}
-                        )
+            if invite["from"] == invite_from:
+                return response(400, {"error": "You cannot invite yourself to a game"})
 
-                    game = {
-                        "id": str(uuid4()),
-                        "players": {
-                            "A": {
-                                "id": authenticated_user["id"],
-                                "lastTurnTakenAt": None,
-                            },
-                            "B": {"id": opponent["id"], "lastTurnTakenAt": None},
-                        },
-                        "turnCount": 0,
-                        "gameOver": False,
-                        "board": [
-                            [
-                                None,
-                                {"1-A": False},
-                                None,
-                                {"2-A": False},
-                                None,
-                                {"3-A": False},
-                                None,
-                                {"4-A": False},
-                            ],
-                            [
-                                {"5-A": False},
-                                None,
-                                {"6-A": False},
-                                None,
-                                {"7-A": False},
-                                None,
-                                {"8-A": False},
-                                None,
-                            ],
-                            [
-                                None,
-                                {"9-A": False},
-                                None,
-                                {"10-A": False},
-                                None,
-                                {"11-A": False},
-                                None,
-                                {"12-A": False},
-                            ],
-                            [None, None, None, None, None, None, None, None],
-                            [None, None, None, None, None, None, None, None],
-                            [
-                                {"1-B": False},
-                                None,
-                                {"2-B": False},
-                                None,
-                                {"3-B": False},
-                                None,
-                                {"4-B": False},
-                                None,
-                            ],
-                            [
-                                None,
-                                {"5-B": False},
-                                None,
-                                {"6-B": False},
-                                None,
-                                {"7-B": False},
-                                None,
-                                {"8-B": False},
-                            ],
-                            [
-                                {"9-B": False},
-                                None,
-                                {"10-B": False},
-                                None,
-                                {"11-B": False},
-                                None,
-                                {"12-B": False},
-                                None,
-                            ],
-                        ],
-                    }
-                    game_table.put_item(Item=game)
+            game = {
+                "id": str(uuid4()),
+                "players": {
+                    "A": {
+                        "id": authenticated_user["id"],
+                        "lastTurnTakenAt": None,
+                    },
+                    "B": {"id": opponent["id"], "lastTurnTakenAt": None},
+                },
+                "turnCount": 0,
+                "gameOver": False,
+                "board": [
+                    [
+                        None,
+                        {"1-A": False},
+                        None,
+                        {"2-A": False},
+                        None,
+                        {"3-A": False},
+                        None,
+                        {"4-A": False},
+                    ],
+                    [
+                        {"5-A": False},
+                        None,
+                        {"6-A": False},
+                        None,
+                        {"7-A": False},
+                        None,
+                        {"8-A": False},
+                        None,
+                    ],
+                    [
+                        None,
+                        {"9-A": False},
+                        None,
+                        {"10-A": False},
+                        None,
+                        {"11-A": False},
+                        None,
+                        {"12-A": False},
+                    ],
+                    [None, None, None, None, None, None, None, None],
+                    [None, None, None, None, None, None, None, None],
+                    [
+                        {"1-B": False},
+                        None,
+                        {"2-B": False},
+                        None,
+                        {"3-B": False},
+                        None,
+                        {"4-B": False},
+                        None,
+                    ],
+                    [
+                        None,
+                        {"5-B": False},
+                        None,
+                        {"6-B": False},
+                        None,
+                        {"7-B": False},
+                        None,
+                        {"8-B": False},
+                    ],
+                    [
+                        {"9-B": False},
+                        None,
+                        {"10-B": False},
+                        None,
+                        {"11-B": False},
+                        None,
+                        {"12-B": False},
+                        None,
+                    ],
+                ],
+            }
+            game_table.put_item(Item=game)
 
-                    cursor.execute(f"DELETE FROM invites WHERE `id` = '{result['id']}'")
-                    table.commit()
-                    return response(200, {"gameID": game["id"]})
+            # Remove the invite from the table
+            invite_table.delete_item(Key={"id": invite["id"]})
 
-                else:
-                    # If not found, create a new invite
-                    cursor.execute(
-                        f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}')"
-                    )
-                    table.commit()
-                    return response(
-                        200,
-                        {"message": "Game will be created when an opponent is found"},
-                    )
+            return response(200, {"gameID": game["id"]})
 
-            # Validate invite_to id and retrieve name if valid
-            recipient = user_table.get_item(Key={"id": invite_to})
-            if "Item" not in recipient:
-                return response(404, {"message": "Recipient not found"})
-            else:
-                invite_to_name = recipient["Item"]["name"]
+        else:
+            # If not found, create a new invite
+            invite_table.put_item(
+                Item={
+                    "id": invite_id,
+                    "from": invite_from,
+                    "from-name": invite_from_name,
+                    "from-background-color": invite_from_background,
+                    "from-highlight-color": invite_from_highlight,
+                    "to": None,
+                    "to-name": "Random",
+                }
+            )
+            return response(
+                200,
+                {"message": "Game will be created when an opponent is found"},
+            )
 
-                cursor.execute(
-                    f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`, `to`, `to-name`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}', '{invite_to}', '{invite_to_name}')"
-                )
-                table.commit()
+    # Validate invite_to id and retrieve name if valid
+    recipient = user_table.get_item(Key={"id": invite_to})
+    if "Item" not in recipient:
+        return response(404, {"message": "Recipient not found"})
+    else:
+        invite_to_name = recipient["Item"]["name"]
+
+        # Create the invite
+        invite_table.put_item(
+            Item={
+                "id": invite_id,
+                "from": invite_from,
+                "from-name": invite_from_name,
+                "from-background-color": invite_from_background,
+                "from-highlight-color": invite_from_highlight,
+                "to": invite_to,
+                "to-name": invite_to_name,
+            }
+        )
 
         return response(200, {"inviteID": invite_id})
 

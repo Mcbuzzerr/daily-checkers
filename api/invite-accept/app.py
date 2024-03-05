@@ -7,7 +7,7 @@ import json
 
 region_name = getenv("APP_REGION")
 invite_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Invites"
+    "DailyCheckers_Invites_SAM"
 )
 game_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Games_SAM"
