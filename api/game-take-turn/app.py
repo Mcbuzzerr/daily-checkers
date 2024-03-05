@@ -44,13 +44,13 @@ def lambda_handler(event, context):
         "A" if old_game_state["players"]["A"]["id"] == authenticated_user["id"] else "B"
     )
 
-    # if old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"] != None:
-    #     last_turn_taken_at = datetime.fromisoformat(
-    #         old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"]
-    #     )
-    #     print((datetime.now() - last_turn_taken_at))
-    #     if (datetime.now() - last_turn_taken_at).days < 1:
-    #         return response(400, {"error": "You can only take one turn every 24 hours"})
+    if old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"] != None:
+        last_turn_taken_at = datetime.fromisoformat(
+            old_game_state["players"][authenticated_user_team]["lastTurnTakenAt"]
+        )
+        print((datetime.now() - last_turn_taken_at))
+        if (datetime.now() - last_turn_taken_at).days < 1:
+            return response(400, {"error": "You can only take one turn every 24 hours"})
 
     if old_game_state["turnCount"] % 2 == 0:
         if authenticated_user_team != "A":

@@ -456,12 +456,12 @@ const renderTimeSinceLastTurn = () => {
     }
 
     let hoursSinceLastTurn = getHoursSinceLastTurn(whoseTurn === "A" ? Players.A.lastTurnTakenAt : Players.B.lastTurnTakenAt);
-    // if (hoursSinceLastTurn >= 24) {
-    //     rateLimitActive = false;
-    // } else {
-    //     rateLimitActive = true;
-    // }
-    rateLimitActive = false;
+    if (hoursSinceLastTurn >= 24) {
+        rateLimitActive = false;
+    } else {
+        rateLimitActive = true;
+    }
+    // rateLimitActive = false;
 }
 
 const formatTimeSinceLastTurn = (time) => {
