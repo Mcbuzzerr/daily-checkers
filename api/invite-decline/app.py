@@ -2,39 +2,33 @@ import boto3
 from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.conditions import Attr
 from os import getenv
-import pymysql.cursors
 import json
 
 region_name = getenv("APP_REGION")
+table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Invites"
+)
 
 
 def lambda_handler(event, context):
     authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
     id = event["pathParameters"]["id"]
-    invite_decliner = authenticated_user["id"]
+    invite_decliner = event["invite_decliner"]
 
-    with pymysql.connect(
-        host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
-        user="trumpetbeast",
-        password="2JDfC1YtMiKLa17cdscj",
-        database="dailycheckers_invites",
-        cursorclass=pymysql.cursors.DictCursor,
-    ) as table:
-        with table.cursor() as cursor:
-            cursor = table.cursor()
-            cursor.execute(f"SELECT * FROM invites WHERE id = '{id}'")
-            invite = cursor.fetchone()
+    response = table.scan(
+        KeyConditionExpression=Key("id").eq(id),
+        FilterExpression=Attr("to").eq(invite_decliner),
+    )
 
-            if not invite:
-                return response(404, {"error": "Invite not found"})
-            else:
-                if invite["to"] != invite_decliner:
-                    return response(403, {"error": "Unauthorized"})
+    if response["Count"] == 0:
+        return response(404, {"error": "Invite not found"})
+    else:
+        invite = response["Items"][0]
+        if invite["to"] != invite_decliner:
+            return response(403, {"error": "Unauthorized"})
 
-                cursor.execute(f"DELETE FROM invites WHERE id = '{id}'")
-                table.commit()
-
-    return response(200, {"message": "Invite declined"})
+        table.delete_item(Key={"id": id})
+        return response(200, {"message": "Invite declined"})
 
 
 def response(code, body):
