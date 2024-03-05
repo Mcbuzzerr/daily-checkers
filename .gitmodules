@@ -1,0 +1,3 @@
+[submodule "daily-checkers-frontend"]
+	path = daily-checkers-frontend
+	url = https://github.com/Mcbuzzerr/daily-checkers-frontend.git
