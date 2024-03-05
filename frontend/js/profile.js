@@ -19,6 +19,11 @@ const handleClickPiece = (event) => {
 
     const eventListenerEvent = (event) => {
         piece.innerHTML = label.value;
+        if (pieceText != label.value) {
+            document.getElementById('submit-button').style.animation = 'pulse 3s infinite';
+            User.pieces[pieceId].displayText = label.value;
+            setUser(User);
+        }
     }
 
     label.addEventListener('blur', eventListenerEvent);
