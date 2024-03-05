@@ -7,12 +7,9 @@ import mysql.connector
 import json
 
 region_name = getenv("APP_REGION")
-invite_table = mysql.connector.connect(
-    host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
-    user="trumpetbeast",
-    password="2JDfC1YtMiKLa17cdscj",
-    database="dailycheckers_invites",
-)
+invite_table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Invites"
+    )
 game_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Games"
 )
@@ -23,22 +20,12 @@ def lambda_handler(event, context):
     id = event["pathParameters"]["id"]
     invite_acceptor = event["invite_acceptor"]
 
-    cursor = invite_table.cursor()
-    cursor.execute(f"SELECT * FROM invites WHERE id = '{id}'")
-    invites = cursor.fetchone()
+    invites = invite_table.get_item(Key={"id": id})
 
-    if not invites:
+    if "Item" not in invites:
         return response(404, {"error": "Invite not found"})
     else:
-        invite = {
-            "id": invites[0],
-            "from": invites[1],
-            "from-name": invites[2],
-            "from-background-color": invites[3],
-            "from-highlight-color": invites[4],
-            "to": invites[5],
-            "to-name": invites[6],
-        }
+        invite = invites["Item"]
         if invite["to"] != invite_acceptor:
             return response(403, {"error": "Unauthorized"})
 
@@ -127,9 +114,7 @@ def lambda_handler(event, context):
             ),
         )
 
-        cursor.execute(f"DELETE FROM invites WHERE id = '{invite['id']}'")
-        invite_table.commit()
-        cursor.close()
+        invite_table.delete_item(Key={"id": id})
         return response(200, {"gameID": game["id"]})
 
 

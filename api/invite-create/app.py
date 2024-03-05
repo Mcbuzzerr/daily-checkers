@@ -8,12 +8,10 @@ region_name = getenv("APP_REGION")
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Users"
 )
-table = mysql.connector.connect(
-    host="dailycheckers-mysql.cpeg0mmogxkq.us-east-1.rds.amazonaws.com",
-    user="trumpetbeast",
-    password="2JDfC1YtMiKLa17cdscj",
-    database="dailycheckers_invites",
+invite_table = boto3.resource("dynamodb", region_name=region_name).Table(
+    "DailyCheckers_Invites"
 )
+
 sqs = boto3.client("sqs", region_name=region_name)
 
 
@@ -25,7 +23,7 @@ def lambda_handler(event, context):
     invite_from_background = event["from-background-color"]
     invite_from_highlight = event["from-highlight-color"]
     invite_to = event["to"]
-    invite_to_name = None
+    invite_to_name = None   
 
     # Validate invite_to id and retrieve name if valid
     recipient = user_table.get_item(Key={"id": invite_to})
@@ -35,12 +33,17 @@ def lambda_handler(event, context):
         invite_to_name = recipient["Item"]["name"]
 
     # Insert invite into database
-    cursor = table.cursor()
-    cursor.execute(
-        f"INSERT INTO invites (`id`, `from`, `from-name`, `from-background-color`, `from-highlight-color`, `to`, `to-name`) VALUES ('{invite_id}', '{invite_from}', '{invite_from_name}', '{invite_from_background}', '{invite_from_highlight}', '{invite_to}', '{invite_to_name}')"
-    )
-    table.commit()
-    cursor.close()
+    invite = {
+        "id": invite_id,
+        "from": invite_from,
+        "from-name": invite_from_name,
+        "from-background-color": invite_from_background,
+        "from-highlight-color": invite_from_highlight,
+        "to": invite_to,
+        "to-name": invite_to_name,
+    }
+        
+    invite_table.put_item(Item=invite)
 
     URL = "localhost:5500"
 
