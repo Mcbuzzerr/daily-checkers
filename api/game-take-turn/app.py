@@ -225,7 +225,7 @@ def send_game_end_notification(winner, loser):
 
     if winner["victories"] == 0:
         winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! With this victory, you have unlocked the ability to customize your pieces and profile! Go to the settings page to check it out!"
-
+        add_text_to_winner_pieces(winner)
     else:
         winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! You now have {winner['victories']} victories!"
 
