@@ -21,7 +21,7 @@ table = dynamodb.Table("DailyCheckers_Users_SAM")
 def lambda_handler(event, context):
     body = json.loads(event["body"])
     email = body["email"]
-    password = hash(body["password"])
+    password = body["password"]
 
     response = table.scan(FilterExpression=Attr("email").eq(email))
 

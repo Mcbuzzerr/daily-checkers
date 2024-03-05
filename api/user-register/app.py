@@ -18,7 +18,7 @@ def lambda_handler(event, context):
     body = json.loads(event["body"])
     user_name = body["name"]
     user_email = body["email"]
-    user_password = hash(body["password"])
+    user_password = body["password"]
     user_victories = 0
 
     user_with_email = table.scan(FilterExpression=Attr("email").eq(user_email))
