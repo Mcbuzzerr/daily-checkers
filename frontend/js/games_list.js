@@ -157,7 +157,8 @@ const handleConcedeClicked = (gameId) => {
     }
 }
 
-const handleNewGameClicked = () => {
+const handleNewGameClicked = (event) => {
+    event.target.classList.add('disabled');
     fetch("https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/invite/random",
         {
             method: 'POST',
@@ -173,9 +174,11 @@ const handleNewGameClicked = () => {
             } else if (data.hasOwnProperty("gameID")) {
                 window.location.href = "play_game.html?game=" + data.gameID;
             }
+            event.target.classList.remove('disabled');
         }).catch((error) => {
             console.error('Error:', error);
             alert('An error occurred. Please try again later.')
+            event.target.classList.remove('disabled');
         });
 };
 

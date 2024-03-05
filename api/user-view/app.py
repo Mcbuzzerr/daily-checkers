@@ -18,12 +18,11 @@ def lambda_handler(event, context):
     id = path["id"]
 
     user = table.get_item(Key={"id": id})
-    user = user["Item"]
-    del user["password"]
-    print(user)
     if "Item" not in user:
         return response(404, {"error": "User not found"})
     else:
+        user = user["Item"]
+        del user["password"]
         return response(200, user)
 
 

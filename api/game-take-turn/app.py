@@ -167,18 +167,18 @@ def lambda_handler(event, context):
     # check if the game is over
     if len(currently_alive_team_a_pieces) == 0:
         # team B wins
-        user_b["victories"] += 1
         new_game_state["gameOver"] = True
-        send_game_end_notification(user_b, user_a)
+        user_b = send_game_end_notification(user_b, user_a)
+        user_b["victories"] += 1
         table.put_item(Item=new_game_state)
         user_table.put_item(Item=user_a)
         user_table.put_item(Item=user_b)
         return response(200, {"message": "Game over. Team B wins."})
     elif len(currently_alive_team_b_pieces) == 0:
         # team A wins
-        user_a["victories"] += 1
         new_game_state["gameOver"] = True
-        send_game_end_notification(user_a, user_b)
+        user_a = send_game_end_notification(user_a, user_b)
+        user_a["victories"] += 1
         table.put_item(Item=new_game_state)
         user_table.put_item(Item=user_a)
         user_table.put_item(Item=user_b)
@@ -225,7 +225,7 @@ def send_game_end_notification(winner, loser):
 
     if winner["victories"] == 0:
         winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! With this victory, you have unlocked the ability to customize your pieces and profile! Go to the settings page to check it out!"
-        add_text_to_winner_pieces(winner)
+        winner["pieces"] = add_text_to_winner_pieces(winner)
     else:
         winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! You now have {winner['victories']} victories!"
 
@@ -249,24 +249,40 @@ def send_game_end_notification(winner, loser):
         ),
     )
 
+    return winner
+
 
 def add_text_to_winner_pieces(winner):
+    print(winner)
     winner_pieces = winner["pieces"]
-    winner_pieces[0]["displyText"] = "Click"
-    winner_pieces[1]["displyText"] = "Piece"
-    winner_pieces[2]["displyText"] = "To"
-    winner_pieces[3]["displyText"] = "Customize"
-    winner_pieces[4]["displyText"] = "Your"
-    winner_pieces[5]["displyText"] = "Pieces"
-    winner_pieces[6]["displyText"] = "Names"
-    winner_pieces[7]["displyText"] = "And"
-    winner_pieces[8]["displyText"] = "Hover"
-    winner_pieces[9]["displyText"] = "Over"
-    winner_pieces[10]["displyText"] = "Them"
-    winner_pieces[11]["displyText"] = "To"
-    winner_pieces[12]["displyText"] = "See"
-    winner_pieces[13]["displyText"] = "Their"
-    winner_pieces[14]["displyText"] = "Stats"
+    print(winner_pieces)
+
+    # Get the first item of a dictionary
+
+    winner_pieces["1-A"]["displayText"] = "Click"
+    winner_pieces["2-A"]["displayText"] = "Piece"
+    winner_pieces["3-A"]["displayText"] = "To"
+    winner_pieces["4-A"]["displayText"] = "Customize"
+    winner_pieces["5-A"]["displayText"] = "Your"
+    winner_pieces["6-A"]["displayText"] = "Pieces"
+    winner_pieces["7-A"]["displayText"] = "Names"
+    winner_pieces["9-A"]["displayText"] = "Emoji"
+    winner_pieces["10-A"]["displayText"] = "Work"
+    winner_pieces["11-A"]["displayText"] = "Too!"
+    winner_pieces["12-A"]["displayText"] = "🎉"
+    winner_pieces["1-B"]["displayText"] = "Hover"
+    winner_pieces["2-B"]["displayText"] = "Over"
+    winner_pieces["3-B"]["displayText"] = "Them"
+    winner_pieces["4-B"]["displayText"] = "To"
+    winner_pieces["5-B"]["displayText"] = "See"
+    winner_pieces["6-B"]["displayText"] = "Their"
+    winner_pieces["7-B"]["displayText"] = "Stats"
+    winner_pieces["9-B"]["displayText"] = "🐢"
+    winner_pieces["10-B"]["displayText"] = "🐱"
+    winner_pieces["11-B"]["displayText"] = "👑"
+    winner_pieces["12-B"]["displayText"] = "💀"
+
+    return winner_pieces
 
 
 def response(code, body):

@@ -428,7 +428,12 @@ window.onload = () => {
         let customizationSlate = document.getElementById('customization-slate');
         customizationSlate.classList.remove('hidden');
         const url = `https://hjpe29d12e.execute-api.us-east-1.amazonaws.com/1/user/view/${id}`;
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': getCookie('token'),
+            }
+        })
             .then(
                 response => {
                     if (response.status === 404) {
@@ -442,12 +447,10 @@ window.onload = () => {
                 }
                 User = data;
                 renderProfile(User);
+                setUser(User);
                 let profileTitle = document.getElementById('profile-title');
                 profileTitle.innerText = `${User.name}'s Profile`;
-                if (User.victories < 1) {
-                    let customizationStation = document.getElementById('customization-slate');
-                    customizationStation.classList.add('hidden');
-                } else {
+                if (User.victories > 1) {
                     // Initialize the interactable JavaScript bits
                     let pieces = document.getElementsByClassName('piece');
                     let itter_count = 0;
