@@ -1,6 +1,7 @@
 import boto3
 from os import getenv
 import json
+import hashlib
 from uuid import uuid4
 from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.conditions import Attr
@@ -18,7 +19,7 @@ def lambda_handler(event, context):
     body = json.loads(event["body"])
     user_name = body["name"]
     user_email = body["email"]
-    user_password = body["password"]
+    user_password = hash256(str(body["password"]))
     user_victories = 0
 
     user_with_email = table.scan(FilterExpression=Attr("email").eq(user_email))
@@ -90,6 +91,10 @@ def lambda_handler(event, context):
     )
 
     return response(200, {"message": "User created successfully"})
+
+
+def hash256(obj):
+    return hashlib.sha256(obj.encode()).hexdigest()
 
 
 def notification(recipient_email, recipient_name, subject, contents):

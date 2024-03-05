@@ -3,6 +3,7 @@ from boto3.dynamodb.conditions import Attr
 import os
 import json
 import jwt
+import hashlib
 from datetime import datetime, timedelta
 from decimal import Decimal
 
@@ -21,7 +22,7 @@ table = dynamodb.Table("DailyCheckers_Users_SAM")
 def lambda_handler(event, context):
     body = json.loads(event["body"])
     email = body["email"]
-    password = body["password"]
+    password = hash256(str(body["password"]))
 
     response = table.scan(FilterExpression=Attr("email").eq(email))
 
@@ -39,6 +40,10 @@ def lambda_handler(event, context):
     del user["password"]
 
     return format_response(200, {"token": token, "user": user})
+
+
+def hash256(obj):
+    return hashlib.sha256(obj.encode()).hexdigest()
 
 
 def generate_jwt(email):
