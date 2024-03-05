@@ -3,7 +3,6 @@ from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.conditions import Attr
 from os import getenv
 from uuid import uuid4
-import pymysql.cursors
 import json
 
 region_name = getenv("APP_REGION")
@@ -13,7 +12,6 @@ invite_table = boto3.resource("dynamodb", region_name=region_name).Table(
 game_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Games_SAM"
 )
-sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
@@ -105,17 +103,6 @@ def lambda_handler(event, context):
         }
 
         game_table.put_item(Item=game)
-        URL = "localhost:5500/frontend"
-        sqs.send_message(
-            QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
-            MessageBody=notification(
-                invite["from"],
-                "Daily Checkers User",
-                "Your invite has been accepted",
-                f"Your invite to play Checkers has been accepted. Click here to view the game: https://{URL}/play_game/{game['id']}",
-            ),
-        )
-
         invite_table.delete_item(Key={"id": id})
         return response(200, {"gameID": game["id"]})
 
@@ -132,14 +119,3 @@ def response(code, body):
         "body": json.dumps(body),
         "isBase64Encoded": False,
     }
-
-
-def notification(recipient_email, recipient_name, subject, contents):
-    return json.dumps(
-        {
-            "recipient_email": recipient_email,
-            "recipient_name": recipient_name,
-            "subject": subject,
-            "email_text": contents,
-        }
-    )

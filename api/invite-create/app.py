@@ -11,7 +11,6 @@ user_table = boto3.resource("dynamodb", region_name=region_name).Table(
 game_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Games_SAM"
 )
-sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
@@ -131,16 +130,6 @@ def lambda_handler(event, context):
 
                     cursor.execute(f"DELETE FROM invites WHERE `id` = '{result['id']}'")
                     table.commit()
-                    sqs.send_message(
-                        QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
-                        MessageBody=notification(
-                            opponent["email"],
-                            opponent["name"],
-                            "Your random invite has been accepted!",
-                            f"Your random invite has been accepted by {invite_from_name}. Click here to view your games: https://{URL}/games",
-                        ),
-                    )
-
                     return response(200, {"gameID": game["id"]})
 
                 else:
@@ -166,16 +155,6 @@ def lambda_handler(event, context):
                 )
                 table.commit()
 
-            sqs.send_message(
-                QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
-                MessageBody=notification(
-                    invite_to,
-                    "Daily Checkers User",
-                    "You've been invited to play a match of Checkers",
-                    f"You've been invited (Dare I say Challenged?) to play Checkers by {invite_from_name}. Click here to view your pending invites: https://{URL}/invites",
-                ),
-            )
-
         return response(200, {"inviteID": invite_id})
 
 
@@ -191,14 +170,3 @@ def response(code, body):
         "body": json.dumps(body),
         "isBase64Encoded": False,
     }
-
-
-def notification(recipient_email, recipient_name, subject, contents):
-    return json.dumps(
-        {
-            "recipient_email": recipient_email,
-            "recipient_name": recipient_name,
-            "subject": subject,
-            "email_text": contents,
-        }
-    )

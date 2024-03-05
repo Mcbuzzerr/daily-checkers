@@ -88,66 +88,15 @@ Resources:
         Type: String
       TableName: DailyCheckers_Users_SAM
   
-  NotificationTable:
+  InviteTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
       PrimaryKey:
         Name: id
         Type: String
-      TableName: DailyCheckers_Notifications_SAM
+      TableName: DailyCheckers_Invites_SAM
   
-  # SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------ SQS ------
-
-  MySqsQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: my-queue
-
-  # Lambdas (non-endpoints) ------ Lambdas (non-endpoints) ------ Lambdas (non-endpoints) ------ Lambdas (non-endpoints) ------ Lambdas (non-endpoints) ------
-  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-schedule.html
-
-  ScheduledEmailSenderFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: email/scheduled-sender/
-      Handler: app.lambda_handler
-      Runtime: python3.12
-      Events:
-        ScheduleEvent:
-          Type: ScheduleV2
-          Properties:
-            ScheduleExpression: "rate(1 hour)"
-      Environment:
-        Variables:
-          SMTP_HOST: smtp.ethereal.email
-          SMTP_PORT: 587
-          SMTP_USERNAME: isaac.lind93@ethereal.email
-          SMTP_PASSWORD: 6BSWcnhBA8TpVg1TwJ
-          SMTP_NAME: Isaac Lind
-    
-  QueuedEmailSenderFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: email/queue-sender/
-      Handler: app.lambda_handler
-      Runtime: python3.12
-      Events:
-        MySQSEvent:
-          Type: SQS
-          Properties:
-            Queue: !GetAtt MySqsQueue.Arn
-            BatchSize: 1
-      Environment:
-        Variables:
-          SMTP_HOST: smtp.ethereal.email
-          SMTP_PORT: 587
-          SMTP_USERNAME: isaac.lind93@ethereal.email
-          SMTP_PASSWORD: 6BSWcnhBA8TpVg1TwJ
-          SMTP_NAME: Isaac Lind
-      Policies:
-        - AmazonSQSFullAccess
-
-  # Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ 
+ # Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ Endpoints ------ 
 
   GameConcedeFunction:
     Type: AWS::Serverless::Function
@@ -275,6 +224,9 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref InviteTable
         - AmazonSQSFullAccess
   
   InviteAcceptFunction:
@@ -302,6 +254,9 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref InviteTable
         - AmazonSQSFullAccess
 
   InviteDeclineFunction:
@@ -329,6 +284,9 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: 
               !Ref UserTable
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref InviteTable
   
   InviteListFunction:
     Type: AWS::Serverless::Function
@@ -347,6 +305,11 @@ Resources:
             Method: get
             Auth:
               Authorizer: UserAuth
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - DynamoDBCrudPolicy:
+            TableName: 
+              !Ref InviteTable
   
   UserDeleteFunction:
     Type: AWS::Serverless::Function

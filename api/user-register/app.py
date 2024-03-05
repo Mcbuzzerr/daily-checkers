@@ -10,7 +10,6 @@ region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Users_SAM"
 )
-sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
@@ -80,32 +79,11 @@ def lambda_handler(event, context):
 
     table.put_item(Item=user)
 
-    sqs.send_message(
-        QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
-        MessageBody=notification(
-            user_email,
-            user_name,
-            "Welcome to Daily Checkers!",
-            "You have successfully registered for Daily Checkers! Come play a game!",
-        ),
-    )
-
     return response(200, {"message": "User created successfully"})
 
 
 def hash256(obj):
     return hashlib.sha256(obj.encode()).hexdigest()
-
-
-def notification(recipient_email, recipient_name, subject, contents):
-    return json.dumps(
-        {
-            "recipient_email": recipient_email,
-            "recipient_name": recipient_name,
-            "subject": subject,
-            "email_text": contents,
-        }
-    )
 
 
 def response(code, body):

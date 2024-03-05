@@ -13,10 +13,6 @@ table = boto3.resource("dynamodb", region_name=region_name).Table(
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Users_SAM"
 )
-notification_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Notifications_SAM"
-)
-sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
@@ -168,7 +164,8 @@ def lambda_handler(event, context):
     if len(currently_alive_team_a_pieces) == 0:
         # team B wins
         new_game_state["gameOver"] = True
-        user_b = send_game_end_notification(user_b, user_a)
+        if user_b["victories"] == 0:
+            user_b["pieces"] = add_text_to_winner_pieces(user_b)
         user_b["victories"] += 1
         table.put_item(Item=new_game_state)
         user_table.put_item(Item=user_a)
@@ -177,36 +174,13 @@ def lambda_handler(event, context):
     elif len(currently_alive_team_b_pieces) == 0:
         # team A wins
         new_game_state["gameOver"] = True
-        user_a = send_game_end_notification(user_a, user_b)
+        if user_a["victories"] == 0:
+            user_a["pieces"] = add_text_to_winner_pieces(user_a)
         user_a["victories"] += 1
         table.put_item(Item=new_game_state)
         user_table.put_item(Item=user_a)
         user_table.put_item(Item=user_b)
         return response(200, {"message": "Game over. Team A wins."})
-
-    send_at_24_hours_from_now = datetime.now() + timedelta(hours=24)
-
-    notification_table.put_item(
-        Item=scheduled_notification(
-            send_at_24_hours_from_now.isoformat(),
-            authenticated_user["email"],
-            authenticated_user["name"],
-            "Your next turn is ready!",
-            "It's your turn again in your game of checkers!",
-        )
-    )
-
-    opponent = user_a if authenticated_user_team == "B" else user_b
-
-    sqs.send_message(
-        QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
-        MessageBody=notification(
-            opponent["email"],
-            opponent["name"],
-            "Your opponent has taken their turn",
-            "Your opponent has taken their turn in your game of checkers!",
-        ),
-    )
 
     # update the user stats
     user_table.put_item(Item=user_a)
@@ -214,42 +188,7 @@ def lambda_handler(event, context):
     # update the game state
     table.put_item(Item=new_game_state)
 
-    # send a notification to the other player
-
     return response(200, {"message": "Game state updated."})
-
-
-def send_game_end_notification(winner, loser):
-    winner = user_table.get_item(Key={"id": winner["id"]})["Item"]
-    loser = user_table.get_item(Key={"id": loser["id"]})["Item"]
-
-    if winner["victories"] == 0:
-        winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! With this victory, you have unlocked the ability to customize your pieces and profile! Go to the settings page to check it out!"
-        winner["pieces"] = add_text_to_winner_pieces(winner)
-    else:
-        winner_message = f"Congratulations, {winner['name']}! You just won a game of checkers against {loser['name']}! You now have {winner['victories']} victories!"
-
-    sqs.send_message(
-        QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
-        MessageBody=notification(
-            winner["email"],
-            winner["name"],
-            "You got that W in a game of checkers!",
-            winner_message,
-        ),
-    )
-
-    sqs.send_message(
-        QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
-        MessageBody=notification(
-            loser["email"],
-            loser["name"],
-            "You just suffered from a skill issue in checkers...",
-            f"Sorry, {loser['name']}. You just lost a game of checkers against {winner['name']}. Better luck next time!",
-        ),
-    )
-
-    return winner
 
 
 def add_text_to_winner_pieces(winner):
@@ -266,6 +205,7 @@ def add_text_to_winner_pieces(winner):
     winner_pieces["5-A"]["displayText"] = "Your"
     winner_pieces["6-A"]["displayText"] = "Pieces"
     winner_pieces["7-A"]["displayText"] = "Names"
+    winner_pieces["8-A"]["displayText"] = "And"
     winner_pieces["9-A"]["displayText"] = "Emoji"
     winner_pieces["10-A"]["displayText"] = "Work"
     winner_pieces["11-A"]["displayText"] = "Too!"
@@ -277,6 +217,7 @@ def add_text_to_winner_pieces(winner):
     winner_pieces["5-B"]["displayText"] = "See"
     winner_pieces["6-B"]["displayText"] = "Their"
     winner_pieces["7-B"]["displayText"] = "Stats"
+    winner_pieces["8-B"]["displayText"] = "0.0"
     winner_pieces["9-B"]["displayText"] = "🐢"
     winner_pieces["10-B"]["displayText"] = "🐱"
     winner_pieces["11-B"]["displayText"] = "👑"
@@ -296,26 +237,4 @@ def response(code, body):
         },
         "body": json.dumps(body),
         "isBase64Encoded": False,
-    }
-
-
-def notification(recipient_email, recipient_name, subject, contents):
-    return json.dumps(
-        {
-            "recipient_email": recipient_email,
-            "recipient_name": recipient_name,
-            "subject": subject,
-            "email_text": contents,
-        }
-    )
-
-
-def scheduled_notification(send_at, recipient_email, recipient_name, subject, contents):
-    return {
-        "id": str(uuid4()),
-        "send_at": send_at,
-        "recipient_email": recipient_email,
-        "recipient_name": recipient_name,
-        "subject": subject,
-        "email_text": contents,
     }

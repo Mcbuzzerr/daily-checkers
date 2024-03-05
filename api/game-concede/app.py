@@ -10,7 +10,6 @@ table = boto3.resource("dynamodb", region_name=region_name).Table(
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
     "DailyCheckers_Users_SAM"
 )
-sqs = boto3.client("sqs", region_name=region_name)
 
 
 def lambda_handler(event, context):
@@ -28,15 +27,6 @@ def lambda_handler(event, context):
             user = user_table.get_item(Key={"id": game["players"]["A"]["id"]})["Item"]
 
         table.delete_item(Key={"id": id})
-        sqs.send_message(
-            QueueUrl="https://sqs.us-east-1.amazonaws.com/385155794368/my-queue",
-            MessageBody=notification(
-                user["email"],
-                user["name"],
-                "Your opponent has conceded the game",
-                "Your opponent has conceded the game. Unfortunately, this does not count as a win for you otherwise it would be too easy to unlock customizations! Good luck in your next game!",
-            ),
-        )
 
         return response(200, {"message": "Game deleted"})
 
@@ -60,14 +50,3 @@ class DecimalEncoder(json.JSONEncoder):
         if isinstance(o, Decimal):
             return int(o)
         return super(DecimalEncoder, self).default(o)
-
-
-def notification(recipient_email, recipient_name, subject, contents):
-    return json.dumps(
-        {
-            "recipient_email": recipient_email,
-            "recipient_name": recipient_name,
-            "subject": subject,
-            "email_text": contents,
-        }
-    )
