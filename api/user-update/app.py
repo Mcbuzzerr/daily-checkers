@@ -1,4 +1,5 @@
 import boto3
+import hashlib
 from decimal import Decimal
 from os import getenv
 import json
@@ -26,11 +27,11 @@ def lambda_handler(event, context):
     if "email" in body:
         email = body["email"]
     if "password" in body:
-        password = hash(body["password"])
+        password = hash256(body["password"])
 
     user = table.get_item(Key={"id": id})["Item"]
 
-    if hash(body["confirmPassword"]) != user["password"]:
+    if hash256(body["confirmPassword"]) != user["password"]:
         return response(400, {"error": "Password confirmation failed"})
 
     if user is None:
@@ -55,6 +56,10 @@ def lambda_handler(event, context):
         )
 
         return response(200, user)
+    
+    
+def hash256(obj):
+    return hashlib.sha256(obj.encode()).hexdigest()
 
 
 def notification(recipient_email, recipient_name, subject, contents):
