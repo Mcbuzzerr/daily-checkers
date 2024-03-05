@@ -30,7 +30,7 @@ def lambda_handler(event, context):
         name = body["name"]
     if "email" in body:
         email = body["email"]
-    if "password" in body:
+    if "newPassword" in body:
         newPassword = body["newPassword"]
 
     user = table.get_item(Key={"id": id})["Item"]

@@ -268,6 +268,7 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
         return;
     }
     if (selected_piece == null) return;
+    if (selected_piece != piece) return;
     let undoButton = document.getElementById("undo-button");
     undoButton.classList.remove("disabled");
     let submitButton = document.getElementById("submit-button");
@@ -275,12 +276,12 @@ const planMovePiece = (piece, old_x, old_y, new_x, new_y) => {
 
     let old_cell = document.getElementById(`${old_x}-${old_y}`);
     let new_cell = document.getElementById(`${new_x}-${new_y}`);
-    let pieceText = Players[Object.keys(piece)[0].split("-")[1]].account.pieces[Object.keys(piece)[0]].displayText;
-    new_cell.innerHTML = `<div class="piece ghost ${piece.promoted ? "promoted" : ""}" id="${Object.keys(piece)[0]}">${pieceText}</div>`
-    old_cell.innerHTML = `<div class="piece shadow ${piece.promoted ? "promoted" : ""}" id="shadow"></div>`;
+    let pieceText = Players[Object.keys(selected_piece)[0].split("-")[1]].account.pieces[Object.keys(selected_piece)[0]].displayText;
+    new_cell.innerHTML = `<div class="piece ghost ${selected_piece.promoted ? "promoted" : ""}" id="${Object.keys(selected_piece)[0]}">${pieceText}</div>`
+    old_cell.innerHTML = `<div class="piece shadow ${selected_piece.promoted ? "promoted" : ""}" id="shadow"></div>`;
 
     gameBoard = Game.board;
-    gameBoard[new_y][new_x] = piece;
+    gameBoard[new_y][new_x] = selected_piece;
     gameBoard[old_y][old_x] = null;
 
     let jumped_piece = null;
