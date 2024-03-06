@@ -21,10 +21,10 @@ table = dynamodb.Table("DailyCheckers_Users_SAM")
 
 def lambda_handler(event, context):
     body = json.loads(event["body"])
-    email = body["email"]
+    username = body["username"]
     password = hash256(str(body["password"]))
 
-    response = table.scan(FilterExpression=Attr("email").eq(email))
+    response = table.scan(FilterExpression=Attr("username").eq(username))
 
     print(response)
 
@@ -36,7 +36,7 @@ def lambda_handler(event, context):
     if user["password"] != password:
         return format_response(401, {"error": "Authentication failed"})
 
-    token = generate_jwt(email)
+    token = generate_jwt(username)
     del user["password"]
 
     return format_response(200, {"token": token, "user": user})
@@ -46,8 +46,8 @@ def hash256(obj):
     return hashlib.sha256(obj.encode()).hexdigest()
 
 
-def generate_jwt(email):
-    payload = {"email": email, "exp": datetime.utcnow() + timedelta(days=2)}
+def generate_jwt(username):
+    payload = {"username": username, "exp": datetime.utcnow() + timedelta(days=2)}
     # Generate private key with: openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
     private_key_env_var = os.getenv("PRIVATE_KEY")
     private_key = private_key_env_var.replace("\\n", "\n")

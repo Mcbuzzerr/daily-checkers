@@ -23,7 +23,7 @@ def lambda_handler(event, context):
     invite_id = str(uuid4())
     invite_to = event["pathParameters"]["id"]
     invite_from = authenticated_user["id"]
-    invite_from_name = authenticated_user["name"]
+    invite_from_name = authenticated_user["username"]
     invite_from_background = authenticated_user["backgroundColor"]
     invite_from_highlight = authenticated_user["highlightColor"]
     URL = "localhost:5500/frontend"
@@ -51,7 +51,7 @@ def lambda_handler(event, context):
                         "id": authenticated_user["id"],
                         "lastTurnTakenAt": None,
                     },
-                    "B": {"id": opponent["id"], "lastTurnTakenAt": None},
+                    "B": {"id": invite["from"], "lastTurnTakenAt": None},
                 },
                 "turnCount": 0,
                 "gameOver": False,
@@ -150,7 +150,7 @@ def lambda_handler(event, context):
     if "Item" not in recipient:
         return response(404, {"error": "Recipient not found"})
     else:
-        invite_to_name = recipient["Item"]["name"]
+        invite_to_name = recipient["Item"]["username"]
 
         # Create the invite
         invite_table.put_item(

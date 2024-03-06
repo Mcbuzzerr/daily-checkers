@@ -54,7 +54,7 @@ def lambda_handler(event, context):
         allow = "Allow"
 
     response = {
-        "principalId": f"{decoded_token['email']}",
+        "principalId": f"{decoded_token['username']}",
         "policyDocument": {
             "Version": "2012-10-17",
             "Statement": [
@@ -75,8 +75,8 @@ def lambda_handler(event, context):
 
 def found_in_db(decoded_token):
     print(decoded_token)
-    email = decoded_token["email"]
-    user = table.scan(FilterExpression=Attr("email").eq(email))
+    username = decoded_token["username"]
+    user = table.scan(FilterExpression=Attr("username").eq(username))
 
     if len(user["Items"]) == 1:
         return user["Items"][0]

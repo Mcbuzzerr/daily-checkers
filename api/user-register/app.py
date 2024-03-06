@@ -16,15 +16,14 @@ def lambda_handler(event, context):
     print(event)
     user_id = uuid4()
     body = json.loads(event["body"])
-    user_name = body["name"]
-    user_email = body["email"]
+    user_name = body["username"]
     user_password = hash256(str(body["password"]))
     user_victories = 0
 
-    user_with_email = table.scan(FilterExpression=Attr("email").eq(user_email))
+    user_with_username = table.scan(FilterExpression=Attr("username").eq(user_name))
 
-    if user_with_email["Items"]:
-        return response(400, {"error": "Email already in use"})
+    if user_with_username["Items"]:
+        return response(400, {"error": "Username already in use"})
 
     blankPiece = {
         "displayText": "",
@@ -66,8 +65,7 @@ def lambda_handler(event, context):
 
     user = {
         "id": str(user_id),
-        "name": user_name,
-        "email": user_email,
+        "username": user_name,
         "password": user_password,
         "victories": user_victories,
         "pieces": user_pieces,

@@ -29,7 +29,7 @@ def lambda_handler(event, context):
         for game in games["Items"]:
             for player in game["players"]:
                 if game["players"][player]["id"] == id:
-                    game["players"][player]["name"] = authenticated_user["name"]
+                    game["players"][player]["username"] = authenticated_user["username"]
                 else:
                     user_ids.append(game["players"][player]["id"])
 
@@ -40,7 +40,7 @@ def lambda_handler(event, context):
                 if game["players"][player]["id"] != id:
                     for user in users["Items"]:
                         if user["id"] == game["players"][player]["id"]:
-                            game["players"][player]["name"] = user["name"]
+                            game["players"][player]["username"] = user["username"]
 
         return response(200, games["Items"])
 

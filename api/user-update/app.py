@@ -19,17 +19,14 @@ def lambda_handler(event, context):
         return response(403, {"error": "Forbidden"})
 
     body = json.loads(event["body"])
-    name = None
-    email = None
+    username = None
     newPassword = None
 
     if "confirmPassword" not in body:
         return response(400, {"error": "Confirm password is required"})
 
-    if "name" in body:
-        name = body["name"]
-    if "email" in body:
-        email = body["email"]
+    if "username" in body:
+        username = body["username"]
     if "newPassword" in body:
         newPassword = hash256(str(body["newPassword"]))
 
@@ -41,10 +38,8 @@ def lambda_handler(event, context):
     if user is None:
         return response(404, {"error": "User not found"})
     else:
-        if name is not None:
-            user["name"] = name
-        if email is not None:
-            user["email"] = email
+        if username is not None:
+            user["username"] = username
         if newPassword is not None:
             user["password"] = newPassword
         table.put_item(Item=user)
