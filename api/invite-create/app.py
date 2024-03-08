@@ -128,6 +128,16 @@ def lambda_handler(event, context):
             return response(200, {"gameID": game["id"]})
 
         else:
+            invites_from_user = invite_table.scan(
+                FilterExpression=Attr("to").eq(None) & Attr("from").eq(invite_from)
+            )
+
+            if invites_from_user["Count"] > 0:
+                return response(
+                    200,
+                    {"message": "Game will be created when an opponent is found"},
+                )
+
             # If not found, create a new invite
             invite_table.put_item(
                 Item={
