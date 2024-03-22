@@ -1,6 +1,6 @@
-## Daily Checkers
+## The Daily Checkers
 
-Daily Checkers is an asynchronous checkers game that you can play with others! You take turns making moves, but only one move per game per day,
+The Daily Checkers is an asynchronous checkers game that you can play with others! You take turns making moves, but only one move per game per day,
 
 ## Pre-requisites
 
