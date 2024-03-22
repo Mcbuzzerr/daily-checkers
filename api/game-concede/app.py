@@ -26,7 +26,10 @@ def lambda_handler(event, context):
         else:
             user = user_table.get_item(Key={"id": game["players"]["A"]["id"]})["Item"]
 
-        table.delete_item(Key={"id": id})
+        game["gameOver"] = True
+        game["winner"] = user["id"]
+
+        table.put_item(Item=game)
 
         return response(200, {"message": "Game deleted"})
 

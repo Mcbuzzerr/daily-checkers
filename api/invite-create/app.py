@@ -55,6 +55,7 @@ def lambda_handler(event, context):
                 },
                 "turnCount": 0,
                 "gameOver": False,
+                "winner": None,
                 "board": [
                     [
                         None,

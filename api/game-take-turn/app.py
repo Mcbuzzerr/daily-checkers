@@ -169,6 +169,7 @@ def lambda_handler(event, context):
         if user_b["victories"] == 0:
             user_b["pieces"] = add_text_to_winner_pieces(user_b)
         user_b["victories"] += 1
+        new_game_state["winner"] = user_b["id"]
         table.put_item(Item=new_game_state)
         user_table.put_item(Item=user_a)
         user_table.put_item(Item=user_b)
@@ -179,6 +180,7 @@ def lambda_handler(event, context):
         if user_a["victories"] == 0:
             user_a["pieces"] = add_text_to_winner_pieces(user_a)
         user_a["victories"] += 1
+        new_game_state["winner"] = user_a["id"]
         table.put_item(Item=new_game_state)
         user_table.put_item(Item=user_a)
         user_table.put_item(Item=user_b)
