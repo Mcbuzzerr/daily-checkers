@@ -322,34 +322,34 @@ Resources:
             TableName: 
               !Ref InviteTable
 
-  InviteCancelFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: api/invite-cancel/
-      Handler: app.lambda_handler
-      Runtime: python3.12
-      Architectures:
-      - x86_64
-      Events:
-        InviteDecline:
-          Type: Api
-          Properties:
-            RestApiId: !Ref MyApi
-            Path: /invite/cancel/{id}
-            Method: post
-            Auth:
-              Authorizer: UserAuth
-      Policies:
-        - AmazonDynamoDBFullAccess
-        - DynamoDBCrudPolicy:
-            TableName: 
-              !Ref GameTable
-        - DynamoDBCrudPolicy:
-            TableName: 
-              !Ref UserTable
-        - DynamoDBCrudPolicy:
-            TableName: 
-              !Ref InviteTable
+  # InviteCancelFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     CodeUri: api/invite-cancel/
+  #     Handler: app.lambda_handler
+  #     Runtime: python3.12
+  #     Architectures:
+  #     - x86_64
+  #     Events:
+  #       InviteDecline:
+  #         Type: Api
+  #         Properties:
+  #           RestApiId: !Ref MyApi
+  #           Path: /invite/cancel/{id}
+  #           Method: post
+  #           Auth:
+  #             Authorizer: UserAuth
+  #     Policies:
+  #       - AmazonDynamoDBFullAccess
+  #       - DynamoDBCrudPolicy:
+  #           TableName: 
+  #             !Ref GameTable
+  #       - DynamoDBCrudPolicy:
+  #           TableName: 
+  #             !Ref UserTable
+  #       - DynamoDBCrudPolicy:
+  #           TableName: 
+  #             !Ref InviteTable
 
   UserDeleteFunction:
     Type: AWS::Serverless::Function
