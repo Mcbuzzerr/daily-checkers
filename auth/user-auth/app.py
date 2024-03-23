@@ -16,7 +16,7 @@ class DecimalEncoder(json.JSONEncoder):
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Users_SAM"
+    "DailyCheckers_Users_SAM_dev"
 )
 
 

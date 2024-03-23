@@ -5,10 +5,10 @@ import json
 
 region_name = getenv("APP_REGION")
 table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Games_SAM"
+    "DailyCheckers_Games_SAM_dev"
 )
 user_table = boto3.resource("dynamodb", region_name=region_name).Table(
-    "DailyCheckers_Users_SAM"
+    "DailyCheckers_Users_SAM_dev"
 )
 
 

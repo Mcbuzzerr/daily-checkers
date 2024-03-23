@@ -16,7 +16,7 @@ class DecimalEncoder(json.JSONEncoder):
 
 
 dynamodb = boto3.resource("dynamodb", region_name=os.getenv("APP_REGION"))
-table = dynamodb.Table("DailyCheckers_Users_SAM")
+table = dynamodb.Table("DailyCheckers_Users_SAM_dev")
 
 
 def lambda_handler(event, context):
