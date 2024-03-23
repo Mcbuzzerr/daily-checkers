@@ -142,6 +142,22 @@ def lambda_handler(event, context):
                             print("Lifetime kills added to ", piece_prev["key"])
                             print(user_b["pieces"][piece_prev["key"]])
 
+    pieces_moved = 0
+    # Check for movement
+    for piece_prev in previously_alive_pieces:
+        for piece_curr in currently_alive_pieces:
+            if piece_prev["key"] == piece_curr["key"]:
+                if piece_prev["position"] != piece_curr["position"]:
+                    pieces_moved += 1
+                    # if "A" in piece_prev["key"]:
+                    #     user_a["pieces"][piece_prev["key"]]["lifetimeMoves"] += 1
+                    # elif "B" in piece_prev["key"]:
+                    #     user_b["pieces"][piece_prev["key"]]["lifetimeMoves"] += 1
+
+    # If more tha one piece was moved it means that the user tried to cheat by moving more than one piece
+    if pieces_moved > 1:
+        return response(400, {"error": "You can only move one piece at a time."})
+
     # Check for promotions
     if authenticated_user_team == "A":
         for cell in new_board[7]:

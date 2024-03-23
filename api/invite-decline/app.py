@@ -13,17 +13,16 @@ table = boto3.resource("dynamodb", region_name=region_name).Table(
 def lambda_handler(event, context):
     authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
     id = event["pathParameters"]["id"]
-    invite_decliner = event["invite_decliner"]
+    invite_decliner = authenticated_user["id"]
 
-    response = table.scan(
-        KeyConditionExpression=Key("id").eq(id),
-        FilterExpression=Attr("to").eq(invite_decliner),
+    table_response = table.scan(
+        FilterExpression=Attr("id").eq(id) & Attr("to").eq(invite_decliner)
     )
 
-    if response["Count"] == 0:
+    if table_response["Count"] == 0:
         return response(404, {"error": "Invite not found"})
     else:
-        invite = response["Items"][0]
+        invite = table_response["Items"][0]
         if invite["to"] != invite_decliner:
             return response(403, {"error": "Unauthorized"})
 

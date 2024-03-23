@@ -44,6 +44,11 @@ def lambda_handler(event, context):
             if invite["from"] == invite_from:
                 return response(400, {"error": "You cannot invite yourself to a game"})
 
+            # Check that the account is still active
+            recipient = user_table.get_item(Key={"id": invite["from"]})
+            if "Item" not in recipient:
+                return response(404, {"error": "Recipient not found"})
+
             game = {
                 "id": str(uuid4()),
                 "players": {
