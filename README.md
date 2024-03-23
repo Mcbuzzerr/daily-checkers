@@ -19,10 +19,20 @@ To run API locally
 sam local start-api
 ```
 
-To Deploy API
+To Build API
 
 ```bash
-sam build && sam deploy --no-confirm-changeset
+sam build
 ```
+
+To Deploy to dev or prod
+
+```bash
+sam deploy --parameter-overrides EnvironmentType=dev --stack-name daily-checkers-dev
+```
+```bash
+sam deploy --parameter-overrides EnvironmentType=prod --stack-name daily-checkers-prod
+```
+
 
 To run frontend locally us a live server extension in vs-code or open the index.html file in a browser.
