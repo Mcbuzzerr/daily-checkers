@@ -1,4 +1,5 @@
 import boto3
+from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.conditions import Attr
 from os import getenv
 import json
@@ -11,19 +12,22 @@ table = boto3.resource("dynamodb", region_name=region_name).Table(
 
 def lambda_handler(event, context):
     authenticated_user = json.loads(event["requestContext"]["authorizer"]["user"])
-    id = authenticated_user["id"]
+    id = event["pathParameters"]["id"]
+    invite_decliner = authenticated_user["id"]
 
-    invites_to = table.scan(FilterExpression=Attr("to").eq(id))
+    table_response = table.scan(
+        FilterExpression=Attr("id").eq(id) & Attr("from").eq(invite_decliner)
+    )
 
-    invites_from = table.scan(FilterExpression=Attr("from").eq(id))
-
-    if invites_to["Count"] == 0 and invites_from["Count"] == 0:
-        return response(200, {"message": "No invites found"})
+    if table_response["Count"] == 0:
+        return response(404, {"error": "Invite not found"})
     else:
-        return response(
-            200,
-            {"invitesTo": invites_to["Items"], "invitesFrom": invites_from["Items"]},
-        )
+        invite = table_response["Items"][0]
+        if invite["from"] != invite_decliner:
+            return response(403, {"error": "Unauthorized"})
+
+        table.delete_item(Key={"id": id})
+        return response(200, {"message": "Invite declined"})
 
 
 def response(code, body):

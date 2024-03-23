@@ -149,6 +149,13 @@ def lambda_handler(event, context):
             if piece_prev["key"] == piece_curr["key"]:
                 if piece_prev["position"] != piece_curr["position"]:
                     pieces_moved += 1
+
+                    # Check if movement distance is valid
+                    # If it's larger than 1, and the piece did not kill another piece, it's an invalid move
+                    # There are also only a few valid distances
+
+                    # Validate the team of the piece against whose turn it is
+
                     # if "A" in piece_prev["key"]:
                     #     user_a["pieces"][piece_prev["key"]]["lifetimeMoves"] += 1
                     # elif "B" in piece_prev["key"]:

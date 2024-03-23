@@ -13,7 +13,6 @@ table = boto3.resource("dynamodb", region_name=region_name).Table(
 
 
 def lambda_handler(event, context):
-    print(event)
     user_id = uuid4()
     body = json.loads(event["body"])
     user_name = body["username"]
@@ -30,6 +29,7 @@ def lambda_handler(event, context):
         "lifetimeKills": 0,
         "lifetimeDeaths": 0,
         "lifetimePromotions": 0,
+        "lifetimeMoves": 0,
     }
     user_pieces = {
         "1-A": blankPiece,
@@ -73,6 +73,7 @@ def lambda_handler(event, context):
         "piecesBColor": user_piecesBColor,
         "highlightColor": user_highlightColor,
         "backgroundColor": user_backgroundColor,
+        "website": None,
     }
 
     table.put_item(Item=user)
